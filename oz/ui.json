@@ -1,0 +1,69 @@
+[
+  {
+    "uuid": "ubiact1",
+    "name": "UbiAct",
+    "body": [
+      {
+        "type": "select_prob",
+        "property2": "gesture",
+        "property": "detected_gestures",
+        "show": true
+      },
+      {
+        "type": "_displayjson",
+        "property": "detected_gestures",
+        "show": true
+      },
+      {
+        "type": "display",
+        "property": "gesture",
+        "show": true
+      },
+      {
+        "type": "radio_json",
+        "property": "detected_gestures",
+        "prefix": "set detected_gestures to",
+        "options": [
+          {
+            "name": "hand_closed",
+            "value": [
+              {
+                "value": "hand_closed",
+                "prob": 0.81
+              },
+              {
+                "value": "hand_rotate_right",
+                "prob": 0.04
+              },
+              {
+                "value": "hand_rotate_left",
+                "prob": 0.03
+              }
+            ]
+          },
+          {
+            "name": "hand_opened",
+            "value": [
+              {
+                "value": "hand_opened",
+                "prob": 0.94
+              },
+              {
+                "value": "hand_rotate_right",
+                "prob": 0.01
+              },
+              {
+                "value": "hand_rotate_left",
+                "prob": 0.01
+              }
+            ]
+          },
+          {
+            "name": "none",
+            "value": []
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "domain": "kosmos",
+  "name": "KosmoS",
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/kosmos",
+  "requirements": ["websocket-client","kosmos-client==0.9.1"],
+  "ssdp": [],
+  "version": "0.8",
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@janssen-jan"
+  ]
+}

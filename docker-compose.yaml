@@ -1,0 +1,36 @@
+version: '3.4'
+services:
+  kosmos-home-assistant:
+    container_name: kosmos-home-assistant
+    image: homeassistant/home-assistant:stable
+    volumes:
+      - ./ha-config:/config
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=1000
+      - PGID=1000
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+  kosmos-platform:
+    container_name: kosmos-platform
+    restart: unless-stopped
+    image: ghcr.io/kosmos-lab/kosmos-platform
+    volumes:
+      - ./config:/app/config
+      - ../web:/app/web
+      - ./db:/app/db
+      - ./rules:/app/rules/rules
+      - ./oz/ui.json:/app/web/oz/assets/ui.json
+    environment:
+      - SETUPHA=1
+      - KOSMOS_HOST=kosmos-platform
+      - HA_USER=kosmos
+      - HA_HOST=kosmos-home-assistant
+      - HA_PASS=pass
+      - USERS=[{"username":"admin","level":100,"password":"verysecret"},{"username":"user","level":1,"password":"pass"},{"username":"user2","level":1,"password":"pass"}]
+    depends_on:
+      - kosmos-home-assistant
+    ports:
+      - "18080:18080"
+      - "1883:1883"
