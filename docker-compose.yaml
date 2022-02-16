@@ -18,7 +18,6 @@ services:
     image: ghcr.io/kosmos-lab/kosmos-platform
     volumes:
       - ./config:/app/config
-      - ../web:/app/web
       - ./db:/app/db
       - ./rules:/app/rules/rules
       - ./oz/ui.json:/app/web/oz/assets/ui.json
