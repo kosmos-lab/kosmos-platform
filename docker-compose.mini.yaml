@@ -1,0 +1,20 @@
+version: '3.4'
+services:
+  kosmos-platform:
+    container_name: kosmos-platform # the name of the container 
+    restart: unless-stopped # automatically start on boot, and restart if container dies
+    image: ghcr.io/kosmos-lab/kosmos-platform # the kosmos platform image
+    volumes:
+      - ./config:/app/config #the config folder
+      - ./db:/app/db # the folder of the database
+      - ./plugins:/app/plugins  # the plugins folder, drop kosmos plugin zips in here
+      - ./rules:/app/rules/rules # the rules created with KREE will be saved here
+      - ./oz/ui.json:/app/web/oz/assets/ui.json # the custom Wizard-of-Oz UI config will be saved in this file
+    environment:
+      # the users to setup, here we create 3 users with simple passwords
+      - USERS=[{"username":"admin","level":100,"password":"verysecret"},{"username":"user","level":1,"password":"pass"},{"username":"user2","level":1,"password":"pass"}]
+      - PUID=1000 # the userid to run the process
+      - PGID=1000 # the groupid to run the process
+    ports:
+      - "18080:18080" # this is the default port of the webserver
+      - "1883:1883" # this is the MQTT port

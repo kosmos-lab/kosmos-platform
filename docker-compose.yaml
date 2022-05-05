@@ -4,7 +4,7 @@ services:
     container_name: kosmos-home-assistant
     image: homeassistant/home-assistant:stable
     volumes:
-      - ./ha-config:/config
+      - ./ha-config:/config #the config folder, also contains the kosmos custom component, this NEEDS the checkout or github download containing the giving folder
     environment:
       - TZ=Europe/Berlin
       - PUID=1000
@@ -17,17 +17,21 @@ services:
     restart: unless-stopped
     image: ghcr.io/kosmos-lab/kosmos-platform
     volumes:
-      - ./config:/app/config
-      - ./db:/app/db
-      - ./rules:/app/rules/rules
-      - ./oz/ui.json:/app/web/oz/assets/ui.json
+      - ./config:/app/config #the config folder
+      - ./db:/app/db # the folder of the database
+      - ./plugins:/app/plugins # the plugins folder, drop kosmos plugin zips in here
+      - ./rules:/app/rules/rules # the rules created with KREE will be saved here
+      - ./oz/ui.json:/app/web/oz/assets/ui.json # the custom Wizard-of-Oz UI config will be saved in this file
     environment:
-      - SETUPHA=1
-      - KOSMOS_HOST=kosmos-platform
-      - HA_USER=kosmos
-      - HA_HOST=kosmos-home-assistant
-      - HA_PASS=pass
+      - SETUPHA=1 # automatically setup home assistant, this implies the home assisstant instance is completely fresh
+      - KOSMOS_HOST=kosmos-platform # the internal host for the platform
+      - HA_HOST=kosmos-home-assistant # the host of the home assisstant instance to connect to
+      - HA_USER=kosmos # the username we add to home asssisstant
+      - HA_PASS=pass # the password to use for the added home assisstant user
+        # the users to setup in the kosmos platform, here we create 3 users with simple passwords
       - USERS=[{"username":"admin","level":100,"password":"verysecret"},{"username":"user","level":1,"password":"pass"},{"username":"user2","level":1,"password":"pass"}]
+      - PUID=1000 # the userid to run the process
+      - PGID=1000 # the groupid to run the process      
     depends_on:
       - kosmos-home-assistant
     ports:
