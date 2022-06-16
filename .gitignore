@@ -29,6 +29,7 @@ hs_err_pid*
 *.pyc
 _*
 *.backup/*
+**/*.backup/*
 *.old
 /docker/ha/config/.storage/core.area_registry
 /docker/ha/config/.storage/core.config
