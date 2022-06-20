@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "readOnly": true,
+    "title": "roadCondition",
+    "type": "string",
+    "enum": [
+        "Dry",
+        "Damp",
+        "Wet",
+        "IceCovered"
+    ],
+    "$id": "https://kosmos-lab.de/schema/roadCondition.json"
+}

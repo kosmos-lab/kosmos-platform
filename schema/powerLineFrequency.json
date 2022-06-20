@@ -1,0 +1,11 @@
+{
+    "unit": "Hz",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 150,
+    "description": "The nominal frequency of the oscillations of",
+    "readOnly": true,
+    "title": "powerLineFrequency",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/powerLineFrequency.json"
+}

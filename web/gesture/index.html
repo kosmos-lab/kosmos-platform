@@ -1,0 +1,550 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>$Q Recognizer</title>
+    <link href="styles.css" rel="stylesheet" type="text/css"/>
+    <!--[if IE]>
+    <script src="excanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="canvas.text.js"></script>
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+    <link rel="manifest" href="manifest.json">
+
+    <script type="text/javascript">
+
+        class Point {
+            constructor(x, y, stroke) {
+                this.x = x;
+                this.y = y;
+                this.stroke = stroke;
+            }
+        }
+
+        let gestureDefs = {};
+        let isDrawing, currentPoints, currentStroke, _r;
+        let canvas_context, canvas_rect;
+
+        function onLoadEvent() {
+
+            var canvas = document.getElementById('myCanvas');
+
+            canvas_context = canvas.getContext('2d');
+
+            currentPoints = []; // point array for current stroke
+            currentStroke = 0;
+
+
+            canvas_context.lineWidth = 3;
+            canvas_context.font = "16px Gentilis";
+            canvas_rect = getCanvasRect(canvas); // canvas rect on page
+            //canvas_context.fillStyle = "rgb(255,255,136)";
+            //canvas_context.fillRect(0, 0, canvas_rect.width, 20);
+
+            isDrawing = false;
+            getGestureList();
+        }
+
+        function getCanvasRect(canvas) {
+            var w = canvas.width;
+            var h = canvas.height;
+
+            var cx = canvas.offsetLeft;
+            var cy = canvas.offsetTop;
+            while (canvas.offsetParent != null) {
+                canvas = canvas.offsetParent;
+                cx += canvas.offsetLeft;
+                cy += canvas.offsetTop;
+            }
+            return {x: cx, y: cy, width: w, height: h};
+        }
+
+        function getScrollX() {
+            return $(window).scrollLeft();
+
+        }
+
+        function getScrollY() {
+            return $(window).scrollTop();
+
+        }
+
+        //
+        // Mouse Events
+        //
+        function onPointerDown(x, y, button) {
+            document.onselectstart = function () {
+                return false;
+            } // disable drag-select
+            document.onmousedown = function () {
+                return false;
+            } // disable drag-select
+
+
+            if (button <= 1) {
+                $("#class").text("");
+
+
+                isDrawing = true;
+                x -= canvas_rect.x - getScrollX();
+                y -= canvas_rect.y - getScrollY();
+                if (currentStroke == 0) // starting a new gesture
+                {
+                    currentPoints.length = 0;
+                    canvas_context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
+                }
+                let px = canvas_rect.height - y;
+                let py = x;
+                currentPoints[currentPoints.length] = new Point(x, y, ++currentStroke);
+                //log("Recording stroke #" + currentStroke + "...");
+
+                //log("got click "+ px+","+py+" ("+ x+","+y+")",false);
+                var clr = "rgb(" + rand(0, 200) + "," + rand(0, 200) + "," + rand(0, 200) + ")";
+                canvas_context.strokeStyle = clr;
+                canvas_context.fillStyle = clr;
+                canvas_context.fillRect(x - 4, y - 3, 9, 9);
+            } else if (button == 2) {
+
+            }
+        }
+
+        function onPointerMove(x, y, button) {
+            if (isDrawing) {
+
+                x -= canvas_rect.x - getScrollX();
+                y -= canvas_rect.y - getScrollY();
+
+                currentPoints[currentPoints.length] = new Point(x, y, currentStroke); // append
+
+                drawConnectedPoint(currentPoints.length - 2, currentPoints.length - 1);
+
+            }
+            /*else {
+                //console.log("not down!");
+            }*/
+        }
+
+        function recognize() {
+            if (currentPoints.length >= 10) {
+
+                $.ajax("/gesture/guess", {
+                    data: JSON.stringify(getPointsArray(currentPoints)),
+                    contentType: 'application/json',
+                    type: 'POST'
+                }).done(function (data) {
+                    if (console && console.log) {
+                        console.log(data)
+                    }
+                    //log("recognized as "+data["result"], false);
+                    $("#class").text(data["result"] + "(" + data["key"] + ")");
+
+                }).fail(function () {
+                    //log("Gestures was NOT added, maybe already existed?", false);
+                    $("#class").text("");
+
+
+                });
+            } else {
+                console.log("only have " + currentPoints.length + " points")
+            }
+            //currentStroke = 0; // signal to begin new gesture on next mouse-down
+
+        }
+
+        function onPointerUp(x, y, button) {
+            document.onselectstart = function () {
+                return true;
+            } // enable drag-select
+            document.onmousedown = function () {
+                return true;
+            } // enable drag-select
+
+            if (button <= 1) {
+                if (isDrawing) {
+                    isDrawing = false;
+                    //log("Stroke #" + currentStroke + " recorded.");
+                    recognize();
+
+                }
+            }
+
+
+        }
+
+        function drawConnectedPoint(from, to) {
+            canvas_context.beginPath();
+            canvas_context.moveTo(currentPoints[from].x, currentPoints[from].y);
+            canvas_context.lineTo(currentPoints[to].x, currentPoints[to].y);
+            canvas_context.closePath();
+            canvas_context.stroke();
+        }
+
+        function log(str, clear) {
+            log = document.getElementById("log");
+            if (clear) {
+                log.value = str;
+            } else {
+                log.value = str + "\n" + log.value;
+            }
+        }
+        function sortJsonArrayByProperty(objArray, prop, direction){
+            if (arguments.length<2) throw new Error("sortJsonArrayByProp requires 2 arguments");
+            var direct = arguments.length>2 ? arguments[2] : 1; //Default to ascending
+
+            if (objArray && objArray.constructor===Array){
+                var propPath = (prop.constructor===Array) ? prop : prop.split(".");
+                objArray.sort(function(a,b){
+                    for (var p in propPath){
+                        if (a[propPath[p]] && b[propPath[p]]){
+                            a = a[propPath[p]];
+                            b = b[propPath[p]];
+                        }
+                    }
+                    // convert numeric strings to integers
+                    a = a.match(/^\d+$/) ? +a : a;
+                    b = b.match(/^\d+$/) ? +b : b;
+                    return ( (a < b) ? -1*direct : ((a > b) ? 1*direct : 0) );
+                });
+            }
+        }
+        /**
+         * create the pointsArray needed for the KosmoS system
+         * it also rotates the result by 90° to have it match the actual positions on the real touchpad
+         * @param points
+         * @returns {*[]}
+         */
+        function getPointsArray(points) {
+            const arr = []
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+                let a = arr[p.stroke - 1];
+                if (a == undefined) {
+                    a = []
+                    arr[p.stroke - 1] = a;
+                }
+                let px = canvas_rect.height - p.y;
+                let py = p.x;
+                a.push([px, py]);
+            }
+            return arr;
+        }
+
+        function rand(low, high) {
+            return Math.floor((high - low + 1) * Math.random()) + low;
+        }
+
+        function round(n, d) // round 'n' to 'd' decimals
+        {
+            d = Math.pow(10, d);
+            return Math.round(n * d) / d;
+        }
+
+        function getGestureList() {
+            $.ajax("/gesture/list", {
+
+                type: 'GET'
+            }).done(function (data) {
+
+                parseGestureList(data);
+
+            }).fail(function () {
+
+            });
+        }
+
+        dataPoints = {}
+
+        function parseGestureList(data) {
+            sortJsonArrayByProperty(data,"name");
+            gestureDefs = {};
+
+            let id = $("select#gestureselect option:checked").val();
+            let id2 = $("select#fullgestureselect option:checked").val();
+            console.log("was selected: " + id);
+            $('#gestureselect').empty();
+            $('#fullgestureselect').empty();
+
+            for (let i = 0; i < data.length; i++) {
+                let name = data[i]["name"];
+                let key = data[i]["id"];
+                $('#fullgestureselect').append('<option value="' + key + '">' + name + '(' + key + ')</option>');
+                dataPoints[key] = data[i]["points"];
+                let l = gestureDefs[name];
+                if (l == undefined) {
+
+                    gestureDefs[name] = 1;
+                } else {
+                    gestureDefs[name] = l + 1;
+                }
+            }
+            $.each(gestureDefs, function (key, value) {
+                $('#gestureselect').append('<option value="' + key + '">' + key + '(' + value + ')</option>');
+            });
+
+            $('#gestureselect').val(id).change();
+            $('#fullgestureselect').val(id2).change();
+        }
+
+        function addToSystem(name, points) {
+            $.ajax("/gesture/add", {
+                data: JSON.stringify({name: name, points: getPointsArray(points)}),
+                contentType: 'application/json',
+                type: 'POST'
+            }).done(function (data) {
+                if (console && console.log) {
+                    parseGestureList(data);
+                }
+                log("\"" + name + "\" added. No. of \"" + name + "\" defined: " + gestureDefs[name] + ".", false);
+            }).fail(function () {
+                log("Gestures was NOT added, maybe already existed?", false);
+            });
+        }
+
+        $('#renameModal').modal({'show': false});
+
+        function onClickDoRenameExisting() {
+            let oldname = $("select#gestureselect option:checked").val();
+            let newname = $('#new-name').val();
+            if (oldname != newname) {
+                $.ajax("/gesture/rename", {
+                    data: JSON.stringify({
+                        'from': oldname,
+                        'to': newname
+                    }),
+                    contentType: 'application/json',
+                    type: 'POST'
+                }).done(function (data) {
+                    $('#renameModal').modal('hide');
+                    parseGestureList(data);
+                }).fail(function () {
+                    log("could not rename gesture?!", false);
+                });
+            }
+            else {
+                $('#renameModal').modal('hide');
+            }
+        }
+
+        function onClickRenameExisting() {
+            $('#new-name').val($("select#gestureselect option:checked").val());
+            $('#renameModal').modal('show');
+
+        }
+
+        function deleteGesture() {
+            let key = $("select#fullgestureselect option:checked").val();
+            $.ajax("/gesture/delete", {
+                data: JSON.stringify({'id': key}),
+                contentType: 'application/json',
+                type: 'POST'
+            }).done(function (data) {
+                parseGestureList(data);
+
+
+            }).fail(function () {
+
+                log("could not delete gesture?!", false);
+
+
+            });
+
+        }
+
+        function drawGesture() {
+            canvas_context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
+            let key = $("select#fullgestureselect option:checked").val();
+            let points = dataPoints[key];
+//console.log("draw "+points);
+
+            strokes = {}
+            for (let i = 0; i < points.length; i++) {
+                let p = points[i];
+                let s = p[2]
+                let str = strokes[s];
+                if (str == undefined) {
+                    str = []
+                    strokes[s] = str;
+                }
+                str.push(p);
+            }
+            $.each(strokes, function (key, value) {
+                var clr = "rgb(" + rand(0, 200) + "," + rand(0, 200) + "," + rand(0, 200) + ")";
+                canvas_context.strokeStyle = clr;
+                canvas_context.fillStyle = clr;
+
+                p0 = value[0];
+                x0 = p0[1];
+                y0 = canvas_rect.height - p0[0]
+                canvas_context.fillRect(x0 - 4, y0 - 3, 9, 9);
+
+                for (let i = 1; i < value.length; i++) {
+                    p0 = value[i - 1];
+                    p = value[i];
+                    x = p[1];
+                    y = canvas_rect.height - p[0]
+                    x0 = p0[1];
+                    y0 = canvas_rect.height - p0[0]
+                    console.log(p0);
+                    console.log(p);
+
+                    console.log(x0 + "," + y0 + "->" + x + "," + y);
+
+
+                    //canvas_context.fillRect(x - 4, y - 3, 9, 9);
+                    canvas_context.beginPath();
+                    canvas_context.moveTo(x0, y0);
+                    canvas_context.lineTo(x, y);
+                    canvas_context.closePath();
+                    canvas_context.stroke();
+                }
+            });
+
+
+        }
+
+        //
+        // Multistroke Adding and Clearing
+        //
+        function onClickAddExisting() {
+            if (currentPoints.length >= 10) {
+                var name = gestureselect[gestureselect.selectedIndex].value;
+                addToSystem(name, currentPoints);
+
+
+                currentStroke = 0; // signal to begin new gesture on next mouse-down
+            }
+        }
+
+        function onClickAddCustom() {
+            var name = document.getElementById('custom').value;
+            if (currentPoints.length >= 10 && name.length > 0) {
+
+                addToSystem(name, currentPoints);
+
+                currentStroke = 0; // signal to begin new gesture on next mouse-down
+            }
+        }
+
+
+        function onClickClearStrokes() {
+            currentPoints.length = 0;
+            currentStroke = 0;
+            canvas_context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
+            log("Canvas cleared.", false);
+        }
+
+        // -->
+    </script>
+</head>
+<body onload="onLoadEvent()">
+<p align="center">
+
+<div class="container">
+    <table>
+        <tr>
+            <td>
+                <canvas id="myCanvas" width="384" height="510" style="    touch-action: none;
+background-color:#dddddd"
+                        onpointerdown="onPointerDown(event.clientX, event.clientY, event.button)"
+                        onpointermove="onPointerMove(event.clientX, event.clientY, event.button)"
+                        onpointerup="onPointerUp(event.clientX, event.clientY, event.button)"
+                        oncontextmenu="return false;">
+                    <span style="background-color:#ffff88;">The &lt;canvas&gt; element is not supported by this browser.</span>
+                </canvas>
+                <div class="input-group mb-3" id="classdiv">
+                    <span class="input-group-text">recognized as</span>
+                    <span class="input-group-text" id="class"></span>
+                </div>
+            </td>
+            <td>
+                <div class="input-group mb-3" id="">
+                    <span class="input-group-text">recognize</span>
+                    <input class="btn btn-primary" type="button" value="recognize"
+                           onclick="recognize()"/>
+                </div>
+                <div class="input-group mb-3" id="cleargesture">
+                    <span class="input-group-text">clear canvas</span>
+                    <input class="btn btn-danger" type="button" value="clear"
+                           onclick="onClickClearStrokes()"/>
+                </div>
+                <div class="input-group mb-3" id="selectgesturediv">
+                    <span class="input-group-text">select gesture</span>
+                    <select id="fullgestureselect" class="form-select"
+                            onkeypress="if (event.keyCode == 13) draw()">
+                    </select>
+                    <input class="btn btn-primary" type="button" value="draw"
+                           onclick="drawGesture()"/>
+                    <input class="btn btn-danger" type="button" value="delete"
+                           onclick="deleteGesture()"/>
+                </div>
+
+                <div class="input-group mb-3" id="addtogesture">
+                    <span class="input-group-text">add to gesture</span>
+                    <select id="gestureselect" class="form-select"
+                            onkeypress="if (event.keyCode == 13) onClickAddExisting()">
+                    </select>
+                    <input class="btn btn-primary" type="button" value="add"
+                           onclick="onClickAddExisting()"/>
+                    <input class="btn btn-primary" type="button" value="rename"
+                           onclick="onClickRenameExisting()"/>
+                </div>
+
+
+                <div class="input-group mb-3" id="addasnew">
+                    <span class="input-group-text">add as new Gesture</span>
+                    <input type="text" id="custom"
+                           class="form-control" placeholder="name"
+                           onkeypress="if (event.keyCode == 13) onClickAddCustom()"/>
+                    <input class="btn btn-primary" type="button" value="add"
+                           onclick="onClickAddCustom()"/>
+                </div>
+                <label for="logg" class="form-label">Log</label>
+
+                <div class="input-group mb-3" id="logg">
+
+         <textarea class="form-control" id="log" cols="200" rows="10">
+
+</textarea>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- End of editing area below stroking canvas area -->
+
+
+</p>
+
+<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="renameModalLabel">Rename</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="new-name" class="col-form-label">new name:</label>
+                        <input type="text" class="form-control" id="new-name">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">cancel</button>
+                <button type="button" class="btn btn-primary" onclick="onClickDoRenameExisting()">rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

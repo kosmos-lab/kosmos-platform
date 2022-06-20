@@ -1,0 +1,11 @@
+{
+    "unit": "W/m²",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 1000000,
+    "description": "Power density of a surface",
+    "readOnly": true,
+    "title": "powerDensity",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/powerDensity.json"
+}

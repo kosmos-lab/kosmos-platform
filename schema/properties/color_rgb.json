@@ -1,0 +1,66 @@
+{
+  "$id": "https://kosmos-lab.de/schema/properties/color_rgb.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "default": {
+    "r": 0,
+    "g": 0,
+    "b": 0
+  },
+  "examples": [
+    {
+      "r": 0,
+      "g": 2,
+      "b": 55
+    }
+  ],
+  "required": [
+    "r",
+    "g",
+    "b"
+  ],
+  "transform": {
+    "hs_color": {
+      "type": "method",
+      "method": "color_rgb_to_hs",
+      "params": {
+        "r": "$.r",
+        "g": "$.g",
+        "b": "$.b"
+      }
+    },
+    "xy_color": {
+      "type": "method",
+      "method": "color_rgb_to_xy",
+      "params": {
+        "r": "$.r",
+        "g": "$.g",
+        "b": "$.b"
+      }
+    }
+  },
+  "properties": {
+    "r": {
+      "description": "the 'red' value [0..255]",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 255
+    },
+    "g": {
+      "description": "the 'green' value [0..255]",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 255
+    },
+    "b": {
+      "description": "the 'blue' value [0..255]",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 255
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,42 @@
+FROM openjdk:14-oraclelinux8
+WORKDIR /app
+LABEL org.opencontainers.image.source https://github.com/kosmos-lab/kosmos-platform
+LABEL org.opencontainers.image.url https://github.com/kosmos-lab/kosmos-platform
+LABEL org.opencontainers.image.title KosmoS Platform
+LABEL org.opencontainers.image.vendor KosmoS-Lab.de, DFKI.de
+LABEL org.opencontainers.image.authors Jan Janssen, KosmoS-Lab.de, DFKI.de
+LABEL org.opencontainers.image.description KosmoS Platform
+RUN groupadd --gid 1000 kosmos
+RUN useradd --no-user-group --uid 1000 -m kosmos
+RUN usermod -g kosmos kosmos
+RUN microdnf install -y python38-pip util-linux
+#RUN microdnf update
+RUN python3 -m pip install --user  certifi requests urllib3
+RUN mkdir -p ./rules
+RUN mkdir -p ./rules/rules
+RUN mkdir -p ./db
+RUN mkdir -p ./config
+
+
+COPY rules/kosmos.py ./rules/kosmos.py
+COPY rules/requirements.txt ./rules/requirements.txt
+RUN python3 -m pip install --user  -r /app/rules/requirements.txt
+COPY schema ./schema
+RUN mkdir -p ./web
+COPY web/oz ./web/oz
+COPY web/kree ./web/kree
+COPY web/js ./web/js
+COPY web/css ./web/css
+COPY web/live.html ./web/live.html
+COPY web/index.html ./web/index.html
+COPY web/gesture ./web/gesture
+COPY web/doc ./web/doc
+COPY target/kosmos.jar ./target/kosmos.jar
+COPY target/lib/ ./target/lib
+COPY config/config.json ./config/config.json
+COPY startup.sh ./startup.sh
+RUN chmod +x  ./startup.sh
+EXPOSE 18080
+EXPOSE 1883
+CMD ["./startup.sh"]
+

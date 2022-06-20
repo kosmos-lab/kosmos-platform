@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Status of a rotary sensor",
+    "readOnly": true,
+    "title": "rotationStatus",
+    "type": "string",
+    "enum": [
+        "counterclockwise",
+        "no rotation",
+        "clockwise"
+    ],
+    "$id": "https://kosmos-lab.de/schema/rotationStatus.json"
+}

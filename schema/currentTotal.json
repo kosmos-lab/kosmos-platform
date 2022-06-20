@@ -1,0 +1,9 @@
+{
+    "unit": "A",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Total current of all phases of the electrical",
+    "readOnly": true,
+    "title": "currentTotal",
+    "type": "number",
+    "$id": "https://kosmos-lab.de/schema/currentTotal.json"
+}

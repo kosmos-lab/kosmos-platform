@@ -1,0 +1,10 @@
+{
+    "unit": "°C",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 70,
+    "readOnly": true,
+    "title": "roadSurfaceTemperature",
+    "type": "number",
+    "minimum": -40,
+    "$id": "https://kosmos-lab.de/schema/roadSurfaceTemperature.json"
+}

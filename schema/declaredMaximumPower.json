@@ -1,0 +1,11 @@
+{
+    "unit": "W",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 3600,
+    "description": "Declared maximum power of a home",
+    "readOnly": false,
+    "title": "declaredMaximumPower",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/declaredMaximumPower.json"
+}

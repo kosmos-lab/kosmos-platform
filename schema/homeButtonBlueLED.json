@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Blue LED of the home button.",
+    "readOnly": false,
+    "title": "homeButtonBlueLED",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/homeButtonBlueLED.json"
+}

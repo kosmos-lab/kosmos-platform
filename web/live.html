@@ -1,0 +1,30 @@
+live.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-size: x-large;
+            color: lightgrey;
+        }
+    </style>
+    <script src="/js/jquery-1.7.2.min.js"></script>
+    <script>
+        var params = window.location.href.slice(window.location.href.indexOf('?') + 1)
+        $(document).ready(function(){
+            function reload(){
+
+                $('#content').load("/obs/live?type=html&"+params);
+            }
+            setInterval(reload, 500);
+            reload();
+        });
+    </script>
+</head>
+<body>
+
+<div id="content"></div>
+
+</body>
+</html>

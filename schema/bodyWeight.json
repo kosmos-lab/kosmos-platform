@@ -1,0 +1,11 @@
+{
+    "unit": "kg",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 300,
+    "description": "Holds the weight measurement of a human",
+    "readOnly": true,
+    "title": "bodyWeight",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/bodyWeight.json"
+}

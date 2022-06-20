@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "State a traffic light may have.",
+    "readOnly": true,
+    "title": "trafficLightState",
+    "type": "string",
+    "enum": [
+        "Green",
+        "Yellow",
+        "YellowRed",
+        "Red"
+    ],
+    "$id": "https://kosmos-lab.de/schema/trafficLightState.json"
+}

@@ -1,0 +1,300 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "communicationInterval": 8979,
+            "pushButtonState": true,
+            "rssi": -96.8,
+            "standby": false,
+            "batteryVoltage": 24.53,
+            "powerUsage": 240.1,
+            "latitude": 69.87169805911392,
+            "declaredMaximumPower": 2704.5,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "powerUsageEstimate": 933,
+            "deviceStatus": "Driver Not Ready",
+            "voltage": -187190.951,
+            "apiUrl": "NlWZtVbDAw",
+            "connectionStatus": true,
+            "gatewayIdentifier": "JnFTcQGyBU",
+            "configuredLocationName": "yflFGp05zJ",
+            "repeaterRssi": -93.7,
+            "supportedCommunicationIntervals": "uSsfD5tO2w",
+            "batteryLevel": 39.951,
+            "longitude": 179.56037792121634,
+            "on": true
+        },
+        {
+            "communicationInterval": 42694,
+            "pushButtonState": false,
+            "rssi": -8.8,
+            "standby": true,
+            "batteryVoltage": 5.66,
+            "powerUsage": 1712.6,
+            "latitude": -30.979280550345827,
+            "declaredMaximumPower": 2471.7,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 2223,
+            "deviceStatus": "Driver Stopped",
+            "voltage": -807951.242,
+            "apiUrl": "mk3Su93J83",
+            "connectionStatus": false,
+            "gatewayIdentifier": "urY509fWD1",
+            "configuredLocationName": "cPfO2p6V24",
+            "repeaterRssi": -48.7,
+            "supportedCommunicationIntervals": "KJpLCsJes0",
+            "batteryLevel": 9.869,
+            "longitude": -4.676050728972996,
+            "on": true
+        },
+        {
+            "communicationInterval": 2419,
+            "pushButtonState": false,
+            "rssi": -46.3,
+            "standby": true,
+            "batteryVoltage": 16.74,
+            "powerUsage": 653.6,
+            "latitude": -60.42612747281768,
+            "declaredMaximumPower": 1764.3,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "powerUsageEstimate": 2074.3,
+            "deviceStatus": "Driver Not Ready",
+            "voltage": 654797.436,
+            "apiUrl": "FcDmHATWmE",
+            "connectionStatus": true,
+            "gatewayIdentifier": "whK0lsVKTN",
+            "configuredLocationName": "w1t8kyuiYZ",
+            "repeaterRssi": -38.5,
+            "supportedCommunicationIntervals": "N1vz1jgGaZ",
+            "batteryLevel": 3.174,
+            "longitude": 105.63383874691692,
+            "on": true
+        },
+        {
+            "communicationInterval": 57229,
+            "pushButtonState": false,
+            "rssi": -12,
+            "standby": true,
+            "batteryVoltage": 4.32,
+            "powerUsage": 2617.5,
+            "latitude": -69.22006866016946,
+            "declaredMaximumPower": 3523.7,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "powerUsageEstimate": 3582.2,
+            "deviceStatus": "Driver Stopped",
+            "voltage": -856200.751,
+            "apiUrl": "eNe0Pjh81u",
+            "connectionStatus": true,
+            "gatewayIdentifier": "dK10FRfgjh",
+            "configuredLocationName": "dMCeMSKU32",
+            "repeaterRssi": -24.7,
+            "supportedCommunicationIntervals": "kcVz5AytRz",
+            "batteryLevel": 7.279,
+            "longitude": 138.16846471552554,
+            "on": true
+        },
+        {
+            "communicationInterval": 80472,
+            "pushButtonState": true,
+            "rssi": -75.5,
+            "standby": false,
+            "batteryVoltage": 9.66,
+            "powerUsage": 352.8,
+            "latitude": 73.11487164369638,
+            "declaredMaximumPower": 2409.5,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 2120.8,
+            "deviceStatus": "Driver Stopped",
+            "voltage": 380479.911,
+            "apiUrl": "4s3i8oGJFX",
+            "connectionStatus": true,
+            "gatewayIdentifier": "6XYDYYiAs9",
+            "configuredLocationName": "qTUFzFhtaP",
+            "repeaterRssi": -58.1,
+            "supportedCommunicationIntervals": "Y53YD0FLxp",
+            "batteryLevel": 53.641,
+            "longitude": -67.39753403845354,
+            "on": true
+        }
+    ],
+    "additionalProperties": false,
+    "title": "Lamp",
+    "type": "object",
+    "properties": {
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsage",
+            "type": "number",
+            "minimum": 0
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "description": "Declared maximum power of a home",
+            "readOnly": false,
+            "title": "declaredMaximumPower",
+            "type": "number",
+            "minimum": 0
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsageEstimate",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "on": {
+            "description": "Stores the on/off status of the device, with",
+            "readOnly": false,
+            "title": "on",
+            "type": "boolean"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/Lamp.json"
+}

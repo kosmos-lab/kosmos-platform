@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "URL to extended device API",
+    "readOnly": true,
+    "title": "apiUrl",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/apiUrl.json"
+}

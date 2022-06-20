@@ -1,0 +1,11 @@
+{
+    "unit": "dBm",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 0,
+    "description": "Received Signal Strength Indication",
+    "readOnly": true,
+    "title": "rssi",
+    "type": "number",
+    "minimum": -150,
+    "$id": "https://kosmos-lab.de/schema/rssi.json"
+}

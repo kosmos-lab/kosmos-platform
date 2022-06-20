@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "readOnly": true,
+    "title": "deicerDensityMeaning",
+    "type": "string",
+    "enum": [
+        "NotDetectable",
+        "RealValue",
+        "MinimumValue"
+    ],
+    "$id": "https://kosmos-lab.de/schema/deicerDensityMeaning.json"
+}

@@ -1,0 +1,344 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "pushButtonState": false,
+            "fallDetected": true,
+            "standby": true,
+            "latitude": -50.68986415222062,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "deviceStatus": "Driver Not Ready",
+            "currentIlluminance": 68103.9,
+            "apiUrl": "mzDKmS2037",
+            "presence": false,
+            "repeaterRssi": -64.1,
+            "supportedCommunicationIntervals": "3z4S7OnvLp",
+            "vibrationDetected": true,
+            "batteryLevel": 34.254,
+            "longitude": -81.53473372738323,
+            "communicationInterval": 41789,
+            "currentEnvironmentTemperature": 33.3,
+            "rssi": -59.9,
+            "batteryVoltage": 19.61,
+            "voltage": -843975.969,
+            "ultravioletIndex": 97216.72,
+            "connectionStatus": true,
+            "gatewayIdentifier": "Yjbb3JBVGM",
+            "configuredLocationName": "18DrU02Syw",
+            "humidityLevel": 36.887,
+            "movementDetected": true
+        },
+        {
+            "pushButtonState": true,
+            "fallDetected": false,
+            "standby": false,
+            "latitude": -48.992505645985155,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "deviceStatus": "OK",
+            "currentIlluminance": 47373,
+            "apiUrl": "bUXCaHBKzo",
+            "presence": true,
+            "repeaterRssi": -131.6,
+            "supportedCommunicationIntervals": "NdaDKa8zLv",
+            "vibrationDetected": false,
+            "batteryLevel": 59.929,
+            "longitude": -86.18271023095174,
+            "communicationInterval": 53165,
+            "currentEnvironmentTemperature": -0.3,
+            "rssi": -135.4,
+            "batteryVoltage": 20.73,
+            "voltage": 574433.579,
+            "ultravioletIndex": 693566.58,
+            "connectionStatus": false,
+            "gatewayIdentifier": "RGLLnMqKl1",
+            "configuredLocationName": "HlzGWm5czT",
+            "humidityLevel": 18.801,
+            "movementDetected": false
+        },
+        {
+            "pushButtonState": false,
+            "fallDetected": true,
+            "standby": true,
+            "latitude": -86.22096023955334,
+            "batteryChargingState": true,
+            "lockBit": true,
+            "deviceStatus": "Driver Not Ready",
+            "currentIlluminance": 62344.7,
+            "apiUrl": "u6Xfo2oI1L",
+            "presence": true,
+            "repeaterRssi": -30.1,
+            "supportedCommunicationIntervals": "HcSeuKukeu",
+            "vibrationDetected": false,
+            "batteryLevel": 81.9,
+            "longitude": 11.256849237334109,
+            "communicationInterval": 4218,
+            "currentEnvironmentTemperature": -55,
+            "rssi": -115.9,
+            "batteryVoltage": 21.81,
+            "voltage": -245115.503,
+            "ultravioletIndex": 161986.96,
+            "connectionStatus": true,
+            "gatewayIdentifier": "FlwMmiIqL7",
+            "configuredLocationName": "sjYWHqhIxS",
+            "humidityLevel": 74.28,
+            "movementDetected": true
+        },
+        {
+            "pushButtonState": false,
+            "fallDetected": true,
+            "standby": false,
+            "latitude": 22.832697244097474,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "deviceStatus": "OK",
+            "currentIlluminance": 59736.8,
+            "apiUrl": "l4jIONguRb",
+            "presence": true,
+            "repeaterRssi": -140.4,
+            "supportedCommunicationIntervals": "vshsXTH9LH",
+            "vibrationDetected": true,
+            "batteryLevel": 58.31,
+            "longitude": 96.54649707404127,
+            "communicationInterval": 48081,
+            "currentEnvironmentTemperature": 49.3,
+            "rssi": -0.4,
+            "batteryVoltage": 6.52,
+            "voltage": 517525.256,
+            "ultravioletIndex": 13684.84,
+            "connectionStatus": false,
+            "gatewayIdentifier": "vr7sGcdtaq",
+            "configuredLocationName": "G5L2iTM2IY",
+            "humidityLevel": 1.876,
+            "movementDetected": false
+        },
+        {
+            "pushButtonState": true,
+            "fallDetected": false,
+            "standby": false,
+            "latitude": -14.669497002790294,
+            "batteryChargingState": true,
+            "lockBit": true,
+            "deviceStatus": "Driver Not Ready",
+            "currentIlluminance": 69064.9,
+            "apiUrl": "BV2FsAAdOQ",
+            "presence": false,
+            "repeaterRssi": -33.3,
+            "supportedCommunicationIntervals": "Lzaq5NQvIE",
+            "vibrationDetected": true,
+            "batteryLevel": 16.936,
+            "longitude": -51.911501142381184,
+            "communicationInterval": 3403,
+            "currentEnvironmentTemperature": 27.3,
+            "rssi": -131.4,
+            "batteryVoltage": 8.16,
+            "voltage": 556381.857,
+            "ultravioletIndex": 92193.26,
+            "connectionStatus": true,
+            "gatewayIdentifier": "ktfoIcUZVm",
+            "configuredLocationName": "01K09NTDJP",
+            "humidityLevel": 86.584,
+            "movementDetected": false
+        }
+    ],
+    "additionalProperties": false,
+    "title": "MultiSensor",
+    "type": "object",
+    "properties": {
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "fallDetected": {
+            "readOnly": true,
+            "title": "fallDetected",
+            "type": "boolean"
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "currentIlluminance": {
+            "unit": "lx",
+            "maximum": 100000,
+            "description": "Current illuminance in the environment",
+            "readOnly": true,
+            "title": "currentIlluminance",
+            "type": "number",
+            "minimum": 0
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "presence": {
+            "description": "Presence detection",
+            "readOnly": true,
+            "title": "presence",
+            "type": "boolean"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "vibrationDetected": {
+            "description": "Informs whether vibration has been detected",
+            "readOnly": true,
+            "title": "vibrationDetected",
+            "type": "boolean"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "currentEnvironmentTemperature": {
+            "unit": "°C",
+            "maximum": 60,
+            "description": "Current temperature in the environment",
+            "readOnly": true,
+            "title": "currentEnvironmentTemperature",
+            "type": "number",
+            "minimum": -60
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "ultravioletIndex": {
+            "description": "Ultraviolet index (UV Index)",
+            "readOnly": true,
+            "title": "ultravioletIndex",
+            "type": "number",
+            "minimum": 0
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        },
+        "humidityLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Relative air humidity level",
+            "readOnly": true,
+            "title": "humidityLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "movementDetected": {
+            "description": "Defines whether a movement has been",
+            "readOnly": true,
+            "title": "movementDetected",
+            "type": "boolean"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/MultiSensor.json"
+}

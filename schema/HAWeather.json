@@ -1,0 +1,54 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HAWeather.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HAWeather",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "state","entity_id"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state": {
+      "type": "string",
+      "readOnly": true
+    },
+    "attribution": {
+      "type": "string",
+      "readOnly": true
+    },
+    "forecast": {
+      "type": "array",
+      "readOnly": true
+    },
+    "wind_bearing": {
+      "type": "number",
+      "readOnly": true
+    },
+    "wind_speed": {
+      "type": "number",
+      "readOnly": true
+    },
+    "precipitation": {
+      "type": "number",
+      "readOnly": true
+    },
+    "temperature": {
+      "type": "number",
+      "readOnly": true
+    },
+    "humidity": {
+      "type": "number",
+      "readOnly": true
+    },
+    "pressure": {
+      "type": "number",
+      "readOnly": true
+    }
+  }
+}

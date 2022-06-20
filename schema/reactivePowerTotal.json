@@ -1,0 +1,9 @@
+{
+    "unit": "kvar",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Total reactive power.",
+    "readOnly": true,
+    "title": "reactivePowerTotal",
+    "type": "number",
+    "$id": "https://kosmos-lab.de/schema/reactivePowerTotal.json"
+}

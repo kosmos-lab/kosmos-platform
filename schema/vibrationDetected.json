@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Informs whether vibration has been detected",
+    "readOnly": true,
+    "title": "vibrationDetected",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/vibrationDetected.json"
+}

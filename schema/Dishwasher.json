@@ -1,0 +1,380 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 11.195,
+            "standby": false,
+            "latitude": 40.644616255301,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "dishwasherProgram": "Eco",
+            "powerUsageEstimate": 1595.5,
+            "deviceStatus": "Driver Not Ready",
+            "dishwasherLoadType": true,
+            "apiUrl": "pDCUatmBOE",
+            "programName": "IY5dBlKcPf",
+            "repeaterRssi": -90.9,
+            "supportedCommunicationIntervals": "dCCZY63cgJ",
+            "batteryLevel": 82.93,
+            "longitude": 152.47488271782447,
+            "on": false,
+            "communicationInterval": 23595,
+            "rssi": -74.3,
+            "batteryVoltage": 21.63,
+            "powerUsage": 2905.4,
+            "declaredMaximumPower": 3454.1,
+            "secondsRemaining": 251126680,
+            "voltage": 700430.928,
+            "waterTemperatureSetting": 98.5,
+            "connectionStatus": true,
+            "gatewayIdentifier": "qnnf3KBtkq",
+            "configuredLocationName": "GVV7up3Kpo"
+        },
+        {
+            "pushButtonState": true,
+            "currentWaterTemperature": 2.246,
+            "standby": false,
+            "latitude": -25.444577758670846,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "dishwasherProgram": "Quick",
+            "powerUsageEstimate": 3001.7,
+            "deviceStatus": "OK",
+            "dishwasherLoadType": true,
+            "apiUrl": "mZLKsDgTqh",
+            "programName": "Rpxmnx571r",
+            "repeaterRssi": -20.9,
+            "supportedCommunicationIntervals": "VoJO8ELZX9",
+            "batteryLevel": 77.154,
+            "longitude": 17.639213587169394,
+            "on": false,
+            "communicationInterval": 82868,
+            "rssi": -16.6,
+            "batteryVoltage": 0.07,
+            "powerUsage": 3131.1,
+            "declaredMaximumPower": 1380.7,
+            "secondsRemaining": 707005672,
+            "voltage": -335266.696,
+            "waterTemperatureSetting": 90.5,
+            "connectionStatus": true,
+            "gatewayIdentifier": "mYl0ncNGGW",
+            "configuredLocationName": "Pl3C3kgDyq"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 39.663,
+            "standby": true,
+            "latitude": -76.71154886244155,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "dishwasherProgram": "Intensive",
+            "powerUsageEstimate": 1169.1,
+            "deviceStatus": "Driver Not Ready",
+            "dishwasherLoadType": true,
+            "apiUrl": "sUutQycpJC",
+            "programName": "rwpxgC9v5H",
+            "repeaterRssi": -124.7,
+            "supportedCommunicationIntervals": "VzEfGe2ZUR",
+            "batteryLevel": 95.707,
+            "longitude": -32.661267598784946,
+            "on": false,
+            "communicationInterval": 80443,
+            "rssi": -138.1,
+            "batteryVoltage": 9.82,
+            "powerUsage": 565.6,
+            "declaredMaximumPower": 3308.8,
+            "secondsRemaining": 1950467220,
+            "voltage": -896173.187,
+            "waterTemperatureSetting": 81.5,
+            "connectionStatus": false,
+            "gatewayIdentifier": "L0SuUqVHqK",
+            "configuredLocationName": "U7EZKHi5ge"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 83.543,
+            "standby": false,
+            "latitude": 40.72990795379644,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "dishwasherProgram": "Quick",
+            "powerUsageEstimate": 1760.4,
+            "deviceStatus": "Driver Stopped",
+            "dishwasherLoadType": false,
+            "apiUrl": "rR9cEXSWCo",
+            "programName": "cV4mOeC5nQ",
+            "repeaterRssi": -139.3,
+            "supportedCommunicationIntervals": "ELmzGmEBnN",
+            "batteryLevel": 5.55,
+            "longitude": -80.87575802742752,
+            "on": true,
+            "communicationInterval": 17768,
+            "rssi": -77.6,
+            "batteryVoltage": 23.17,
+            "powerUsage": 3156.8,
+            "declaredMaximumPower": 1707.9,
+            "secondsRemaining": 1937544607,
+            "voltage": -646252.176,
+            "waterTemperatureSetting": 60,
+            "connectionStatus": true,
+            "gatewayIdentifier": "ECrz9Ei3mF",
+            "configuredLocationName": "u9ugvMLvAS"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 45.858,
+            "standby": true,
+            "latitude": 9.516206714778662,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "dishwasherProgram": "Quick",
+            "powerUsageEstimate": 514.5,
+            "deviceStatus": "Driver Stopped",
+            "dishwasherLoadType": false,
+            "apiUrl": "vqCiNFa22Y",
+            "programName": "ZDgDqreSdX",
+            "repeaterRssi": -83.4,
+            "supportedCommunicationIntervals": "zM8YV8PvnX",
+            "batteryLevel": 30.41,
+            "longitude": 176.1018863878756,
+            "on": false,
+            "communicationInterval": 78351,
+            "rssi": -79.3,
+            "batteryVoltage": 5.75,
+            "powerUsage": 1505,
+            "declaredMaximumPower": 2720.7,
+            "secondsRemaining": 1866909950,
+            "voltage": 438714.824,
+            "waterTemperatureSetting": 69.5,
+            "connectionStatus": true,
+            "gatewayIdentifier": "Hr2zc2CwLo",
+            "configuredLocationName": "uuFTUhOwpF"
+        }
+    ],
+    "additionalProperties": false,
+    "title": "Dishwasher",
+    "type": "object",
+    "properties": {
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "currentWaterTemperature": {
+            "unit": "°C",
+            "maximum": 100,
+            "description": "Current temperature in the environment",
+            "readOnly": true,
+            "title": "currentWaterTemperature",
+            "type": "number",
+            "minimum": 0
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "dishwasherProgram": {
+            "description": "Dish washer program",
+            "readOnly": false,
+            "title": "dishwasherProgram",
+            "type": "string",
+            "enum": [
+                "Quick",
+                "Eco",
+                "Intensive"
+            ]
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsageEstimate",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "dishwasherLoadType": {
+            "description": "Load type of the dishwasher",
+            "readOnly": false,
+            "title": "dishwasherLoadType",
+            "type": "boolean"
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "programName": {
+            "description": "Stores the name of the program of this",
+            "readOnly": false,
+            "title": "programName",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "on": {
+            "description": "Stores the on/off status of the device, with",
+            "readOnly": false,
+            "title": "on",
+            "type": "boolean"
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsage",
+            "type": "number",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "description": "Declared maximum power of a home",
+            "readOnly": false,
+            "title": "declaredMaximumPower",
+            "type": "number",
+            "minimum": 0
+        },
+        "secondsRemaining": {
+            "unit": "s",
+            "description": "Stores the remaining time (in seconds) for",
+            "readOnly": true,
+            "title": "secondsRemaining",
+            "type": "integer",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "waterTemperatureSetting": {
+            "multipleOf": 0.5,
+            "unit": "°C",
+            "maximum": 100,
+            "description": "Water temperature in Celsius.",
+            "readOnly": false,
+            "title": "waterTemperatureSetting",
+            "type": "number",
+            "minimum": 0
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/Dishwasher.json"
+}

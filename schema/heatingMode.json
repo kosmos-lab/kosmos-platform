@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Mode of operation of the heater.",
+    "readOnly": false,
+    "title": "heatingMode",
+    "type": "string",
+    "enum": [
+        "Normal",
+        "AntiFreeze",
+        "Summer",
+        "Standby"
+    ],
+    "$id": "https://kosmos-lab.de/schema/heatingMode.json"
+}

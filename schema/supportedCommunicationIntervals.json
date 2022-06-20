@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Supported communication interval times in",
+    "readOnly": true,
+    "title": "supportedCommunicationIntervals",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/supportedCommunicationIntervals.json"
+}

@@ -1,0 +1,11 @@
+{
+    "unit": "°",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 360,
+    "description": "Current geographical location longitude.",
+    "readOnly": true,
+    "title": "locationLongitude",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/locationLongitude.json"
+}

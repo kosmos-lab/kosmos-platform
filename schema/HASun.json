@@ -1,0 +1,60 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HASun.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HASun",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "state","next_rising","entity_id"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state": {
+      "type": "string",
+      "enum": ["above_horizon","below_horizon"],
+      "readOnly": true
+    },
+    "next_rising": {
+      "type": "string",
+      "readOnly": true
+    },
+    "next_setting": {
+      "type": "string",
+      "readOnly": true
+    },
+    "next_dawn": {
+      "type": "string",
+      "readOnly": true
+    },
+    "next_dusk": {
+      "type": "string",
+      "readOnly": true
+    },
+    "next_noon": {
+      "type": "string",
+      "readOnly": true
+    },
+    "next_midnight": {
+      "type": "string",
+      "readOnly": true
+    },
+    "elevation": {
+      "type": "number",
+      "readOnly": true
+    },
+    "azimuth": {
+      "type": "number",
+      "readOnly": true
+    },
+    "rising": {
+      "type": "boolean",
+      "readOnly": true
+    }
+
+  }
+}

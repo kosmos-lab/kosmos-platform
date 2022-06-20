@@ -1,0 +1,1782 @@
+openapi: 3.0.0
+servers:
+  - description: Current Host
+    url: "http://none" # the documentation website replaces this with the current httphost
+  - description: Local Test
+    url: http://localhost:18080
+  - description: Production
+    url: https://example.cloud:18081
+  - description: Production Pi1
+    url: http://192.168.226.226:18080
+info:
+  description: |
+    # Kosmos Platform Synchron HTTP API 
+    ### [Asyncron WS/MQTT Documentation](async.html) 
+    This is the OpenAPI 3.0 specifaction for KosmoS, it can be found on https://kosmos-lab.de/doc/openapi.yaml 
+    Please make sure you are logged in if you want to try to execute any request to the server.   
+    You can simply login with the form injected to the top of the page. 
+
+
+
+
+  version: "1.1.0"
+  title: KosmoS Platform API
+  contact:
+    name: Jan Janssen
+    email: jan.janssen@dfki.de
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+
+
+paths:
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: login
+      description: |
+        Used to get a JWT token from the system.
+
+        This token should be included as a Header (Authorization) for all other requests.
+
+        For example "Authorization: Bearer eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJsZXZlbCI6MSwibmFtZSI6ImphbiIsImV4cCI6MTYwMzQ1NDE4NDY1NSwiaGFzaCI6Ii0ifQ.gAQh1snnG_VlzJ-lv4X7_-A0GV7iQA_l83b1285mPSo"
+
+      operationId: auth
+
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                pass:
+                  type: string
+              required:
+                - user
+                - pass
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/jwt:
+              schema:
+                type: string
+              example:
+                eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJsZXZlbCI6MSwibmFtZSI6ImphbiIsImV4cCI6MTYwMzQ1NDE4NDY1NSwiaGFzaCI6Ii0ifQ.gAQh1snnG_VlzJ-lv4X7_-A0GV7iQA_l83b1285mPSo
+        '403':
+          description: wrong username/password combination
+  /user/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      summary: add
+      operationId: useradd
+      description: add a user
+      requestBody:
+        $ref: 'requestbody/useradd.yaml'
+      responses:
+        '204':
+          description: user added successfully
+        '403':
+          $ref: '#/components/responses/NoAccessError'
+        '409':
+          description: username already in use
+  /user/password:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      summary: password
+      operationId: userpassword
+      description: add a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+
+              type: object
+              properties:
+                user:
+                  type: string
+                pass:
+                  type: string
+              required:
+                - user
+                - pass
+            examples:
+              user:
+                value:
+                  user: user
+                  pass: test
+              user2:
+                value:
+                  user: user2
+                  pass: jskenf325iuh
+              admin2:
+                value:
+                  user: admin2
+                  pass: aksufbasjhs
+                  level: 100
+      responses:
+        '204':
+          description: password changed successfully
+        '403':
+          $ref: '#/components/responses/NoAccessError'
+        '404':
+          description: user not found
+  /user/delete:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      summary: delete
+      operationId: userdel
+      description: delete a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+              required:
+                - user
+            examples:
+              user:
+                value:
+                  user: user
+              user2:
+                value:
+                  user: user2
+              admin2:
+                value:
+                  user: admin2
+      responses:
+        '204':
+          description: user deleted successfully
+        '403':
+          $ref: '#/components/responses/NoAccessError'
+        '404':
+          description: username not found
+
+  /device/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+      summary: add
+      description: |
+        This is used to add a new Device to the KosmoS Backend
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                name:
+                  type: string
+                schema:
+                  type: string
+                state:
+                  type: object
+                scopes:
+                  type: object
+                  properties:
+                    read: string
+                    write: string
+                    del: string
+              required:
+                - uuid
+                - schema
+            examples:
+              multi2:
+                value:
+                  name: multi2
+                  uuid: multi2
+                  schema: https://kosmos-lab.de/schema/MultiSensor.json
+                  state:
+                    currentEnvironmentTemperature: 17
+                    humidityLevel: 10
+              kosmos_multi17:
+                value:
+                  name: kosmos_multi17
+                  uuid: kosmos_multi17
+                  schema: https://kosmos-lab.de/schema/MultiSensor.json
+                  state:
+                    currentEnvironmentTemperature: 17
+                    humidityLevel: 10
+                  scopes:
+                    read: "kosmos:read"
+                    write: "kosmos:write"
+                    del: "kosmos:del"
+              lamp1:
+                value:
+                  name: lamp1
+                  uuid: lamp1
+                  schema: https://kosmos-lab.de/schema/Lamp.json
+                  state:
+                    on: true
+      responses:
+        '204':
+          description: okay, device was added
+        '409':
+          description: there is already a device with that id
+  /device/locations:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - device
+      summary: all locations
+      description: |
+        Get the Location of all devices
+
+
+      responses:
+        '200':
+          description: the location of the device, empty json object meaning no location
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  $ref: '#/components/schemas/deviceLocation'
+
+              example:
+                light1:
+
+                  x: 10
+                  y: 124
+                  z: 24
+                  area: livingroom
+                light2:
+
+                  x: 145
+                  y: 125
+                  z: 125
+                  roll: 12
+                  pitch: 24
+                  yaw: 46
+                  w: 10
+                  d: 10
+                  h: 10
+                  area: livingroom
+
+
+  /device/location:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - device
+      summary: get location
+      description: |
+        Get the Location of the device from the system
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  description: the uuid of the device we want to know the location of
+      responses:
+        '200':
+          description: the location of the device, empty json object meaning no location
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deviceLocation'
+
+
+
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+      summary: set location
+      description: |
+        This is used to update the location of the device
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                x:
+                  type: integer
+                y:
+                  type: integer
+                z:
+                  type: integer
+                w:
+                  type: integer
+                d:
+                  type: integer
+                h:
+                  type: integer
+                roll:
+                  type: integer
+                pitch:
+                  type: integer
+                yaw:
+                  type: integer
+                area:
+                  type: string
+              required:
+                - uuid
+            examples:
+
+              all:
+                value:
+                  uuid: light1
+                  x: 145
+                  y: 125
+                  z: 125
+                  roll: 12
+                  pitch: 24
+                  yaw: 46
+                  w: 10
+                  d: 10
+                  h: 10
+                  area: livingroom
+              only xyz and area:
+                value:
+                  uuuid: light1
+                  x: 10
+                  y: 124
+                  z: 24
+                  area: livingroom
+      responses:
+        '200':
+          description: location was set, new (full) location will be returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deviceLocation'
+
+        '404':
+          $ref: '#/components/responses/DeviceNotFoundError'
+
+  /device/list:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+      summary: list
+      operationId: devicelist
+      description: list all devices
+      responses:
+        '200':
+          description: all currently known devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/deviceInfo'
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /device/get:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+      summary: get
+      operationId: deviceget
+      description: show information about a single device
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          examples:
+            get lamp1:
+              value: lamp1
+            get multi1:
+              value: multi1
+      responses:
+        '200':
+          description: get the current state of the device
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deviceInfo'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/DeviceNotFoundError'
+  /device/delete:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+      summary: delete
+      operationId: devicedelete
+      description: deletes a device
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+            examples:
+              delete lamp1:
+                value:
+                  id: lamp1
+              delete multi1:
+                value:
+                  id: multi1
+      responses:
+        '204':
+          description: device was removed
+
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/DeviceNotFoundError'
+  /device/set:
+    post:
+      summary: set
+      description: sets a device
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  description: the uuid of the device to set a value of
+
+            examples:
+              multi2 set temp:
+                value:
+                  uuid: multi2
+                  currentEnvironmentTemperature: 17
+                  humidityLevel: 10
+              hsv1 on:
+                value:
+                  uuid: hsv1
+                  on: true
+              hsv1 aqua:
+                value:
+                  uuid: hsv1
+                  on: true
+                  hue: 180
+                  saturation: 100
+              hsv1 yellow:
+                value:
+                  uuid: hsv1
+                  on: true
+                  hue: 60
+                  saturation: 100
+              hsv1 pink:
+                value:
+                  uuid: hsv1
+                  on: true
+                  hue: 300
+                  saturation: 100
+              hsv1 warmwhite:
+                value:
+                  uuid: hsv1
+                  on: true
+                  colorTemperature: 7000
+              hsv1 coldwhite:
+                value:
+                  uuid: hsv1
+                  on: true
+                  colorTemperature: 1500
+      responses:
+        '200':
+          description: okay, device was changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deviceInfo'
+        '404':
+          $ref: '#/components/responses/DeviceNotFoundError'
+        '409':
+          $ref: '#/components/responses/ValidationError'
+  /device/setname:
+    post:
+      summary: setname
+      description: sets a devices friendly name
+      security:
+        - bearerAuth: []
+      tags:
+        - device
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  description: the uuid to change the name of
+                name:
+                  type: string
+                  description: the new friendly name of the device
+
+
+            examples:
+              heater1:
+                value:
+                  uuid: heater1
+                  name: heating living room
+      responses:
+        '200':
+          description: okay, device was changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deviceInfo'
+        '404':
+          $ref: '#/components/responses/DeviceNotFoundError'
+
+
+
+  /schema/delete:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - schema
+      summary: delete
+      operationId: deletschema
+      description: Deletes a schema
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+            examples:
+              delete multisensor:
+                value:
+                  id: https://kosmos-lab.de/schema/MultiSensor.json
+              delete door:
+                value:
+                  id: https://kosmos-lab.de/schema/Door.json
+              delete test:
+                value:
+                  id: https://kosmos-lab.de/schema/Test.json
+      responses:
+        '204':
+          description: Schema was removed
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/SchemaNotFoundError'
+        '409':
+          description: Schema is in use, cannot delete!
+  /schema/list:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - schema
+      summary: list
+      operationId: schemalist
+      description: lists all known schemas
+
+      responses:
+        '200':
+          description: returns an array of schemas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/schema'
+
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/SchemaNotFoundError'
+  /schema/get:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - schema
+      summary: get
+      operationId: schemaget
+      description: show the schema
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          examples:
+            get HSVLamp:
+              value: https://kosmos-lab.de/schema/HSVLamp.json
+            get MultiSensor:
+              value: https://kosmos-lab.de/schema/MultiSensor.json
+      responses:
+        '200':
+          description: returns the JSON-Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schema'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/SchemaNotFoundError'
+  /schema/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - schema
+      summary: add
+      operationId: schemadd
+      description: adds a schema
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/schema'
+
+      responses:
+        '200':
+          description: returns the JSON-Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schema'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          description: schema id already in use
+        '400':
+          $ref:
+  /scope/my:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - scope
+      summary: list my scopes
+      operationId: scopemy
+      description: show the scopes you have access to
+
+      responses:
+        '200':
+          description: returns your access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  admin:
+                    description: a list of scopes you have admin access in
+                    type: array
+                    items:
+                      type: string
+                  user:
+                    description: a list of scopes you have user access in
+                    type: array
+                    items:
+                      type: string
+              example:
+
+                admin:
+                  - context_read
+                  - context_write
+                user:
+                  - ubiact_read
+                  - schreibtrainer_read
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /scope/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - scope
+      summary: add
+      operationId: scopeadd
+      description: add a new scope
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                users:
+                  description: list of users to add as an user to the scope
+                  type: array
+                  items:
+                    type: string
+                admins:
+                  description: list of users to add as an admin to the scope
+                  type: array
+                  items:
+                    type: string
+                userGroups:
+                  description: list of group names to add as user
+                  type: array
+                  items:
+                    type: string
+                adminGroups:
+                  description: list of group names to add as admin
+                  type: array
+                  items:
+                    type: string
+
+      responses:
+        '200':
+          description: added successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /scope/get:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - scope
+      summary: get information about a scope
+      operationId: scopeget
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: provide at least one of those
+              properties:
+                id:
+                  type: int
+                  description: the id of the scope to get
+                name:
+                  type: string
+                  description: the name of the scope to get
+
+
+      responses:
+        '200':
+          description: the scope
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/scope'
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /scope/adduser:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - scope
+      summary: add user
+      operationId: scope adduser
+      description: adds a user to a scope
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username to add to the scope
+                scope:
+                  type: string
+                  description: the name of the scope to add the user to
+              required:
+                - user
+                - scope
+
+
+      responses:
+        '204':
+          description: user added to scope
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /scope/deluser:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - scope
+      summary: del user
+      operationId: scope deluser
+      description: removes a user from a scope
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the user to remove from the scope
+                scope:
+                  type: string
+                  description: the schema in which we need to remove the user
+              required:
+                - user
+                - scope
+
+
+      responses:
+        '204':
+          description: user deleted from scope
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /scope/addadmin:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - scope
+      summary: add admin
+      operationId: scopeaddadmin
+      description: adds an admin to a scope
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username of the user to add as an admin
+                scope:
+                  type: string
+                  description: the name of the scope to add the user as an admin
+              required:
+                - user
+                - scope
+
+
+      responses:
+        '204':
+          description: admin added to scope
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /scope/deladmin:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - scope
+      summary: del admin
+      operationId: scope deladmin
+      description: removes an admin from a scope
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username of the admin to remove
+                scope:
+                  type: string
+                  description: the scope to delete the admin from
+              required:
+                - user
+                - scope
+
+
+      responses:
+        '204':
+          description: user removed from scope
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /group/my:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - group
+      summary: list my groups
+      operationId: groupmy
+      description: show the groups you have access to
+
+      responses:
+        '200':
+          description: returns your access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  admin:
+                    description: a list of groups you have admin access in
+                    type: array
+                    items:
+                      type: string
+                  user:
+                    description: a list of groups you have user access in
+                    type: array
+                    items:
+                      type: string
+              example:
+
+                admin:
+                  - context_read
+                  - context_write
+                user:
+                  - ubiact_read
+                  - schreibtrainer_read
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /group/add:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - group
+      summary: add
+      operationId: groupadd
+      description: add a new group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+
+      responses:
+        '204':
+          description: added successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /group/adduser:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - group
+      summary: add user
+      operationId: group adduser
+      description: adds a user to a group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username to add to the group
+                group:
+                  type: string
+                  description: the name of the group to add the user to
+              required:
+                - user
+                - group
+
+
+      responses:
+        '204':
+          description: user added to group
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /group/deluser:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - group
+      summary: del user
+      operationId: group deluser
+      description: removes a user from a group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the user to remove from the group
+                group:
+                  type: string
+                  description: the schema in which we need to remove the user
+              required:
+                - user
+                - group
+
+
+      responses:
+        '204':
+          description: user deleted from group
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /group/addadmin:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - group
+      summary: add admin
+      operationId: groupaddadmin
+      description: adds an admin to a group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username of the user to add as an admin
+                group:
+                  type: string
+                  description: the name of the group to add the user as an admin
+              required:
+                - user
+                - group
+
+
+      responses:
+        '204':
+          description: admin added to group
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /group/deladmin:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - group
+      summary: del admin
+      operationId: group deladmin
+      description: removes an admin from a group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: the username of the admin to remove
+                group:
+                  type: string
+                  description: the group to delete the admin from
+              required:
+                - user
+                - group
+
+
+      responses:
+        '204':
+          description: user removed from group
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: '#/components/responses/NoAccessError'
+        '400':
+          $ref: '#/components/responses/UnknownError'
+  /schreibtrainer/word:
+    post:
+      security:
+        - secret: []
+      tags:
+        - schreibtrainer
+      summary: add recognized word
+      operationId: word
+      description: add a word to the "sentence". If the device does not exist it will be created automatically
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  description: the uuid to add the new word to
+                word:
+                  type: string
+                  description: the word to add
+                token:
+                  type: string
+                  description: the secret token for schreibtrainer
+      responses:
+        '204':
+          description: added successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /schreibtrainer/clear:
+    post:
+      security:
+        - secret: [ ]
+      tags:
+        - schreibtrainer
+      summary: clears the current words
+      operationId: clear
+      description: clears all words for a specific uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+                  description: the uuid to add the new word to
+                token:
+                  type: string
+                  description: the secret token for schreibtrainer
+      responses:
+        '204':
+          description: added successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /server/alive:
+    get:
+      tags:
+        - server
+      summary: alive
+      operationId: serveralive
+      description: check if the server is alive
+      responses:
+        '200':
+          description: server is reachable and running
+  /server/stop:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - server
+      summary: stop
+      operationId: serverstop
+      description: stops the system
+
+      responses:
+        '204':
+          description: server will be shut down
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/NoAccessError'
+  /obs/live:
+    get:
+
+      tags:
+        - obs
+      summary: obs live feed
+      operationId: obslive
+      description: shows the changes in the system in real time
+
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: provide at least one of those
+              properties:
+                username:
+                  type: string
+                  description: the username to use
+                password:
+                  type: string
+                  description: the password to use
+                uuid:
+                  description: comma seperated list of uuids to monitor - accepts wildcards
+                  type: string
+                maxage:
+                  type: integer
+                  default: 120
+                  description: max age in seconds to consider as updated
+
+                type:
+                  description: if the output should be html or json
+                  type: string
+                  enum:
+                    - html
+                    - json
+
+
+              required:
+                - user
+                - pass
+                - uuid
+      responses:
+        '200':
+          description: the result in the given format
+components:
+
+
+  schemas:
+    deviceLocation:
+
+      type: object
+      properties:
+        x:
+          type: integer
+          description: the distance on the X axis to a predefined point in mm
+        y:
+          type: integer
+          description: the distance on the Y axis to a predefined point in mm
+        z:
+          type: integer
+          description: the distance on the Z axis to a predefined point in mm
+        w:
+          type: integer
+          description: the height of the object in mm
+        d:
+          type: integer
+          description: the width of the object in mm
+        h:
+          type: integer
+          description: the height of the object in mm
+        roll:
+          type: integer
+          description: the roll applied to the default object
+        pitch:
+          type: integer
+          description: the pitch applied to the default object
+        yaw:
+          type: integer
+          description: the yaw applied to the default object
+        area:
+          type: string
+          description: the name of the area the object is located in
+      examples:
+
+        full location:
+          value:
+            x: 145
+            y: 125
+            z: 125
+            roll: 12
+            pitch: 24
+            yaw: 46
+            w: 10
+            d: 10
+            h: 10
+    userNameID:
+      description: a very short representation of a user with only ID and name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: the users id
+        name:
+          type: string
+          description: the users name
+    groupNameID:
+      description: a very short representation of a group with only ID and name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: the users id
+        name:
+          type: string
+          description: the users name
+    scope:
+      type: object
+      properties:
+        admins:
+          description: a list of users that have admin access to the scope
+          type: array
+          items:
+            $ref: '#/components/schemas/userNameID'
+        users:
+          description: a list of groups you have user access to the scope
+          type: array
+          items:
+            $ref: '#/components/schemas/userNameID'
+        adminGroups:
+          description: a list of groups that have admin access to the scope
+          type: array
+          items:
+            $ref: '#/components/schemas/groupNameID'
+        userGroups:
+          description: a list of groups you have user access to the scope
+          type: array
+          items:
+            $ref: '#/components/schemas/groupNameID'
+        name:
+          type: string
+          description: the name of the scope
+        id:
+          type: integer
+          description: the id of the scope
+    deviceInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: the name
+        uuid:
+          type: string
+          description: the unique id
+        schema:
+          type: string
+          description: the ID of the schema
+        state:
+          type: object
+          description: current state
+        lastUpdate:
+          type: number
+          description: timestamp of last change
+      example:
+        schema: https://kosmos-lab.de/schema/HSVLamp.json
+        lastUpdate: 1603442792048
+        name: hsv1
+        state:
+          saturation: 100
+          dimmingLevel: 8
+          hue: 285
+          'on': true
+          colorTemperature: 6175
+        uuid: hsv1
+    property:
+      type: object
+
+    schema:
+      type: object
+      properties:
+        examples:
+          type: array
+          items:
+            type: object
+        failures:
+          type: array
+          items:
+            type: object
+        "$schema":
+          type: string
+        additionalProperties:
+          type: boolean
+        title:
+          type: string
+        type:
+          type: string
+        required:
+          type: array
+          items:
+            type: string
+        properties:
+          type: object
+        "$id":
+          type: string
+      required:
+        - "$id"
+        - "type"
+        - "$schema"
+      example:
+        "$schema": http://json-schema.org/draft-07/schema#
+        "$id": https://kosmos-lab.de/schema/HSVLamp.json
+        additionalProperties: false
+        title: HSVLamp
+        type: object
+        required:
+          - dimmingLevel
+          - hue
+          - saturation
+        properties:
+          pushButtonState:
+            description: Describes the state of a push button, which
+            readOnly: true
+            title: pushButtonState
+            type: boolean
+          standby:
+            description: Standby mode status.
+            readOnly: false
+            title: standby
+            type: boolean
+          latitude:
+            unit: "°"
+            maximum: 90
+            description: Latitude
+            readOnly: false
+            title: latitude
+            type: number
+            minimum: -90
+          batteryChargingState:
+            description: Indicates if the battery of the device is
+            readOnly: true
+            title: batteryChargingState
+            type: boolean
+          lockBit:
+            description: Lock bit disables the controls of the device
+            readOnly: false
+            title: lockBit
+            type: boolean
+          powerUsageEstimate:
+            unit: W
+            maximum: 3680
+            description: The current electric power load of a home
+            readOnly: true
+            title: powerUsageEstimate
+            type: number
+            minimum: 0
+          colorTemperature:
+            multipleOf: 25
+            unit: K
+            maximum: 7000
+            description: Color temperature
+            readOnly: false
+            title: colorTemperature
+            type: integer
+            minimum: 1500
+          deviceStatus:
+            description: Holds the status of the device.
+            readOnly: true
+            title: deviceStatus
+            type: string
+            enum:
+              - OK
+              - Driver Stopped
+              - Driver Not Ready
+          saturation:
+            unit: "%"
+            maximum: 100
+            description: Saturation of a light source. Together with
+            readOnly: false
+            title: saturation
+            type: number
+            minimum: 0
+          apiUrl:
+            description: URL to extended device API
+            readOnly: true
+            title: apiUrl
+            type: string
+          repeaterRssi:
+            unit: dBm
+            maximum: 0
+            description: Received Signal Strength Indication of
+            readOnly: true
+            title: repeaterRssi
+            type: number
+            minimum: -150
+          supportedCommunicationIntervals:
+            description: Supported communication interval times in
+            readOnly: true
+            title: supportedCommunicationIntervals
+            type: string
+          batteryLevel:
+            unit: "%"
+            maximum: 100
+            description: Battery level where 100% is a fully charged
+            readOnly: true
+            title: batteryLevel
+            type: number
+            minimum: 0
+          longitude:
+            unit: "°"
+            maximum: 180
+            description: Longitude
+            readOnly: false
+            title: longitude
+            type: number
+            minimum: -180
+          'on':
+            description: Stores the on/off status of the device, with
+            readOnly: false
+            title: 'on'
+            type: boolean
+          communicationInterval:
+            unit: s
+            maximum: 86400
+            description: Maximum time between two data packets of
+            readOnly: false
+            title: communicationInterval
+            type: integer
+            minimum: 0
+          dimmingLevel:
+            multipleOf: 2
+            unit: "%"
+            maximum: 100
+            description: Dimming level of the lamp, between 0 and
+            readOnly: false
+            title: dimmingLevel
+            type: integer
+            minimum: 0
+          rssi:
+            unit: dBm
+            maximum: 0
+            description: Received Signal Strength Indication
+            readOnly: true
+            title: rssi
+            type: number
+            minimum: -150
+          batteryVoltage:
+            unit: V
+            maximum: 25
+            description: Battery voltage indicating the power left in
+            readOnly: true
+            title: batteryVoltage
+            type: number
+            minimum: 0
+          powerUsage:
+            unit: W
+            maximum: 3680
+            description: The current electric power load of a home
+            readOnly: true
+            title: powerUsage
+            type: number
+            minimum: 0
+          declaredMaximumPower:
+            unit: W
+            maximum: 3600
+            description: Declared maximum power of a home
+            readOnly: false
+            title: declaredMaximumPower
+            type: number
+            minimum: 0
+          voltage:
+            unit: V
+            description: Electric voltage
+            readOnly: true
+            title: voltage
+            type: number
+          connectionStatus:
+            description: Connection status of a device that needs to
+            readOnly: false
+            title: connectionStatus
+            type: boolean
+          gatewayIdentifier:
+            description: Identifier of the gateway of this device
+            readOnly: true
+            title: gatewayIdentifier
+            type: string
+          hue:
+            unit: "°"
+            maximum: 360
+            description: Hue of a light source. Together with the
+            readOnly: false
+            title: hue
+            type: number
+            minimum: 0
+          configuredLocationName:
+            description: Location configured in the device
+            readOnly: true
+            title: configuredLocationName
+            type: string
+        examples:
+          - pushButtonState: false
+            standby: true
+            latitude: 7.621439674439458
+            batteryChargingState: true
+            lockBit: false
+            powerUsageEstimate: 2616.4
+            colorTemperature: 3150
+            deviceStatus: Driver Not Ready
+            saturation: 76.3
+            apiUrl: 6jRz1wWKEl
+            repeaterRssi: -85.3
+            supportedCommunicationIntervals: wa75YFBvW6
+            batteryLevel: 10.907
+            longitude: -6.2726034900927345
+            'on': true
+            communicationInterval: 34548
+            dimmingLevel: 28
+            rssi: -97.9
+            batteryVoltage: 11.32
+            powerUsage: 1516.9
+            declaredMaximumPower: 804.5
+            voltage: -624200.791
+            connectionStatus: false
+            gatewayIdentifier: MlVguCykm6
+            hue: 267.6
+            configuredLocationName: cCeOjLDJyC
+          - pushButtonState: true
+            standby: true
+            latitude: 26.764834364530785
+            batteryChargingState: false
+            lockBit: false
+            powerUsageEstimate: 2458.1
+            colorTemperature: 6450
+            deviceStatus: Driver Not Ready
+            saturation: 83.6
+            apiUrl: PTGPmrCM6L
+            repeaterRssi: -43.1
+            supportedCommunicationIntervals: KQW3IxFZyU
+            batteryLevel: 4.707
+            longitude: 88.21045873406621
+            'on': true
+            communicationInterval: 4371
+            dimmingLevel: 70
+            rssi: -129.3
+            batteryVoltage: 5.02
+            powerUsage: 2907.6
+            declaredMaximumPower: 3172.3
+            voltage: -497647.246
+            connectionStatus: false
+            gatewayIdentifier: 13TUosjar8
+            hue: 148.4
+            configuredLocationName: xKElJqNzGb
+        failures:
+          - pushButtonState: false
+            standby: true
+            latitude: 7.621439674439458
+            batteryChargingState: true
+            lockBit: false
+            powerUsageEstimate: 2616.4
+            colorTemperature: 3150
+            deviceStatus: Driver Not Ready
+            saturation: 76.3
+            apiUrl: 6jRz1wWKEl
+            repeaterRssi: -85.3
+            supportedCommunicationIntervals: wa75YFBvW6
+            batteryLevel: 10.907
+            longitude: -6.2726034900927345
+            'on': true
+            communicationInterval: 34548
+            rssi: -97.9
+            batteryVoltage: 11.32
+            powerUsage: 1516.9
+            declaredMaximumPower: 804.5
+            voltage: -624200.791
+            connectionStatus: false
+            gatewayIdentifier: MlVguCykm6
+            hue: 267.6
+            configuredLocationName: cCeOjLDJyC
+          - pushButtonState: true
+            standby: true
+            latitude: 26.764834364530785
+            batteryChargingState: false
+            lockBit: false
+            powerUsageEstimate: 2458.1
+            colorTemperature: 6450
+            deviceStatus: Driver Not Ready
+            saturation: 83.6
+            apiUrl: PTGPmrCM6L
+            repeaterRssi: -43.1
+            supportedCommunicationIntervals: KQW3IxFZyU
+            batteryLevel: 4.707
+            longitude: 88.21045873406621
+            'on': true
+            communicationInterval: 4371
+            dimmingLevel: 70
+            rssi: -129.3
+            batteryVoltage: 5.02
+            powerUsage: 2907.6
+            declaredMaximumPower: 3172.3
+            voltage: -497647.246
+            connectionStatus: false
+            gatewayIdentifier: 13TUosjar8
+            configuredLocationName: xKElJqNzGb
+
+  securitySchemes:
+    bearerAuth:
+      description: contains a JWT token obtainable from #post-/user/login
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    secret:
+      description: contains a secret known to both parties
+      type: apiKey
+
+      in: query
+      name: token
+
+  responses:
+    DeviceNotFoundError:
+      description: Could not find the given Device
+    ValidationError:
+      description: Could not find the given Device
+    SchemaNotFoundError:
+      description: Could not find the given Device
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    NoAccessError:
+      description: You don't have sufficient access to do this
+    UnknownError:
+      description: Request could not be parsed, are all needed properties/parameters used?
+    UnknownFailure:
+      description: Request could not be parsed, did you provide the wrong datatype to some parameter?

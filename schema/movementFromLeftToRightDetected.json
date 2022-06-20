@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Defines movement from right to left.",
+    "readOnly": true,
+    "title": "movementFromLeftToRightDetected",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/movementFromLeftToRightDetected.json"
+}

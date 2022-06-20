@@ -1,0 +1,10 @@
+{
+    "unit": "W/m²",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Global Horizontal Irradiance (GHI).",
+    "readOnly": true,
+    "title": "globalHorizontalIrradiance",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/globalHorizontalIrradiance.json"
+}

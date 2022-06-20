@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Defines whether water has been detected or",
+    "readOnly": true,
+    "title": "waterDetected",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/waterDetected.json"
+}

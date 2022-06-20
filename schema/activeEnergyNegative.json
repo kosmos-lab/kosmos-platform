@@ -1,0 +1,10 @@
+{
+    "unit": "kWh",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Negative active energy (A-).",
+    "readOnly": true,
+    "title": "activeEnergyNegative",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/activeEnergyNegative.json"
+}

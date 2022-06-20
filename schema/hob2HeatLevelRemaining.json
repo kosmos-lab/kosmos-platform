@@ -1,0 +1,11 @@
+{
+    "unit": "%",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100,
+    "description": "Remaining heat level of hob 2.",
+    "readOnly": true,
+    "title": "hob2HeatLevelRemaining",
+    "type": "integer",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/hob2HeatLevelRemaining.json"
+}

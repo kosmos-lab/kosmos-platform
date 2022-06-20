@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Today's sunset time in milliseconds since",
+    "readOnly": true,
+    "title": "sunsetTime",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/sunsetTime.json"
+}

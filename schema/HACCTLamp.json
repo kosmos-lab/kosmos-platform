@@ -1,0 +1,61 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HACCTLamp.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HACCTLamp",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "state","entity_id"
+  ],
+  "properties": {
+
+    "brightness": {
+      "type": "integer",
+      "default": 128,
+      "examples": [
+        128
+      ],
+      "minimum": 0,
+      "maximum": 255
+    },
+    "state": {
+      "type": "string",
+      "default": "on"
+    },
+    "color_temp": {
+      "type": "number"
+    },
+    "max_mireds": {
+      "type": "number",
+      "readOnly": true
+    },
+    "min_mireds": {
+      "type": "number",
+      "readOnly": true
+    },
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "supported_color_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "readOnly": true
+    },
+    "effect_list": {
+    },
+    "color_mode": {
+      "type": "string"
+    },
+    "white_value": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 255
+    }
+  }
+}

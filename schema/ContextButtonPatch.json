@@ -1,0 +1,75 @@
+{
+  "$id": "https://kosmos-lab.de/schema/ContextButtonPatch.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContextPatch",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+    {
+      "color": {
+        "r": 255,
+        "g": 20,
+        "b": 25
+      },
+      "shortpress": false,
+      "longpress": false,
+      "on": false,
+      "brightness": 0
+    },
+    {
+      "color": {
+        "r": 255,
+        "g": 20,
+        "b": 25
+      },
+      "shortpress": false,
+      "longpress": false,
+      "on": true,
+      "brightness": 255
+    },
+    {
+      "color": {
+        "r": 55,
+        "g": 20,
+        "b": 225
+      },
+      "shortpress": false,
+      "longpress": true,
+      "on": true,
+      "brightness": 255
+    }
+  ],
+  "required": [
+    "color",
+    "brightness",
+    "longpress",
+    "shortpress",
+    "on"
+  ],
+  "properties": {
+    "color": {
+      "description": "The color that should be displayed on the Patch",
+      "$ref": "/schema/properties/color_rgb.json"
+    },
+    "brightness": {
+      "$ref": "/schema/properties/brightness.json.json"
+    },
+    "shortpress": {
+      "description": "was there a short press on the patch? Will directly jump back to false.",
+      "readOnly": true,
+      "type": "boolean",
+      "default": false
+    },
+    "longpress": {
+      "description": "is somebody currently longpressing the patch?",
+      "readOnly": true,
+      "type": "boolean",
+      "default": false
+    },
+    "on": {
+      "description": "is the led active?",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

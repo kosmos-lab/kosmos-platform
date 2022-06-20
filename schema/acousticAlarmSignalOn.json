@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Describes if the acoustic alarm signal is on",
+    "readOnly": false,
+    "title": "acousticAlarmSignalOn",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/acousticAlarmSignalOn.json"
+}

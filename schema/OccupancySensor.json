@@ -1,0 +1,85 @@
+{
+  "failures": [
+    {
+      "illuminance": 250,
+      "linkquality": 101,
+      "occupancy": "no",
+      "battery": 100
+    },
+    {
+      "illuminance": 250,
+      "linkquality": 101,
+      "occupancy": false,
+      "battery": 101
+    },
+    {
+      "illuminance": 250,
+      "linkquality": 256,
+      "occupancy": false,
+      "battery": 100
+    },
+    {
+      "illuminance": -1,
+      "linkquality": 101,
+      "occupancy": false,
+      "battery": 100
+    }
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "examples": [
+    {
+      "illuminance": 14,
+      "linkquality": 69,
+      "occupancy": true,
+      "battery": 70
+    },
+    {
+      "illuminance": 250,
+      "linkquality": 101,
+      "occupancy": false,
+      "battery": 100
+    }
+  ],
+  "additionalProperties": false,
+  "title": "OccupancySensor",
+  "type": "object",
+  "required": [
+    "occupancy"
+  ],
+  "properties": {
+    "illuminance": {
+      "unit": "lx",
+      "maximum": 100000,
+      "description": "Current illuminance in the environment",
+      "readOnly": true,
+      "title": "illuminance",
+      "type": "number",
+      "minimum": 0
+    },
+    "linkquality": {
+      "unit": "lqi",
+      "maximum": 255,
+      "description": "Link quality",
+      "readOnly": true,
+      "title": "linkquality",
+      "type": "number",
+      "minimum": 0
+    },
+    "battery": {
+      "unit": "%",
+      "maximum": 100,
+      "description": "Battery level where 100% is a fully charged",
+      "readOnly": true,
+      "title": "batteryLevel",
+      "type": "number",
+      "minimum": 0
+    },
+    "occupancy": {
+      "description": "Defines whether the sensors detected motion",
+      "readOnly": true,
+      "title": "occupancy",
+      "type": "boolean"
+    }
+  },
+  "$id": "https://kosmos-lab.de/schema/OccupancySensor.json"
+}

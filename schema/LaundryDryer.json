@@ -1,0 +1,335 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "pushButtonState": true,
+            "standby": false,
+            "latitude": -23.879637687918873,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 62.2,
+            "deviceStatus": "Driver Not Ready",
+            "apiUrl": "VCBCQLNwap",
+            "startTime": "zDCsTUVWiy",
+            "stopTime": "uhu2PtJKyH",
+            "repeaterRssi": -52,
+            "supportedCommunicationIntervals": "kaeC2OwDNk",
+            "batteryLevel": 61.616,
+            "longitude": -20.38883946347488,
+            "on": true,
+            "communicationInterval": 24382,
+            "rssi": -68.6,
+            "batteryVoltage": 0.41,
+            "powerUsage": 364.3,
+            "declaredMaximumPower": 2533.1,
+            "secondsRemaining": 852390603,
+            "voltage": 914511.578,
+            "connectionStatus": true,
+            "gatewayIdentifier": "EMsyJfFswg",
+            "configuredLocationName": "BeFw0mSzmv"
+        },
+        {
+            "pushButtonState": false,
+            "standby": true,
+            "latitude": -28.605526651050397,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "powerUsageEstimate": 297.7,
+            "deviceStatus": "Driver Not Ready",
+            "apiUrl": "i6S1ECDg0Z",
+            "startTime": "6fmlrLL68O",
+            "stopTime": "wFb60hKyhD",
+            "repeaterRssi": -18.9,
+            "supportedCommunicationIntervals": "mbRqsKhkch",
+            "batteryLevel": 71.276,
+            "longitude": -49.04977128345985,
+            "on": true,
+            "communicationInterval": 54784,
+            "rssi": -51.5,
+            "batteryVoltage": 21.44,
+            "powerUsage": 1204.4,
+            "declaredMaximumPower": 659.6,
+            "secondsRemaining": 1780408614,
+            "voltage": -763125.263,
+            "connectionStatus": false,
+            "gatewayIdentifier": "S1EtsPfFb3",
+            "configuredLocationName": "LeuwAZRqO4"
+        },
+        {
+            "pushButtonState": true,
+            "standby": false,
+            "latitude": -25.48445489859418,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "powerUsageEstimate": 3143.6,
+            "deviceStatus": "Driver Stopped",
+            "apiUrl": "A3aAlXYcor",
+            "startTime": "bvbkZukc2n",
+            "stopTime": "4T8mbhI8cb",
+            "repeaterRssi": -84.6,
+            "supportedCommunicationIntervals": "q20EqmaYTy",
+            "batteryLevel": 90.675,
+            "longitude": 179.60016762580995,
+            "on": true,
+            "communicationInterval": 63188,
+            "rssi": -7.6,
+            "batteryVoltage": 19.69,
+            "powerUsage": 724.4,
+            "declaredMaximumPower": 99.3,
+            "secondsRemaining": 1221904994,
+            "voltage": -774158.343,
+            "connectionStatus": false,
+            "gatewayIdentifier": "v47TujQ5Oi",
+            "configuredLocationName": "nenZXN94HW"
+        },
+        {
+            "pushButtonState": false,
+            "standby": true,
+            "latitude": 63.17066445711092,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 2352,
+            "deviceStatus": "OK",
+            "apiUrl": "PLTHRZ1WEN",
+            "startTime": "Ot3glZ9RXk",
+            "stopTime": "YHqQXoDHG4",
+            "repeaterRssi": -12.1,
+            "supportedCommunicationIntervals": "DXvWaZNEDw",
+            "batteryLevel": 6.186,
+            "longitude": -35.570625845452554,
+            "on": false,
+            "communicationInterval": 25356,
+            "rssi": -119.2,
+            "batteryVoltage": 12.28,
+            "powerUsage": 923.8,
+            "declaredMaximumPower": 2425,
+            "secondsRemaining": 1531397682,
+            "voltage": 120396.71,
+            "connectionStatus": false,
+            "gatewayIdentifier": "Zcj9seBJ7t",
+            "configuredLocationName": "LBzIllN65I"
+        },
+        {
+            "pushButtonState": true,
+            "standby": false,
+            "latitude": -6.887901674276478,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 1563.7,
+            "deviceStatus": "OK",
+            "apiUrl": "TUft081OKL",
+            "startTime": "wa06KTJ5wg",
+            "stopTime": "ZRGE2gjw6Z",
+            "repeaterRssi": -11.6,
+            "supportedCommunicationIntervals": "c4qDL2tST6",
+            "batteryLevel": 31.326,
+            "longitude": -9.992750244659362,
+            "on": true,
+            "communicationInterval": 84646,
+            "rssi": -77.1,
+            "batteryVoltage": 24.03,
+            "powerUsage": 473.2,
+            "declaredMaximumPower": 563.3,
+            "secondsRemaining": 1149301364,
+            "voltage": -727950.636,
+            "connectionStatus": true,
+            "gatewayIdentifier": "gMXrdcxnw8",
+            "configuredLocationName": "ntrO2euGa6"
+        }
+    ],
+    "additionalProperties": false,
+    "title": "LaundryDryer",
+    "type": "object",
+    "properties": {
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsageEstimate",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "startTime": {
+            "description": "Start time of the program, expressed in",
+            "readOnly": false,
+            "title": "startTime",
+            "type": "string"
+        },
+        "stopTime": {
+            "description": "Stop time of the program, expressed in",
+            "readOnly": false,
+            "title": "stopTime",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "on": {
+            "description": "Stores the on/off status of the device, with",
+            "readOnly": false,
+            "title": "on",
+            "type": "boolean"
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsage",
+            "type": "number",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "description": "Declared maximum power of a home",
+            "readOnly": false,
+            "title": "declaredMaximumPower",
+            "type": "number",
+            "minimum": 0
+        },
+        "secondsRemaining": {
+            "unit": "s",
+            "description": "Stores the remaining time (in seconds) for",
+            "readOnly": true,
+            "title": "secondsRemaining",
+            "type": "integer",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/LaundryDryer.json"
+}

@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Describes if the valve is open or closed.",
+    "readOnly": false,
+    "title": "valveStatus",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/valveStatus.json"
+}

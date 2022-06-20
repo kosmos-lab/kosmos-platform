@@ -1,0 +1,44 @@
+{
+  "$id": "https://kosmos-lab.de/schema/RGB.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RGB",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "r": {
+      "type": "integer",
+      "description": "The red Value",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "g": {
+      "type": "integer",
+      "description": "The green Value",
+      "minimum": 0,
+      "maximum": 255
+    },
+    "b": {
+      "type": "integer",
+      "description": "The green Value",
+      "minimum": 0,
+      "maximum": 255
+    }
+  },
+  "required": [
+    "r",
+    "g",
+    "b"
+  ],
+  "examples": [
+    {
+      "r": 255,
+      "g": 0,
+      "b": 255
+    }
+  ],
+  "failures": [
+    {
+      "r": 255
+    }
+  ]
+}

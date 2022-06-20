@@ -1,0 +1,11 @@
+{
+  "examples": [
+  ],
+  "failures": [
+    {
+    },
+    {
+      "communicationInterval": 100
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+    "multipleOf": 10,
+    "unit": "%",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100,
+    "description": "Heat level setting of hob 3.",
+    "readOnly": false,
+    "title": "hob3HeatLevelSetting",
+    "type": "integer",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/hob3HeatLevelSetting.json"
+}

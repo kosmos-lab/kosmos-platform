@@ -1,0 +1,15 @@
+{
+    "statelog": {
+        "blacklist": [],
+        "whitelist": []
+    },
+    "mqtt": {
+        "port": 1883,
+        "host": "0.0.0.0"
+    },
+    "webserver": {"port": 18080},
+    "sql": {
+        "url": "jdbc:sqlite:./db/database.sqlite",
+        "maxConnections": 10
+    }
+}

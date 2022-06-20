@@ -1,0 +1,11 @@
+{
+    "unit": "°",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 90,
+    "description": "Latitude",
+    "readOnly": false,
+    "title": "latitude",
+    "type": "number",
+    "minimum": -90,
+    "$id": "https://kosmos-lab.de/schema/latitude.json"
+}

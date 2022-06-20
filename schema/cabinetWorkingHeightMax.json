@@ -1,0 +1,11 @@
+{
+    "unit": "cm",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 200,
+    "description": "Cabinet maximum working height",
+    "readOnly": true,
+    "title": "cabinetWorkingHeightMax",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/cabinetWorkingHeightMax.json"
+}

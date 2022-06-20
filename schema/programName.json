@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Stores the name of the program of this",
+    "readOnly": false,
+    "title": "programName",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/programName.json"
+}

@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Print command sent to the printer, allowing",
+    "readOnly": false,
+    "title": "printJobCommand",
+    "type": "string",
+    "enum": [
+        "Pause",
+        "Stop",
+        "Print"
+    ],
+    "$id": "https://kosmos-lab.de/schema/printJobCommand.json"
+}

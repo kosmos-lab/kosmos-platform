@@ -1,0 +1,11 @@
+{
+    "unit": "m/s",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 3.0E8,
+    "description": "Speed",
+    "readOnly": true,
+    "title": "speed",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/speed.json"
+}

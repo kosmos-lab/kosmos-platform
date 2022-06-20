@@ -1,0 +1,79 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "vehicleDriveRange": 759484.9,
+            "locationLatitude": 349.005,
+            "locationLongitude": 229.696,
+            "deviceStatus": "OK"
+        },
+        {
+            "vehicleDriveRange": 683574.5,
+            "locationLatitude": 245.803,
+            "locationLongitude": 127.953,
+            "deviceStatus": "OK"
+        },
+        {
+            "vehicleDriveRange": 436194.5,
+            "locationLatitude": 300.457,
+            "locationLongitude": 253.321,
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "vehicleDriveRange": 498427.9,
+            "locationLatitude": 218.802,
+            "locationLongitude": 93.445,
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "vehicleDriveRange": 440987,
+            "locationLatitude": 293.468,
+            "locationLongitude": 154.378,
+            "deviceStatus": "Driver Not Ready"
+        }
+    ],
+    "additionalProperties": false,
+    "title": "Vehicle",
+    "type": "object",
+    "properties": {
+        "vehicleDriveRange": {
+            "unit": "km",
+            "description": "Remaining drive range of a vehicle.",
+            "readOnly": true,
+            "title": "vehicleDriveRange",
+            "type": "number",
+            "minimum": 0
+        },
+        "locationLatitude": {
+            "unit": "°",
+            "maximum": 360,
+            "description": "Current geographical location latitude.",
+            "readOnly": true,
+            "title": "locationLatitude",
+            "type": "number",
+            "minimum": 0
+        },
+        "locationLongitude": {
+            "unit": "°",
+            "maximum": 360,
+            "description": "Current geographical location longitude.",
+            "readOnly": true,
+            "title": "locationLongitude",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/Vehicle.json"
+}

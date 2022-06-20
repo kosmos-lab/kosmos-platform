@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Stores the on/off status of the device, with",
+    "readOnly": false,
+    "title": "on",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/on.json"
+}

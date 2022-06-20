@@ -1,0 +1,51 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Space Probe",
+    "required": ["liveImageURI"],
+    "properties": {
+        "mediaTitle": {
+            "readOnly": false,
+            "title": "Media Title",
+            "type": "string"
+        },
+        "liveImageURI": {
+            "readOnly": true,
+            "title": "Live Image",
+            "type": "string"
+        },
+        "deviceStatus": {
+            "readOnly": true,
+            "title": "Device Status",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready",
+                "Internal Driver Error",
+                "Configuration Error",
+                "Gateway Unreachable",
+                "Network Gateway Unreachable",
+                "USB Gateway Unreachable",
+                "Wrong Gateway Response",
+                "Gateway Firmware Update Ongoing",
+                "Internal Gateway Error",
+                "Device Not Responding",
+                "Wrong Device Response",
+                "Access Denied",
+                "Battery Low",
+                "Device Firmware Update Ongoing",
+                "Internal Device Error",
+                "Device Is Being Removed",
+                "Driver Not Available",
+                "No Driver Assigned",
+                "Not Mounted",
+                "Mechanical Error",
+                "Device No Longer Available"
+            ]
+        }
+    },
+    "$id": "http://iolite.de#SpaceProbe"
+}

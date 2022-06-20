@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Lock bit disables the controls of the device",
+    "readOnly": false,
+    "title": "lockBit",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/lockBit.json"
+}

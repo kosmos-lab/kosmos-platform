@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Mounting type of a contact sensor.",
+    "readOnly": false,
+    "title": "contactSensorMountingType",
+    "type": "string",
+    "enum": [
+        "Window",
+        "InnerDoor",
+        "EntranceDoor"
+    ],
+    "$id": "https://kosmos-lab.de/schema/contactSensorMountingType.json"
+}

@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Stores the playback state of the device, one",
+    "readOnly": false,
+    "title": "playbackState",
+    "type": "string",
+    "enum": [
+        "play",
+        "pause",
+        "stop"
+    ],
+    "$id": "https://kosmos-lab.de/schema/playbackState.json"
+}

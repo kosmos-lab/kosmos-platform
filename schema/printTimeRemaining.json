@@ -1,0 +1,10 @@
+{
+    "unit": "s",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Remaining print time estimate",
+    "readOnly": true,
+    "title": "printTimeRemaining",
+    "type": "integer",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/printTimeRemaining.json"
+}

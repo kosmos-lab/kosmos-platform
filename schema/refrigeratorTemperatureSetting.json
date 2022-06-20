@@ -1,0 +1,12 @@
+{
+    "multipleOf": 0.5,
+    "unit": "°C",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 8,
+    "description": "Refrigerator temperature requested by the",
+    "readOnly": false,
+    "title": "refrigeratorTemperatureSetting",
+    "type": "number",
+    "minimum": 2,
+    "$id": "https://kosmos-lab.de/schema/refrigeratorTemperatureSetting.json"
+}

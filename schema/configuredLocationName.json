@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Location configured in the device",
+    "readOnly": true,
+    "title": "configuredLocationName",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/configuredLocationName.json"
+}

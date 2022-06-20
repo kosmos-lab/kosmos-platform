@@ -1,0 +1,7 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "readOnly": true,
+    "title": "printJobName",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/printJobName.json"
+}

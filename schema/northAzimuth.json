@@ -1,0 +1,11 @@
+{
+    "unit": "°",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 360,
+    "description": "North azimuth of an element, describing its",
+    "readOnly": true,
+    "title": "northAzimuth",
+    "type": "integer",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/northAzimuth.json"
+}

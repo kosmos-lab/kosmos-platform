@@ -1,0 +1,11 @@
+{
+    "unit": "%",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100,
+    "description": "Saturation of a light source. Together with",
+    "readOnly": false,
+    "title": "saturation",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/saturation.json"
+}

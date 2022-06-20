@@ -1,0 +1,314 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Environmental Sensor",
+    "required": ["particlePM10"],
+    "properties": {
+        "pushButtonState": {
+            "readOnly": true,
+            "title": "Push Button State",
+            "type": "boolean"
+        },
+        "sulfurDioxide": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "H\u2082S",
+            "type": "number",
+            "minimum": 0
+        },
+        "standby": {
+            "readOnly": false,
+            "title": "Standby",
+            "type": "boolean"
+        },
+        "carbonMonoxidePPM": {
+            "unit": "ppm",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "CO ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "latitude": {
+            "unit": "%C2%B0",
+            "maximum": 90,
+            "readOnly": false,
+            "title": "Latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "readOnly": true,
+            "title": "Battery Charging State",
+            "type": "boolean"
+        },
+        "particlePM2dot5": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 10000,
+            "readOnly": true,
+            "title": "PM\u2082.\u2085",
+            "type": "number",
+            "minimum": 0
+        },
+        "carbonMonoxide": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "CO",
+            "type": "number",
+            "minimum": 0
+        },
+        "activeOxygenPPM": {
+            "unit": "ppm",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "O\u2083 ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "lockBit": {
+            "readOnly": false,
+            "title": "Lock Bit",
+            "type": "boolean"
+        },
+        "deviceStatus": {
+            "readOnly": true,
+            "title": "Device Status",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready",
+                "Internal Driver Error",
+                "Configuration Error",
+                "Gateway Unreachable",
+                "Network Gateway Unreachable",
+                "USB Gateway Unreachable",
+                "Wrong Gateway Response",
+                "Gateway Firmware Update Ongoing",
+                "Internal Gateway Error",
+                "Device Not Responding",
+                "Wrong Device Response",
+                "Access Denied",
+                "Battery Low",
+                "Device Firmware Update Ongoing",
+                "Internal Device Error",
+                "Device Is Being Removed",
+                "Driver Not Available",
+                "No Driver Assigned",
+                "Not Mounted",
+                "Mechanical Error",
+                "Device No Longer Available"
+            ]
+        },
+        "currentIlluminance": {
+            "unit": "lx",
+            "maximum": 100000,
+            "readOnly": true,
+            "title": "Current Illuminance",
+            "type": "number",
+            "minimum": 0
+        },
+        "apiUrl": {
+            "readOnly": true,
+            "title": "API URL",
+            "type": "string"
+        },
+        "hydrogenSulfidePPM": {
+            "unit": "ppm",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "H\u2082S ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "particlePM10": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 10000,
+            "readOnly": true,
+            "title": "PM\u2081\u2080",
+            "type": "number",
+            "minimum": 0
+        },
+        "activeOxygen": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "O\u2083",
+            "type": "number",
+            "minimum": 0
+        },
+        "carbonDioxidePPM": {
+            "unit": "ppm",
+            "maximum": 100000,
+            "readOnly": true,
+            "title": "CO\u2082 ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Repeater Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "readOnly": true,
+            "title": "Supported Communication Intervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "Battery Level",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "%C2%B0",
+            "maximum": 180,
+            "readOnly": false,
+            "title": "Longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "readOnly": false,
+            "title": "Communication Interval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "particlePM0dot1": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 10000,
+            "readOnly": true,
+            "title": "PM\u2080.\u2081",
+            "type": "number",
+            "minimum": 0
+        },
+        "smokeDetected": {
+            "readOnly": true,
+            "title": "Smoke Detected / Not Detected",
+            "type": "boolean"
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "readOnly": true,
+            "title": "Battery Voltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "airPressure": {
+            "unit": "hPa",
+            "maximum": 1150,
+            "readOnly": true,
+            "title": "Air Pressure",
+            "type": "number",
+            "minimum": 500
+        },
+        "nitrogenMonoxide": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "NO ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "hydrogenSulfide": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "H\u2082S",
+            "type": "number",
+            "minimum": 0
+        },
+        "particlePM1": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 10000,
+            "readOnly": true,
+            "title": "PM\u2081",
+            "type": "number",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "Voltage",
+            "type": "number"
+        },
+        "sulfurDioxidePPM": {
+            "unit": "ppm",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "H\u2082S ppm",
+            "type": "number",
+            "minimum": 0
+        },
+        "connectionStatus": {
+            "readOnly": false,
+            "title": "Connection Status",
+            "type": "boolean"
+        },
+        "outsideEnvironmentTemperature": {
+            "unit": "%C2%B0C",
+            "maximum": 60,
+            "readOnly": true,
+            "title": "Outside Temperature",
+            "type": "number",
+            "minimum": -60
+        },
+        "gatewayIdentifier": {
+            "readOnly": true,
+            "title": "Gateway Identifier",
+            "type": "string"
+        },
+        "nitrogenDioxide": {
+            "unit": "%CE%BCg%2Fm%C2%B3",
+            "maximum": 1000000,
+            "readOnly": true,
+            "title": "NO\u2082",
+            "type": "number",
+            "minimum": 0
+        },
+        "humidityLevel": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "Humidity",
+            "type": "number",
+            "minimum": 0
+        },
+        "configuredLocationName": {
+            "readOnly": true,
+            "title": "Location Name",
+            "type": "string"
+        },
+        "ambientVolumeLevel": {
+            "multipleOf": 1,
+            "unit": "dB",
+            "maximum": 150,
+            "readOnly": true,
+            "title": "Ambient Volume",
+            "type": "number",
+            "minimum": 0
+        }
+    },
+    "$id": "http://iolite.de#EnvironmentalSensor"
+}

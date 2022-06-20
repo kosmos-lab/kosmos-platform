@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Resolution of the live video image.",
+    "readOnly": false,
+    "title": "liveVideoResolution",
+    "type": "string",
+    "enum": [
+        "160x120",
+        "320x176",
+        "320x240",
+        "480x272"
+    ],
+    "$id": "https://kosmos-lab.de/schema/liveVideoResolution.json"
+}

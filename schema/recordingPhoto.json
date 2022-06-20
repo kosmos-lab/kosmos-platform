@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Indicates whether the camera is currently",
+    "readOnly": false,
+    "title": "recordingPhoto",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/recordingPhoto.json"
+}

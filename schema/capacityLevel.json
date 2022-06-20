@@ -1,0 +1,10 @@
+{
+    "unit": "Ah",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Actual capacity level of the battery, unit Ah",
+    "readOnly": false,
+    "title": "capacityLevel",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/capacityLevel.json"
+}

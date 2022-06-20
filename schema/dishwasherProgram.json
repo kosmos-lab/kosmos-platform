@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Dish washer program",
+    "readOnly": false,
+    "title": "dishwasherProgram",
+    "type": "string",
+    "enum": [
+        "Quick",
+        "Eco",
+        "Intensive"
+    ],
+    "$id": "https://kosmos-lab.de/schema/dishwasherProgram.json"
+}

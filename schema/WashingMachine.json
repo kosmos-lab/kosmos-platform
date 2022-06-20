@@ -1,0 +1,353 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "pushButtonState": true,
+            "currentWaterTemperature": 24.386,
+            "standby": true,
+            "latitude": 51.782063881903724,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 1447.3,
+            "deviceStatus": "OK",
+            "apiUrl": "eJKOfWVOL6",
+            "programName": "gGv8BJXxUD",
+            "repeaterRssi": -149.8,
+            "supportedCommunicationIntervals": "nA4Z0GYjUj",
+            "batteryLevel": 12.632,
+            "longitude": 129.02183242017912,
+            "on": true,
+            "communicationInterval": 15844,
+            "rssi": -33.1,
+            "batteryVoltage": 19.87,
+            "powerUsage": 3279,
+            "declaredMaximumPower": 1917.3,
+            "secondsRemaining": 757677341,
+            "voltage": -200029.417,
+            "waterTemperatureSetting": 64.5,
+            "connectionStatus": true,
+            "gatewayIdentifier": "X6zGsFhyqS",
+            "configuredLocationName": "abjG7SMGS1"
+        },
+        {
+            "pushButtonState": true,
+            "currentWaterTemperature": 25.556,
+            "standby": true,
+            "latitude": 45.266004824892946,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "powerUsageEstimate": 2523.3,
+            "deviceStatus": "OK",
+            "apiUrl": "fAFicCF5Ho",
+            "programName": "acfnZE8OQF",
+            "repeaterRssi": -40.8,
+            "supportedCommunicationIntervals": "jQbCkIMqip",
+            "batteryLevel": 2.903,
+            "longitude": 69.66529696488132,
+            "on": true,
+            "communicationInterval": 40082,
+            "rssi": -109.5,
+            "batteryVoltage": 9.1,
+            "powerUsage": 3428,
+            "declaredMaximumPower": 1552.3,
+            "secondsRemaining": 53411858,
+            "voltage": -941159.706,
+            "waterTemperatureSetting": 88.5,
+            "connectionStatus": false,
+            "gatewayIdentifier": "4tGtZ0GaUK",
+            "configuredLocationName": "eSGuTVNF6s"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 95.763,
+            "standby": false,
+            "latitude": -29.460451107334357,
+            "batteryChargingState": false,
+            "lockBit": false,
+            "powerUsageEstimate": 2929.5,
+            "deviceStatus": "OK",
+            "apiUrl": "nDGa2d00OX",
+            "programName": "9GwU2Beruu",
+            "repeaterRssi": -97.8,
+            "supportedCommunicationIntervals": "YbLX8Yhzi7",
+            "batteryLevel": 46.505,
+            "longitude": -5.227481647583318,
+            "on": false,
+            "communicationInterval": 60296,
+            "rssi": -128.1,
+            "batteryVoltage": 11.5,
+            "powerUsage": 3360.3,
+            "declaredMaximumPower": 2076.8,
+            "secondsRemaining": 1455816001,
+            "voltage": 655052.188,
+            "waterTemperatureSetting": 83,
+            "connectionStatus": false,
+            "gatewayIdentifier": "JV2wZv32dc",
+            "configuredLocationName": "SuLnb7D4jw"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 77.391,
+            "standby": false,
+            "latitude": 27.492262950055263,
+            "batteryChargingState": false,
+            "lockBit": true,
+            "powerUsageEstimate": 1211.6,
+            "deviceStatus": "Driver Not Ready",
+            "apiUrl": "IcdCZ3reVI",
+            "programName": "xbTOfDOBTY",
+            "repeaterRssi": -54.1,
+            "supportedCommunicationIntervals": "fQOHl613s7",
+            "batteryLevel": 77.673,
+            "longitude": -21.687984215209553,
+            "on": true,
+            "communicationInterval": 22149,
+            "rssi": -23.2,
+            "batteryVoltage": 10.99,
+            "powerUsage": 2321.4,
+            "declaredMaximumPower": 2758.5,
+            "secondsRemaining": 189529151,
+            "voltage": 863702.125,
+            "waterTemperatureSetting": 82,
+            "connectionStatus": true,
+            "gatewayIdentifier": "FA1cTJIHsw",
+            "configuredLocationName": "SwIjbkDtTq"
+        },
+        {
+            "pushButtonState": false,
+            "currentWaterTemperature": 32.653,
+            "standby": true,
+            "latitude": 49.290510602960154,
+            "batteryChargingState": true,
+            "lockBit": false,
+            "powerUsageEstimate": 2147.9,
+            "deviceStatus": "Driver Not Ready",
+            "apiUrl": "W6IfmFhIm2",
+            "programName": "gJgUPG8fxP",
+            "repeaterRssi": -132.7,
+            "supportedCommunicationIntervals": "qN4lyBt8WQ",
+            "batteryLevel": 59.541,
+            "longitude": -153.22948814236312,
+            "on": false,
+            "communicationInterval": 58988,
+            "rssi": -52.5,
+            "batteryVoltage": 9.16,
+            "powerUsage": 103.7,
+            "declaredMaximumPower": 895.8,
+            "secondsRemaining": 214611246,
+            "voltage": -314088.162,
+            "waterTemperatureSetting": 90.5,
+            "connectionStatus": true,
+            "gatewayIdentifier": "1gaUp83wQC",
+            "configuredLocationName": "UUHIvaQfT1"
+        }
+    ],
+    "additionalProperties": false,
+    "title": "WashingMachine",
+    "type": "object",
+    "properties": {
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "currentWaterTemperature": {
+            "unit": "°C",
+            "maximum": 100,
+            "description": "Current temperature in the environment",
+            "readOnly": true,
+            "title": "currentWaterTemperature",
+            "type": "number",
+            "minimum": 0
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsageEstimate",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "programName": {
+            "description": "Stores the name of the program of this",
+            "readOnly": false,
+            "title": "programName",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "on": {
+            "description": "Stores the on/off status of the device, with",
+            "readOnly": false,
+            "title": "on",
+            "type": "boolean"
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsage",
+            "type": "number",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "description": "Declared maximum power of a home",
+            "readOnly": false,
+            "title": "declaredMaximumPower",
+            "type": "number",
+            "minimum": 0
+        },
+        "secondsRemaining": {
+            "unit": "s",
+            "description": "Stores the remaining time (in seconds) for",
+            "readOnly": true,
+            "title": "secondsRemaining",
+            "type": "integer",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "waterTemperatureSetting": {
+            "multipleOf": 0.5,
+            "unit": "°C",
+            "maximum": 100,
+            "description": "Water temperature in Celsius.",
+            "readOnly": false,
+            "title": "waterTemperatureSetting",
+            "type": "number",
+            "minimum": 0
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/WashingMachine.json"
+}

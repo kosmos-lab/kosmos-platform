@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Determines whether the vehicle is",
+    "readOnly": true,
+    "title": "vehicleConnectionStatus",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/vehicleConnectionStatus.json"
+}

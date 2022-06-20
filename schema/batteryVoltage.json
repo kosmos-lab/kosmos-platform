@@ -1,0 +1,11 @@
+{
+    "unit": "V",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 25,
+    "description": "Battery voltage indicating the power left in",
+    "readOnly": true,
+    "title": "batteryVoltage",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/batteryVoltage.json"
+}

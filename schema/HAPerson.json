@@ -1,0 +1,42 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HAPerson.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HAPerson",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "id","entity_id"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state": {
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "readOnly": true
+    },
+    "id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "user_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "device_trackers": {
+      "type": ["array", "string"],
+      "readOnly": true
+    },
+    "editable": {
+      "type": "boolean",
+      "readOnly": true
+    }
+  }
+}

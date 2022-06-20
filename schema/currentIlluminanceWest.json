@@ -1,0 +1,11 @@
+{
+    "unit": "lx",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100000,
+    "description": "Current illuminance from west",
+    "readOnly": true,
+    "title": "currentIlluminanceWest",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/currentIlluminanceWest.json"
+}

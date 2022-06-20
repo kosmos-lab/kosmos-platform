@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Indicates whether a display is on or off.",
+    "readOnly": false,
+    "title": "displayStatus",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/displayStatus.json"
+}

@@ -1,0 +1,29 @@
+{
+  "$id": "https://kosmos-lab.de/schema/ContextRFIDSensor.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContextRFIDSensor",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+    {
+      "tag": "092358230598235"
+    },
+    {
+      "tag": "092358230598237"
+    },
+    {
+      "tag": ""
+    }
+  ],
+  "required": [
+    "tag"
+  ],
+  "properties": {
+    "tag": {
+      "description": "the tag that is currently visible for the RFID Reader",
+      "readOnly": true,
+
+      "type": "string"
+    }
+  }
+}

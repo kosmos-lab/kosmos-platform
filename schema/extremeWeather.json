@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Describes if there are currently extreme",
+    "readOnly": true,
+    "title": "extremeWeather",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/extremeWeather.json"
+}

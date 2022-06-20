@@ -1,0 +1,274 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Camera",
+    "required": ["liveVideoURI"],
+    "properties": {
+        "pushButtonState": {
+            "readOnly": true,
+            "title": "Push Button State",
+            "type": "boolean"
+        },
+        "standby": {
+            "readOnly": false,
+            "title": "Standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "%C2%B0",
+            "maximum": 90,
+            "readOnly": false,
+            "title": "Latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "readOnly": true,
+            "title": "Battery Charging State",
+            "type": "boolean"
+        },
+        "recordingPhotoDestination": {
+            "readOnly": false,
+            "title": "Recording Photo Destination",
+            "type": "string"
+        },
+        "lockBit": {
+            "readOnly": false,
+            "title": "Lock Bit",
+            "type": "boolean"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "readOnly": true,
+            "title": "Power Usage",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "readOnly": true,
+            "title": "Device Status",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready",
+                "Internal Driver Error",
+                "Configuration Error",
+                "Gateway Unreachable",
+                "Network Gateway Unreachable",
+                "USB Gateway Unreachable",
+                "Wrong Gateway Response",
+                "Gateway Firmware Update Ongoing",
+                "Internal Gateway Error",
+                "Device Not Responding",
+                "Wrong Device Response",
+                "Access Denied",
+                "Battery Low",
+                "Device Firmware Update Ongoing",
+                "Internal Device Error",
+                "Device Is Being Removed",
+                "Driver Not Available",
+                "No Driver Assigned",
+                "Not Mounted",
+                "Mechanical Error",
+                "Device No Longer Available"
+            ]
+        },
+        "availableAlarmSounds": {
+            "readOnly": true,
+            "title": "Available Alarms",
+            "type": "string"
+        },
+        "alarmLampOn": {
+            "readOnly": false,
+            "title": "Alarm Lamp",
+            "type": "boolean"
+        },
+        "liveVideoSupportedResolutions": {
+            "readOnly": true,
+            "title": "Supported Resolutions",
+            "type": "string"
+        },
+        "apiUrl": {
+            "readOnly": true,
+            "title": "API URL",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Repeater Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "readOnly": true,
+            "title": "Supported Communication Intervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "Battery Level",
+            "type": "number",
+            "minimum": 0
+        },
+        "on": {
+            "readOnly": false,
+            "title": "On / Off Status",
+            "type": "boolean"
+        },
+        "longitude": {
+            "unit": "%C2%B0",
+            "maximum": 180,
+            "readOnly": false,
+            "title": "Longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "readOnly": false,
+            "title": "Communication Interval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "recordingPhoto": {
+            "readOnly": false,
+            "title": "Recording",
+            "type": "boolean"
+        },
+        "liveVideoResolution": {
+            "readOnly": false,
+            "title": "Video Resolution",
+            "type": "string",
+            "enum": [
+                "160x120",
+                "320x176",
+                "320x240",
+                "480x272",
+                "640x360",
+                "640x480",
+                "720x480",
+                "720x576",
+                "800x448",
+                "800x600",
+                "960x720",
+                "1024x600",
+                "1024x768",
+                "1280x720",
+                "1280x800",
+                "1600x1200",
+                "1920x1080",
+                "1920x1200",
+                "2560x1440",
+                "2560x1600",
+                "3840x2160"
+            ]
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "readOnly": true,
+            "title": "Battery Voltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "readOnly": true,
+            "title": "Power Usage",
+            "type": "number",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "readOnly": false,
+            "title": "Declared maximum power",
+            "type": "number",
+            "minimum": 0
+        },
+        "liveVideoURI": {
+            "readOnly": true,
+            "title": "Live Video",
+            "type": "string"
+        },
+        "liveImageURI": {
+            "readOnly": true,
+            "title": "Live Image",
+            "type": "string"
+        },
+        "alarmSound": {
+            "readOnly": false,
+            "title": "Alarm Sound",
+            "type": "string"
+        },
+        "voltage": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "Voltage",
+            "type": "number"
+        },
+        "recordingVideo": {
+            "readOnly": false,
+            "title": "Recording Video",
+            "type": "boolean"
+        },
+        "acousticAlarmSignalOn": {
+            "readOnly": false,
+            "title": "Acoustic Alarm",
+            "type": "boolean"
+        },
+        "recordingVideoDestination": {
+            "readOnly": false,
+            "title": "Recording Video Destination",
+            "type": "string"
+        },
+        "connectionStatus": {
+            "readOnly": false,
+            "title": "Connection Status",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "readOnly": true,
+            "title": "Gateway Identifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "readOnly": true,
+            "title": "Location Name",
+            "type": "string"
+        },
+        "ambientVolumeLevel": {
+            "multipleOf": 1,
+            "unit": "dB",
+            "maximum": 150,
+            "readOnly": true,
+            "title": "Ambient Volume",
+            "type": "number",
+            "minimum": 0
+        },
+        "movementDetected": {
+            "readOnly": true,
+            "title": "Movement Status",
+            "type": "boolean"
+        }
+    },
+    "$id": "http://iolite.de#Camera"
+}

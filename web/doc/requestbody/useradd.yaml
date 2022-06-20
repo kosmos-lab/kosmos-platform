@@ -1,0 +1,30 @@
+content:
+  application/json:
+    schema:
+
+      type: object
+      properties:
+        user:
+          type: string
+        pass:
+          type: string
+        level:
+          type: integer
+          example: 1
+      required:
+        - user
+        - pass
+    examples:
+      user:
+        value:
+          user: user
+          pass: test
+      user2:
+        value:
+          user: user2
+          pass: jskenf325iuh
+      admin2:
+        value:
+          user: admin2
+          pass: aksufbasjhs
+          level: 100

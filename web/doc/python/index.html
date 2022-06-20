@@ -1,0 +1,1984 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
+    <meta name="generator" content="pdoc 0.10.0"/>
+    <title>kosmos API documentation</title>
+    <meta name="description" content=""/>
+    <link rel="preload stylesheet" as="style"
+          href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css"
+          integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+    <link rel="preload stylesheet" as="style"
+          href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css"
+          integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+    <link rel="stylesheet preload" as="style"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+    <style>:root {
+        --highlight-color: #fe9
+    }
+
+    .flex {
+        display: flex !important
+    }
+
+    body {
+        line-height: 1.5em
+    }
+
+    #content {
+        padding: 20px
+    }
+
+    #sidebar {
+        padding: 30px;
+        overflow: hidden
+    }
+
+    #sidebar > *:last-child {
+        margin-bottom: 2cm
+    }
+
+    .http-server-breadcrumbs {
+        font-size: 130%;
+        margin: 0 0 15px 0
+    }
+
+    #footer {
+        font-size: .75em;
+        padding: 5px 30px;
+        border-top: 1px solid #ddd;
+        text-align: right
+    }
+
+    #footer p {
+        margin: 0 0 0 1em;
+        display: inline-block
+    }
+
+    #footer p:last-child {
+        margin-right: 30px
+    }
+
+    h1, h2, h3, h4, h5 {
+        font-weight: 300
+    }
+
+    h1 {
+        font-size: 2.5em;
+        line-height: 1.1em
+    }
+
+    h2 {
+        font-size: 1.75em;
+        margin: 1em 0 .50em 0
+    }
+
+    h3 {
+        font-size: 1.4em;
+        margin: 25px 0 10px 0
+    }
+
+    h4 {
+        margin: 0;
+        font-size: 105%
+    }
+
+    h1:target, h2:target, h3:target, h4:target, h5:target, h6:target {
+        background: var(--highlight-color);
+        padding: .2em 0
+    }
+
+    a {
+        color: #058;
+        text-decoration: none;
+        transition: color .3s ease-in-out
+    }
+
+    a:hover {
+        color: #e82
+    }
+
+    .title code {
+        font-weight: bold
+    }
+
+    h2[id^="header-"] {
+        margin-top: 2em
+    }
+
+    .ident {
+        color: #900
+    }
+
+    pre code {
+        background: #f8f8f8;
+        font-size: .8em;
+        line-height: 1.4em
+    }
+
+    code {
+        background: #f2f2f1;
+        padding: 1px 4px;
+        overflow-wrap: break-word
+    }
+
+    h1 code {
+        background: transparent
+    }
+
+    pre {
+        background: #f8f8f8;
+        border: 0;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 1ex
+    }
+
+    #http-server-module-list {
+        display: flex;
+        flex-flow: column
+    }
+
+    #http-server-module-list div {
+        display: flex
+    }
+
+    #http-server-module-list dt {
+        min-width: 10%
+    }
+
+    #http-server-module-list p {
+        margin-top: 0
+    }
+
+    .toc ul, #index {
+        list-style-type: none;
+        margin: 0;
+        padding: 0
+    }
+
+    #index code {
+        background: transparent
+    }
+
+    #index h3 {
+        border-bottom: 1px solid #ddd
+    }
+
+    #index ul {
+        padding: 0
+    }
+
+    #index h4 {
+        margin-top: .6em;
+        font-weight: bold
+    }
+
+    @media (min-width: 200ex) {
+        #index .two-column {
+            column-count: 2
+        }
+    }
+
+    @media (min-width: 300ex) {
+        #index .two-column {
+            column-count: 3
+        }
+    }
+
+    dl {
+        margin-bottom: 2em
+    }
+
+    dl dl:last-child {
+        margin-bottom: 4em
+    }
+
+    dd {
+        margin: 0 0 1em 3em
+    }
+
+    #header-classes + dl > dd {
+        margin-bottom: 3em
+    }
+
+    dd dd {
+        margin-left: 2em
+    }
+
+    dd p {
+        margin: 10px 0
+    }
+
+    .name {
+        background: #eee;
+        font-weight: bold;
+        font-size: .85em;
+        padding: 5px 10px;
+        display: inline-block;
+        min-width: 40%
+    }
+
+    .name:hover {
+        background: #e0e0e0
+    }
+
+    dt:target .name {
+        background: var(--highlight-color)
+    }
+
+    .name > span:first-child {
+        white-space: nowrap
+    }
+
+    .name.class > span:nth-child(2) {
+        margin-left: .4em
+    }
+
+    .inherited {
+        color: #999;
+        border-left: 5px solid #eee;
+        padding-left: 1em
+    }
+
+    .inheritance em {
+        font-style: normal;
+        font-weight: bold
+    }
+
+    .desc h2 {
+        font-weight: 400;
+        font-size: 1.25em
+    }
+
+    .desc h3 {
+        font-size: 1em
+    }
+
+    .desc dt code {
+        background: inherit
+    }
+
+    .source summary, .git-link-div {
+        color: #666;
+        text-align: right;
+        font-weight: 400;
+        font-size: .8em;
+        text-transform: uppercase
+    }
+
+    .source summary > * {
+        white-space: nowrap;
+        cursor: pointer
+    }
+
+    .git-link {
+        color: inherit;
+        margin-left: 1em
+    }
+
+    .source pre {
+        max-height: 500px;
+        overflow: auto;
+        margin: 0
+    }
+
+    .source pre code {
+        font-size: 12px;
+        overflow: visible
+    }
+
+    .hlist {
+        list-style: none
+    }
+
+    .hlist li {
+        display: inline
+    }
+
+    .hlist li:after {
+        content: ',\2002'
+    }
+
+    .hlist li:last-child:after {
+        content: none
+    }
+
+    .hlist .hlist {
+        display: inline;
+        padding-left: 1em
+    }
+
+    img {
+        max-width: 100%
+    }
+
+    td {
+        padding: 0 .5em
+    }
+
+    .admonition {
+        padding: .1em .5em;
+        margin-bottom: 1em
+    }
+
+    .admonition-title {
+        font-weight: bold
+    }
+
+    .admonition.note, .admonition.info, .admonition.important {
+        background: #aef
+    }
+
+    .admonition.todo, .admonition.versionadded, .admonition.tip, .admonition.hint {
+        background: #dfd
+    }
+
+    .admonition.warning, .admonition.versionchanged, .admonition.deprecated {
+        background: #fd4
+    }
+
+    .admonition.error, .admonition.danger, .admonition.caution {
+        background: lightpink
+    }</style>
+    <style media="screen and (min-width: 700px)">@media screen and (min-width: 700px) {
+        #sidebar {
+            width: 30%;
+            height: 100vh;
+            overflow: auto;
+            position: sticky;
+            top: 0
+        }
+
+        #content {
+            width: 70%;
+            max-width: 100ch;
+            padding: 3em 4em;
+            border-left: 1px solid #ddd
+        }
+
+        pre code {
+            font-size: 1em
+        }
+
+        .item .name {
+            font-size: 1em
+        }
+
+        main {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end
+        }
+
+        .toc ul ul, #index ul {
+            padding-left: 1.5em
+        }
+
+        .toc > ul > li {
+            margin-top: .5em
+        }
+    }</style>
+    <style media="print">@media print {
+        #sidebar h1 {
+            page-break-before: always
+        }
+
+        .source {
+            display: none
+        }
+    }
+
+    @media print {
+        * {
+            background: transparent !important;
+            color: #000 !important;
+            box-shadow: none !important;
+            text-shadow: none !important
+        }
+
+        a[href]:after {
+            content: " (" attr(href) ")";
+            font-size: 90%
+        }
+
+        a[href][title]:after {
+            content: none
+        }
+
+        abbr[title]:after {
+            content: " (" attr(title) ")"
+        }
+
+        .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+            content: ""
+        }
+
+        pre, blockquote {
+            border: 1px solid #999;
+            page-break-inside: avoid
+        }
+
+        thead {
+            display: table-header-group
+        }
+
+        tr, img {
+            page-break-inside: avoid
+        }
+
+        img {
+            max-width: 100% !important
+        }
+
+        @page {
+            margin: 0.5cm
+        }
+
+        p, h2, h3 {
+            orphans: 3;
+            widows: 3
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            page-break-after: avoid
+        }
+    }</style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"
+            integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+    <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+    <article id="content">
+        <header>
+            <h1 class="title">Module <code>kosmos</code></h1>
+        </header>
+        <section id="section-intro">
+        </section>
+        <section>
+        </section>
+        <section>
+        </section>
+        <section>
+        </section>
+        <section>
+            <h2 class="section-title" id="header-classes">Classes</h2>
+            <dl>
+                <dt id="kosmos.KosmosAuthInvalid"><code class="flex name class">
+                    <span>class <span class="ident">KosmosAuthInvalid</span></span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>The provided credentials are not correct</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></li>
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosClient"><code class="flex name class">
+                    <span>class <span class="ident">KosmosClient</span></span>
+                    <span>(</span><span>base: str, username: str, password: str, subs: dict = None)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>The baseclass for our Kosmos Client</p>
+                        <p>creates a new instance of the Kosmos Client</p>
+                        <h2 id="parameters">Parameters</h2>
+                        <dl>
+                            <dt><strong><code>base</code></strong> :&ensp;<code>str</code></dt>
+                            <dd>the base for the server</dd>
+                            <dt><strong><code>username</code></strong> :&ensp;<code>str</code></dt>
+                            <dd>the username to use</dd>
+                            <dt><strong><code>password</code></strong> :&ensp;<code>str</code></dt>
+                            <dd>the password to use</dd>
+                            <dt><strong><code>subs</code></strong> :&ensp;<code>dict[<a title="kosmos.KosmosEvent"
+                                                                                        href="#kosmos.KosmosEvent">KosmosEvent</a>,Callable]</code>
+                            </dt>
+                            <dd>the subscriptions to start with</dd>
+                        </dl>
+                        <h2 id="examples">Examples</h2>
+                        <p>sync without async updates</p>
+                        <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos = KosmosClient(&quot;http://localhost:18080&quot;, &quot;user&quot;, &quot;pass&quot;)
+</code></pre>
+                        <p>async with listeners</p>
+                        <pre><code class="language-python-repl">&gt;&gt;&gt; with KosmosClient(&quot;http://localhost:18080&quot;, &quot;user&quot;, &quot;pass&quot;,
+&gt;&gt;&gt;               subs={
+&gt;&gt;&gt;                   KosmosEvent.auth_ok: on_auth_ok,
+&gt;&gt;&gt;                   KosmosEvent.device_created: on_device_created,
+&gt;&gt;&gt;                   KosmosEvent.device_attribute_updated: on_device_attribute_changed
+&gt;&gt;&gt;               }) as kosmos:
+</code></pre>
+                    </div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li>websocket._app.WebSocketApp</li>
+                        <li>threading.Thread</li>
+                    </ul>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosClient.add_device"><code class="name flex">
+                            <span>def <span class="ident">add_device</span></span>(<span>self, uuid: str, state: dict = {}, schema: str = 'https://kosmos-lab.de/schema/NoSchema.json', scopes: <a
+                                title="kosmos.KosmosScopeList" href="#kosmos.KosmosScopeList">KosmosScopeList</a> = None) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>add a device to Kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>uuid</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the UUID to use for the device</dd>
+                                    <dt><strong><code>state</code></strong> :&ensp;<code>dict</code></dt>
+                                    <dd>the current state of the device - NEEDS to contain everything that is required
+                                        by the schema!
+                                    </dd>
+                                    <dt><strong><code>schema</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the $id of the Schema, defaults to <a
+                                            href="https://kosmos-lab.de/schema/NoSchema.json">https://kosmos-lab.de/schema/NoSchema.json</a>
+                                    </dd>
+                                    <dt><strong><code>scopes</code></strong> :&ensp;<code><a
+                                            title="kosmos.KosmosScopeList" href="#kosmos.KosmosScopeList">KosmosScopeList</a></code>
+                                    </dt>
+                                    <dd>the Scopes to use - defaults to no Scopes</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the schema was not found</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>the uuid is already in use or the validation against the schema failed</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.add_device(uuid=&quot;virt_hsv_lamp_3&quot;, state={&quot;on&quot;: False, &quot;hue&quot;: 120, &quot;saturation&quot;: 60, &quot;dimmingLevel&quot;: 50},
+&gt;&gt;&gt;              schema=&quot;https://kosmos-lab.de/schema/HSVLamp.json&quot;)
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.add_schema"><code class="name flex">
+                            <span>def <span
+                                    class="ident">add_schema</span></span>(<span>self, schema: dict) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>add a schema to kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>schema</code></strong> :&ensp;<code>dict</code></dt>
+                                    <dd>the schema to add - needs to be a valid schema</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>something could not be added due to a conflict</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>anything else went wrong</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.add_schema({
+&gt;&gt;&gt;         &quot;failures&quot;: [
+&gt;&gt;&gt;         ],
+&gt;&gt;&gt;         &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+&gt;&gt;&gt;         &quot;examples&quot;: [
+&gt;&gt;&gt;         ],
+&gt;&gt;&gt;         &quot;additionalProperties&quot;: True,
+&gt;&gt;&gt;         &quot;title&quot;: &quot;TestSchema1&quot;,
+&gt;&gt;&gt;         &quot;type&quot;: &quot;object&quot;,
+&gt;&gt;&gt;         &quot;properties&quot;: {
+&gt;&gt;&gt;         },
+&gt;&gt;&gt;         &quot;$id&quot;: &quot;https://kosmos-lab.de/schema/TestSchema1.json&quot;
+&gt;&gt;&gt;     })
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.add_scope"><code class="name flex">
+                            <span>def <span class="ident">add_scope</span></span>(<span>self, scope: str | <a
+                                title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>) ‑> <a
+                                title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a></span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>add a scope to kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the name of the new scope</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>could not add scope, name is in use</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device could not be found!</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>anything else went wrong</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.connect"><code class="name flex">
+                            <span>def <span class="ident">connect</span></span>(<span>self) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>connect to the kosmos backend</p></div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.delete_device"><code class="name flex">
+                            <span>def <span class="ident">delete_device</span></span>(<span>self, device: str | <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a>) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>deletes a device from Kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>device</code></strong> :&ensp;<code>str | KosmosDevice</code></dt>
+                                    <dd>the device to update</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the device</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device was not found</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.delete_device(&quot;virt_lamp_3&quot;)
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.delete_schema"><code class="name flex">
+                            <span>def <span
+                                    class="ident">delete_schema</span></span>(<span>self, schemaid: str) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>deletes as schema from kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>schemaid</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the id of the schema</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the schema was not found</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>the schema cannot be deleted - it is still in use</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.delete_schema(&quot;https://kosmos-lab.de/schema/TestSchema1.json&quot;)
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.delete_scope"><code class="name flex">
+                            <span>def <span class="ident">delete_scope</span></span>(<span>self, scope: str | int | <a
+                                title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>delete a scope from kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>scope</code></strong> :&ensp;<code>str | int</code></dt>
+                                    <dd>the name or id of the scope</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the scope</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>could not add scope, name is in use</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device could not be found!</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>anything else went wrong</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.get_device"><code class="name flex">
+                            <span>def <span class="ident">get_device</span></span>(<span>self, uuid: str) ‑> <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a></span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>get the device from internal cache if possible - get from api
+                                otherwise</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>uuid</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the uuid of the device</dd>
+                                </dl>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosDevice"
+                                                 href="#kosmos.KosmosDevice">KosmosDevice</a></code></dt>
+                                    <dd>the KosmosDevice we wanted to get</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the device</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device was not found</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; print(kosmos.get_device(&quot;virt_lamp_0&quot;))
+&gt;&gt;&gt; print(kosmos.get_device(&quot;virt_lamp_1&quot;).state[&quot;on&quot;])
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.get_location"><code class="name flex">
+                            <span>def <span class="ident">get_location</span></span>(<span>self, device: str | <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a>) ‑> <a
+                                title="kosmos.KosmosLocation" href="#kosmos.KosmosLocation">KosmosLocation</a></span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>gets the location of a given UUID back from kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>device</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the unique ID of the device</dd>
+                                </dl>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosLocation" href="#kosmos.KosmosLocation">KosmosLocation</a></code>
+                                    </dt>
+                                    <dd>the Location of the device</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device could not be found!</dd>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>could not add scope, name is in use</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>anything else went wrong</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.get_schema"><code class="name flex">
+                            <span>def <span
+                                    class="ident">get_schema</span></span>(<span>self, schemaid: str) ‑> dict</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>get a schema back from kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>schemaid</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the $id of the schema</dd>
+                                </dl>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code>dict</code></dt>
+                                    <dd>the schema</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the schema was not found</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>something else went wrong with the communication</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; print(kosmos.get_schema(&quot;https://kosmos-lab.de/schema/TestSchema1.json&quot;))
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.get_scope"><code class="name flex">
+                            <span>def <span class="ident">get_scope</span></span>(<span>self, scope: str | int) ‑> <a
+                                title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a></span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>add a scope to kosmos</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the name of the new scope</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the schema</dd>
+                                    <dt><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                                    </dt>
+                                    <dd>could not add scope, name is in use</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device could not be found!</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>anything else went wrong</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.is_connected"><code class="name flex">
+                            <span>def <span class="ident">is_connected</span></span>(<span>self) ‑> bool</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>checks if a connection is established</p>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code>True if connection is established and most likely alive</code></dt>
+                                    <dd>&nbsp;</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.is_stopped"><code class="name flex">
+                            <span>def <span class="ident">is_stopped</span></span>(<span>self) ‑> bool</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>check if the client got the command to stop itself</p>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code>bool:</code></dt>
+                                    <dd>&nbsp;</dd>
+                                    <dt><code>True if the client should be stopping</code></dt>
+                                    <dd>&nbsp;</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.list_schemas"><code class="name flex">
+                            <span>def <span class="ident">list_schemas</span></span>(<span>self) ‑> list[dict]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>list all schemas in the kosmos</p>
+                                <h2 id="returns">Returns</h2>
+                                <dl>
+                                    <dt><code>List with currently known Schemas (List</code> of <code>Dicts)</code></dt>
+                                    <dd>&nbsp;</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access the list of schemas</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; print(kosmos.list_schemas())
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.reconnect"><code class="name flex">
+                            <span>def <span class="ident">reconnect</span></span>(<span>self) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>closes the current Connection, will be reestablished as long as
+                                __stopped is not True</p></div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.run"><code class="name flex">
+                            <span>def <span class="ident">run</span></span>(<span>self)</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>the runner that automatically reconnects the websocket if needed</p>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.set"><code class="name flex">
+                            <span>def <span class="ident">set</span></span>(<span>self, device: str | <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a>, value: dict[str, any]) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>Set the state of a device in the kosmos backend</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>device</code></strong> :&ensp;<code>str | KosmosDevice</code></dt>
+                                    <dd>the uuid or the actual KosmosDevice to update</dd>
+                                    <dt><strong><code>value</code></strong> :&ensp;<code>dict</code></dt>
+                                    <dd>a dict of one or multiple attributes to change</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the device</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device was not found</dd>
+                                    <dt><code>KosmosConflict</code></dt>
+                                    <dd>the set could not be executed</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.set(&quot;virt_heater_3&quot;, {&quot;heatingTemperatureSetting&quot;: 21})
+</code></pre>
+                                <p>sets the attribute "heatingTemperatureSetting" of "virt_heater_3" to 21</p></div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.set_attribute"><code class="name flex">
+                            <span>def <span class="ident">set_attribute</span></span>(<span>self, device: str | <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a>, attribute: str | int | float, value: str | int | bool | float | list | tuple | None | dict)</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>sets the given attribute on the kosmos backend to a specified value</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>device</code></strong> :&ensp;<code>str | KosmosDevice</code></dt>
+                                    <dd>the uuid or the actual KosmosDevice to update</dd>
+                                    <dt><strong><code>attribute</code></strong> :&ensp;<code>str</code></dt>
+                                    <dd>the attribute to change</dd>
+                                    <dt><strong><code>value</code></strong></dt>
+                                    <dd>the new value to set (will be converted to JSON)</dd>
+                                </dl>
+                                <h2 id="raises">Raises</h2>
+                                <dl>
+                                    <dt><code><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code>
+                                    </dt>
+                                    <dd>the auth was invalid</dd>
+                                    <dt><code><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></code>
+                                    </dt>
+                                    <dd>the auth has not sufficient access to delete the device</dd>
+                                    <dt><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                                    </dt>
+                                    <dd>the device was not found</dd>
+                                    <dt><code>KosmosConflict</code></dt>
+                                    <dd>the set could not be executed because it failed validation</dd>
+                                    <dt><code><a title="kosmos.KosmosError"
+                                                 href="#kosmos.KosmosError">KosmosError</a></code></dt>
+                                    <dd>another error occurred</dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; kosmos.set_attribute(&quot;virt_heater_3&quot;, &quot;heatingTemperatureSetting&quot;, 24)
+</code></pre>
+                                <p>sets the attribute "heatingTemperatureSetting" of "virt_heater_3" to 24</p></div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.set_location"><code class="name flex">
+                            <span>def <span class="ident">set_location</span></span>(<span>self, device: str | <a
+                                title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a>, location: <a
+                                title="kosmos.KosmosLocation" href="#kosmos.KosmosLocation">KosmosLocation</a>) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>set the location of a device</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>device</code></strong> :&ensp;<code>str | KosmosDevice</code></dt>
+                                    <dd>the device to update</dd>
+                                    <dt><strong><code>location</code></strong> :&ensp;<code><a
+                                            title="kosmos.KosmosLocation"
+                                            href="#kosmos.KosmosLocation">KosmosLocation</a></code></dt>
+                                    <dd>the location to set it to</dd>
+                                </dl>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.stop"><code class="name flex">
+                            <span>def <span class="ident">stop</span></span>(<span>self) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>Signal the client that we would want to stop the client.
+                                Will close all connections</p></div>
+                        </dd>
+                        <dt id="kosmos.KosmosClient.subscribe"><code class="name flex">
+                            <span>def <span class="ident">subscribe</span></span>(<span>self, event_type: <a
+                                title="kosmos.KosmosEvent" href="#kosmos.KosmosEvent">KosmosEvent</a>, fn: Callable) ‑> None</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"><p>subscribe to an event with the given Callable</p>
+                                <h2 id="parameters">Parameters</h2>
+                                <dl>
+                                    <dt><strong><code>event_type</code></strong> :&ensp;<code><a
+                                            title="kosmos.KosmosEvent" href="#kosmos.KosmosEvent">KosmosEvent</a></code>
+                                    </dt>
+                                    <dd>the event type to listen to</dd>
+                                    <dt><strong><code>fn</code></strong> :&ensp;<code>Callable</code></dt>
+                                    <dd>the function that fulfills the keyword parameters seen in the documentation for
+                                        each KosmosEvent
+                                    </dd>
+                                </dl>
+                                <h2 id="examples">Examples</h2>
+                                <p>Subscribe to auth events</p>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; def on_auth_ok(kosmos: KosmosClient):
+&gt;&gt;&gt;     print(f&quot;auth okay  on {kosmos}...&quot;)
+&gt;&gt;&gt; kosmos.subscribe(KosmosEvent.auth_ok, on_auth_ok)
+</code></pre>
+                                <p>Subscribe to changed attributes</p>
+                                <pre><code class="language-python-repl">&gt;&gt;&gt; def on_device_attribute_changed(kosmos: KosmosClient, device: KosmosDevice, attribute: str | int | float, value: str | int | bool | float | list | tuple | None | dict):
+&gt;&gt;&gt;     print(f&quot;change on {kosmos} {device} - set {attribute} to {value}&quot;)
+&gt;&gt;&gt; kosmos.subscribe(KosmosEvent.device_attribute_updated, on_device_attribute_changed)
+</code></pre>
+                            </div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosConflictError"><code class="flex name class">
+                    <span>class <span class="ident">KosmosConflictError</span></span>
+                    <span>(</span><span>*args, **kwargs)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>there was a conflict (for example if the resource already existed, or the
+                        validation failed)</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></li>
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosDevice"><code class="flex name class">
+                    <span>class <span class="ident">KosmosDevice</span></span>
+                    <span>(</span><span>uuid: str, name: str = None, schema: str = None, state: dict = &lt;factory&gt;)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosDevice.dataclass_json_config"><code class="name">var <span class="ident">dataclass_json_config</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.last_change"><code class="name">var <span
+                                class="ident">last_change</span></code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.last_update"><code class="name">var <span
+                                class="ident">last_update</span></code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.name"><code class="name">var <span class="ident">name</span>
+                            : str</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.state"><code class="name">var <span class="ident">state</span>
+                            : dict</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.uuid"><code class="name">var <span class="ident">uuid</span>
+                            : str</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosDevice.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosDevice.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosDevice.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosError"><code class="flex name class">
+                    <span>class <span class="ident">KosmosError</span></span>
+                    <span>(</span><span>*args, **kwargs)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>a generic Kosmos Error</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                    <h3>Subclasses</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosAuthInvalid" href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a>
+                        </li>
+                        <li><a title="kosmos.KosmosConflictError"
+                               href="#kosmos.KosmosConflictError">KosmosConflictError</a></li>
+                        <li><a title="kosmos.KosmosForbidden" href="#kosmos.KosmosForbidden">KosmosForbidden</a></li>
+                        <li><a title="kosmos.KosmosNotFoundError"
+                               href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></li>
+                        <li><a title="kosmos.KosmosRequestFailed"
+                               href="#kosmos.KosmosRequestFailed">KosmosRequestFailed</a></li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosEvent"><code class="flex name class">
+                    <span>class <span class="ident">KosmosEvent</span></span>
+                    <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>Event Enums for Kosmos</p>
+                        <h2 id="notes">Notes</h2>
+                        <p>if you use subscribe to these events please make sure the function has the correct keyword
+                            parameters!</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li>enum.Enum</li>
+                    </ul>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosEvent.auth_ok"><code class="name">var <span
+                                class="ident">auth_ok</span></code></dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once the auth to kosmos was successful</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.connection_established"><code class="name">var <span class="ident">connection_established</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered everytime we have a new connection established with
+                                kosmos</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.connection_lost"><code class="name">var <span class="ident">connection_lost</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered everytime we lose the connection to kosmos</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.device_attribute_updated"><code class="name">var <span class="ident">device_attribute_updated</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once for each change to an attribute of a device</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+device: KosmosDevice
+    the device that was updated
+attribute: str | int | float
+    the attribute that changed
+value: str | int | bool | float | list | tuple | None | dict
+    the new value
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.device_created"><code class="name">var <span class="ident">device_created</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once for a new device, will also be triggered while
+                                doing the initial sync</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos : KosmosClient
+    the kosmos client
+device : KosmosDevice
+    the new device that was found
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.device_removed"><code class="name">var <span class="ident">device_removed</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once for each device that was removed from the
+                                kosmos</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos : KosmosClient
+    the kosmos client
+device : KosmosDevice
+    the device that was removed
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.device_updated"><code class="name">var <span class="ident">device_updated</span></code>
+                        </dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once for each update to a device's state</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+device: KosmosDevice
+    the device that was updated
+</code></pre>
+                            </div>
+                        </dd>
+                        <dt id="kosmos.KosmosEvent.stopped"><code class="name">var <span
+                                class="ident">stopped</span></code></dt>
+                        <dd>
+                            <div class="desc"><p>will be triggered once if the stop method was called</p>
+                                <h2 id="parameter">Parameter</h2>
+                                <pre><code>kosmos: KosmosClient
+    the kosmos client
+</code></pre>
+                            </div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosForbidden"><code class="flex name class">
+                    <span>class <span class="ident">KosmosForbidden</span></span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>The credentials are not valid for this request</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></li>
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosGroup"><code class="flex name class">
+                    <span>class <span class="ident">KosmosGroup</span></span>
+                    <span>(</span><span>id: int, name: str)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>KosmosGroup(id: 'int', name: 'str')</p></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosGroup.id"><code class="name">var <span class="ident">id</span> : int</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosGroup.name"><code class="name">var <span class="ident">name</span>
+                            : str</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosGroup.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosGroup.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosGroup.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosGroup.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosGroup.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosLocation"><code class="flex name class">
+                    <span>class <span class="ident">KosmosLocation</span></span>
+                    <span>(</span><span>x: Optional[int] = None, y: Optional[int] = None, z: Optional[int] = None, w: Optional[int] = None, d: Optional[int] = None, h: Optional[int] = None, yaw: Optional[int] = None, roll: Optional[int] = None, pitch: Optional[int] = None, area: Optional[str] = None)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>KosmosLocation(x: 'Optional[int]' = None, y: 'Optional[int]' = None, z:
+                        'Optional[int]' = None, w: 'Optional[int]' = None, d: 'Optional[int]' = None, h: 'Optional[int]'
+                        = None, yaw: 'Optional[int]' = None, roll: 'Optional[int]' = None, pitch: 'Optional[int]' =
+                        None, area: 'Optional[str]' = None)</p></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosLocation.area"><code class="name">var <span class="ident">area</span>
+                            : Optional[str]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.d"><code class="name">var <span class="ident">d</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.h"><code class="name">var <span class="ident">h</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.pitch"><code class="name">var <span class="ident">pitch</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.roll"><code class="name">var <span class="ident">roll</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.w"><code class="name">var <span class="ident">w</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.x"><code class="name">var <span class="ident">x</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.y"><code class="name">var <span class="ident">y</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.yaw"><code class="name">var <span class="ident">yaw</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.z"><code class="name">var <span class="ident">z</span>
+                            : Optional[int]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosLocation.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosLocation.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosLocation.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosNotFoundError"><code class="flex name class">
+                    <span>class <span class="ident">KosmosNotFoundError</span></span>
+                    <span>(</span><span>*args, **kwargs)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>the resource was not found</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></li>
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosRequestFailed"><code class="flex name class">
+                    <span>class <span class="ident">KosmosRequestFailed</span></span>
+                    <span>(</span><span>response: Response)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>The provided credentials are not correct</p></div>
+                    <h3>Ancestors</h3>
+                    <ul class="hlist">
+                        <li><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></li>
+                        <li>builtins.Exception</li>
+                        <li>builtins.BaseException</li>
+                    </ul>
+                </dd>
+                <dt id="kosmos.KosmosScope"><code class="flex name class">
+                    <span>class <span class="ident">KosmosScope</span></span>
+                    <span>(</span><span>users: list[<a title="kosmos.KosmosUser"
+                                                       href="#kosmos.KosmosUser">KosmosUser</a>], admins: list[<a
+                        title="kosmos.KosmosUser" href="#kosmos.KosmosUser">KosmosUser</a>], adminGroups: list[<a
+                        title="kosmos.KosmosGroup" href="#kosmos.KosmosGroup">KosmosGroup</a>], userGroups: list[<a
+                        title="kosmos.KosmosGroup"
+                        href="#kosmos.KosmosGroup">KosmosGroup</a>], name: str, id: int)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>KosmosScope(users: 'list[KosmosUser]', admins: 'list[KosmosUser]', adminGroups:
+                        'list[KosmosGroup]', userGroups: 'list[KosmosGroup]', name: 'str', id: 'int')</p></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScope.adminGroups"><code class="name">var <span
+                                class="ident">adminGroups</span> : list[<a title="kosmos.KosmosGroup"
+                                                                           href="#kosmos.KosmosGroup">KosmosGroup</a>]</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.admins"><code class="name">var <span class="ident">admins</span>
+                            : list[<a title="kosmos.KosmosUser" href="#kosmos.KosmosUser">KosmosUser</a>]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.id"><code class="name">var <span class="ident">id</span> : int</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.name"><code class="name">var <span class="ident">name</span>
+                            : str</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.userGroups"><code class="name">var <span
+                                class="ident">userGroups</span> : list[<a title="kosmos.KosmosGroup"
+                                                                          href="#kosmos.KosmosGroup">KosmosGroup</a>]</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.users"><code class="name">var <span class="ident">users</span>
+                            : list[<a title="kosmos.KosmosUser" href="#kosmos.KosmosUser">KosmosUser</a>]</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScope.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.from_dict_"><code class="name flex">
+                            <span>def <span class="ident">from_dict_</span></span>(<span>s) ‑> <a
+                                title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a></span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScope.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScope.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosScopeList"><code class="flex name class">
+                    <span>class <span class="ident">KosmosScopeList</span></span>
+                    <span>(</span><span>read: Optional[<a title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>], write: Optional[<a
+                        title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>], delete: Optional[<a
+                        title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>])</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>KosmosScopeList(read: 'Optional[KosmosScope]', write: 'Optional[KosmosScope]',
+                        delete: 'Optional[KosmosScope]')</p></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScopeList.delete"><code class="name">var <span class="ident">delete</span>
+                            : Optional[<a title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>]</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScopeList.read"><code class="name">var <span class="ident">read</span>
+                            : Optional[<a title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>]</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScopeList.write"><code class="name">var <span class="ident">write</span>
+                            : Optional[<a title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a>]</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScopeList.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScopeList.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScopeList.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosScopeList.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosScopeList.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+                <dt id="kosmos.KosmosUser"><code class="flex name class">
+                    <span>class <span class="ident">KosmosUser</span></span>
+                    <span>(</span><span>id: int, name: str)</span>
+                </code></dt>
+                <dd>
+                    <div class="desc"><p>KosmosUser(id: 'int', name: 'str')</p></div>
+                    <h3>Class variables</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosUser.id"><code class="name">var <span class="ident">id</span> : int</code>
+                        </dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosUser.name"><code class="name">var <span class="ident">name</span>
+                            : str</code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Static methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosUser.from_dict"><code class="name flex">
+                            <span>def <span class="ident">from_dict</span></span>(<span>kvs: Union[dict, list, str, int, float, bool, None], *, infer_missing=False) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosUser.from_json"><code class="name flex">
+                            <span>def <span class="ident">from_json</span></span>(<span>s: Union[str, bytes, bytearray], *, parse_float=None, parse_int=None, parse_constant=None, infer_missing=False, **kw) ‑> ~A</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosUser.schema"><code class="name flex">
+                            <span>def <span class="ident">schema</span></span>(<span>*, infer_missing: bool = False, only=None, exclude=(), many: bool = False, context=None, load_only=(), dump_only=(), partial: bool = False, unknown=None) ‑> dataclasses_json.mm.SchemaF[~A]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                    <h3>Methods</h3>
+                    <dl>
+                        <dt id="kosmos.KosmosUser.to_dict"><code class="name flex">
+                            <span>def <span class="ident">to_dict</span></span>(<span>self, encode_json=False) ‑> Dict[str, Union[dict, list, str, int, float, bool, None]]</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                        <dt id="kosmos.KosmosUser.to_json"><code class="name flex">
+                            <span>def <span class="ident">to_json</span></span>(<span>self, *, skipkeys: bool = False, ensure_ascii: bool = True, check_circular: bool = True, allow_nan: bool = True, indent: Union[int, str, None] = None, separators: Tuple[str, str] = None, default: Callable = None, sort_keys: bool = False, **kw) ‑> str</span>
+                        </code></dt>
+                        <dd>
+                            <div class="desc"></div>
+                        </dd>
+                    </dl>
+                </dd>
+            </dl>
+        </section>
+    </article>
+    <nav id="sidebar">
+        <h1>Index</h1>
+        <div class="toc">
+            <ul></ul>
+        </div>
+        <ul id="index">
+            <li><h3><a href="#header-classes">Classes</a></h3>
+                <ul>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosAuthInvalid"
+                                     href="#kosmos.KosmosAuthInvalid">KosmosAuthInvalid</a></code></h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosClient" href="#kosmos.KosmosClient">KosmosClient</a></code>
+                        </h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosClient.add_device" href="#kosmos.KosmosClient.add_device">add_device</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.add_schema" href="#kosmos.KosmosClient.add_schema">add_schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.add_scope" href="#kosmos.KosmosClient.add_scope">add_scope</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.connect"
+                                         href="#kosmos.KosmosClient.connect">connect</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.delete_device"
+                                         href="#kosmos.KosmosClient.delete_device">delete_device</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.delete_schema"
+                                         href="#kosmos.KosmosClient.delete_schema">delete_schema</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.delete_scope"
+                                         href="#kosmos.KosmosClient.delete_scope">delete_scope</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.get_device" href="#kosmos.KosmosClient.get_device">get_device</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.get_location"
+                                         href="#kosmos.KosmosClient.get_location">get_location</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.get_schema" href="#kosmos.KosmosClient.get_schema">get_schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.get_scope" href="#kosmos.KosmosClient.get_scope">get_scope</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.is_connected"
+                                         href="#kosmos.KosmosClient.is_connected">is_connected</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.is_stopped" href="#kosmos.KosmosClient.is_stopped">is_stopped</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.list_schemas"
+                                         href="#kosmos.KosmosClient.list_schemas">list_schemas</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.reconnect" href="#kosmos.KosmosClient.reconnect">reconnect</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.run" href="#kosmos.KosmosClient.run">run</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.set" href="#kosmos.KosmosClient.set">set</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosClient.set_attribute"
+                                         href="#kosmos.KosmosClient.set_attribute">set_attribute</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.set_location"
+                                         href="#kosmos.KosmosClient.set_location">set_location</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.stop"
+                                         href="#kosmos.KosmosClient.stop">stop</a></code></li>
+                            <li><code><a title="kosmos.KosmosClient.subscribe" href="#kosmos.KosmosClient.subscribe">subscribe</a></code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosConflictError" href="#kosmos.KosmosConflictError">KosmosConflictError</a></code>
+                        </h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosDevice" href="#kosmos.KosmosDevice">KosmosDevice</a></code>
+                        </h4>
+                        <ul class="">
+                            <li><code><a title="kosmos.KosmosDevice.dataclass_json_config"
+                                         href="#kosmos.KosmosDevice.dataclass_json_config">dataclass_json_config</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosDevice.from_dict" href="#kosmos.KosmosDevice.from_dict">from_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosDevice.from_json" href="#kosmos.KosmosDevice.from_json">from_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosDevice.last_change"
+                                         href="#kosmos.KosmosDevice.last_change">last_change</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.last_update"
+                                         href="#kosmos.KosmosDevice.last_update">last_update</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.name"
+                                         href="#kosmos.KosmosDevice.name">name</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.schema"
+                                         href="#kosmos.KosmosDevice.schema">schema</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.state"
+                                         href="#kosmos.KosmosDevice.state">state</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.to_dict"
+                                         href="#kosmos.KosmosDevice.to_dict">to_dict</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.to_json"
+                                         href="#kosmos.KosmosDevice.to_json">to_json</a></code></li>
+                            <li><code><a title="kosmos.KosmosDevice.uuid"
+                                         href="#kosmos.KosmosDevice.uuid">uuid</a></code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosError" href="#kosmos.KosmosError">KosmosError</a></code></h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosEvent" href="#kosmos.KosmosEvent">KosmosEvent</a></code></h4>
+                        <ul class="">
+                            <li><code><a title="kosmos.KosmosEvent.auth_ok"
+                                         href="#kosmos.KosmosEvent.auth_ok">auth_ok</a></code></li>
+                            <li><code><a title="kosmos.KosmosEvent.connection_established"
+                                         href="#kosmos.KosmosEvent.connection_established">connection_established</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosEvent.connection_lost"
+                                         href="#kosmos.KosmosEvent.connection_lost">connection_lost</a></code></li>
+                            <li><code><a title="kosmos.KosmosEvent.device_attribute_updated"
+                                         href="#kosmos.KosmosEvent.device_attribute_updated">device_attribute_updated</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosEvent.device_created"
+                                         href="#kosmos.KosmosEvent.device_created">device_created</a></code></li>
+                            <li><code><a title="kosmos.KosmosEvent.device_removed"
+                                         href="#kosmos.KosmosEvent.device_removed">device_removed</a></code></li>
+                            <li><code><a title="kosmos.KosmosEvent.device_updated"
+                                         href="#kosmos.KosmosEvent.device_updated">device_updated</a></code></li>
+                            <li><code><a title="kosmos.KosmosEvent.stopped"
+                                         href="#kosmos.KosmosEvent.stopped">stopped</a></code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosForbidden"
+                                     href="#kosmos.KosmosForbidden">KosmosForbidden</a></code></h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosGroup" href="#kosmos.KosmosGroup">KosmosGroup</a></code></h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosGroup.from_dict" href="#kosmos.KosmosGroup.from_dict">from_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosGroup.from_json" href="#kosmos.KosmosGroup.from_json">from_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosGroup.id" href="#kosmos.KosmosGroup.id">id</a></code></li>
+                            <li><code><a title="kosmos.KosmosGroup.name" href="#kosmos.KosmosGroup.name">name</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosGroup.schema" href="#kosmos.KosmosGroup.schema">schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosGroup.to_dict"
+                                         href="#kosmos.KosmosGroup.to_dict">to_dict</a></code></li>
+                            <li><code><a title="kosmos.KosmosGroup.to_json"
+                                         href="#kosmos.KosmosGroup.to_json">to_json</a></code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosLocation"
+                                     href="#kosmos.KosmosLocation">KosmosLocation</a></code></h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosLocation.area" href="#kosmos.KosmosLocation.area">area</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.d" href="#kosmos.KosmosLocation.d">d</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.from_dict"
+                                         href="#kosmos.KosmosLocation.from_dict">from_dict</a></code></li>
+                            <li><code><a title="kosmos.KosmosLocation.from_json"
+                                         href="#kosmos.KosmosLocation.from_json">from_json</a></code></li>
+                            <li><code><a title="kosmos.KosmosLocation.h" href="#kosmos.KosmosLocation.h">h</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.pitch"
+                                         href="#kosmos.KosmosLocation.pitch">pitch</a></code></li>
+                            <li><code><a title="kosmos.KosmosLocation.roll" href="#kosmos.KosmosLocation.roll">roll</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.schema" href="#kosmos.KosmosLocation.schema">schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.to_dict" href="#kosmos.KosmosLocation.to_dict">to_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.to_json" href="#kosmos.KosmosLocation.to_json">to_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.w" href="#kosmos.KosmosLocation.w">w</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.x" href="#kosmos.KosmosLocation.x">x</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.y" href="#kosmos.KosmosLocation.y">y</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosLocation.yaw"
+                                         href="#kosmos.KosmosLocation.yaw">yaw</a></code></li>
+                            <li><code><a title="kosmos.KosmosLocation.z" href="#kosmos.KosmosLocation.z">z</a></code>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosNotFoundError" href="#kosmos.KosmosNotFoundError">KosmosNotFoundError</a></code>
+                        </h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosRequestFailed" href="#kosmos.KosmosRequestFailed">KosmosRequestFailed</a></code>
+                        </h4>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosScope" href="#kosmos.KosmosScope">KosmosScope</a></code></h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosScope.adminGroups" href="#kosmos.KosmosScope.adminGroups">adminGroups</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.admins" href="#kosmos.KosmosScope.admins">admins</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.from_dict" href="#kosmos.KosmosScope.from_dict">from_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.from_dict_" href="#kosmos.KosmosScope.from_dict_">from_dict_</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.from_json" href="#kosmos.KosmosScope.from_json">from_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.id" href="#kosmos.KosmosScope.id">id</a></code></li>
+                            <li><code><a title="kosmos.KosmosScope.name" href="#kosmos.KosmosScope.name">name</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.schema" href="#kosmos.KosmosScope.schema">schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.to_dict"
+                                         href="#kosmos.KosmosScope.to_dict">to_dict</a></code></li>
+                            <li><code><a title="kosmos.KosmosScope.to_json"
+                                         href="#kosmos.KosmosScope.to_json">to_json</a></code></li>
+                            <li><code><a title="kosmos.KosmosScope.userGroups" href="#kosmos.KosmosScope.userGroups">userGroups</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScope.users"
+                                         href="#kosmos.KosmosScope.users">users</a></code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosScopeList"
+                                     href="#kosmos.KosmosScopeList">KosmosScopeList</a></code></h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosScopeList.delete" href="#kosmos.KosmosScopeList.delete">delete</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScopeList.from_dict"
+                                         href="#kosmos.KosmosScopeList.from_dict">from_dict</a></code></li>
+                            <li><code><a title="kosmos.KosmosScopeList.from_json"
+                                         href="#kosmos.KosmosScopeList.from_json">from_json</a></code></li>
+                            <li><code><a title="kosmos.KosmosScopeList.read"
+                                         href="#kosmos.KosmosScopeList.read">read</a></code></li>
+                            <li><code><a title="kosmos.KosmosScopeList.schema" href="#kosmos.KosmosScopeList.schema">schema</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScopeList.to_dict" href="#kosmos.KosmosScopeList.to_dict">to_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScopeList.to_json" href="#kosmos.KosmosScopeList.to_json">to_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosScopeList.write"
+                                         href="#kosmos.KosmosScopeList.write">write</a></code></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h4><code><a title="kosmos.KosmosUser" href="#kosmos.KosmosUser">KosmosUser</a></code></h4>
+                        <ul class="two-column">
+                            <li><code><a title="kosmos.KosmosUser.from_dict" href="#kosmos.KosmosUser.from_dict">from_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosUser.from_json" href="#kosmos.KosmosUser.from_json">from_json</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosUser.id" href="#kosmos.KosmosUser.id">id</a></code></li>
+                            <li><code><a title="kosmos.KosmosUser.name" href="#kosmos.KosmosUser.name">name</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosUser.schema"
+                                         href="#kosmos.KosmosUser.schema">schema</a></code></li>
+                            <li><code><a title="kosmos.KosmosUser.to_dict" href="#kosmos.KosmosUser.to_dict">to_dict</a></code>
+                            </li>
+                            <li><code><a title="kosmos.KosmosUser.to_json" href="#kosmos.KosmosUser.to_json">to_json</a></code>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</main>
+<footer id="footer">
+    <p>Generated by <a href="https://pdoc3.github.io/pdoc"
+                       title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

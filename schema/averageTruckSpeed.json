@@ -1,0 +1,11 @@
+{
+    "unit": "km/h",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 300,
+    "description": "Average Speed of traffic on a lane.",
+    "readOnly": true,
+    "title": "averageTruckSpeed",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/averageTruckSpeed.json"
+}

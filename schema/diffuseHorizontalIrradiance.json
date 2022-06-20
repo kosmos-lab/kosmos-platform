@@ -1,0 +1,10 @@
+{
+    "unit": "W/m²",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Diffuse Horizontal Irradiance (DHI).",
+    "readOnly": true,
+    "title": "diffuseHorizontalIrradiance",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/diffuseHorizontalIrradiance.json"
+}

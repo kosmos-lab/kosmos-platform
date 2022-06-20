@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Toggle switch state",
+    "readOnly": true,
+    "title": "toggleState",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/toggleState.json"
+}

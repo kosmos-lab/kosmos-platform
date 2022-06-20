@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Window status assessment based on",
+    "readOnly": true,
+    "title": "windowStatusAssessment",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/windowStatusAssessment.json"
+}

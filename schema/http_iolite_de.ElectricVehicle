@@ -1,0 +1,231 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Electric Vehicle",
+    "required": [
+        "batteryLevel",
+        "activePowerTotal"
+    ],
+    "properties": {
+        "batteryTemperature": {
+            "unit": "%C2%B0C",
+            "readOnly": true,
+            "title": "Battery Temperature",
+            "type": "number",
+            "minimum": -273.15
+        },
+        "voltageL1": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "L1 Voltage",
+            "type": "number"
+        },
+        "voltageL2": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "L2 Voltage",
+            "type": "number"
+        },
+        "voltageL3": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "L3 Voltage",
+            "type": "number"
+        },
+        "deviceStatus": {
+            "readOnly": true,
+            "title": "Device Status",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready",
+                "Internal Driver Error",
+                "Configuration Error",
+                "Gateway Unreachable",
+                "Network Gateway Unreachable",
+                "USB Gateway Unreachable",
+                "Wrong Gateway Response",
+                "Gateway Firmware Update Ongoing",
+                "Internal Gateway Error",
+                "Device Not Responding",
+                "Wrong Device Response",
+                "Access Denied",
+                "Battery Low",
+                "Device Firmware Update Ongoing",
+                "Internal Device Error",
+                "Device Is Being Removed",
+                "Driver Not Available",
+                "No Driver Assigned",
+                "Not Mounted",
+                "Mechanical Error",
+                "Device No Longer Available"
+            ]
+        },
+        "currentL3": {
+            "unit": "A",
+            "readOnly": true,
+            "title": "L3 Current",
+            "type": "number"
+        },
+        "activePowerTotal": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "Active Power Total",
+            "type": "number"
+        },
+        "vehicleDriveRange": {
+            "unit": "km",
+            "readOnly": true,
+            "title": "Drive Range",
+            "type": "number",
+            "minimum": 0
+        },
+        "activePowerL3": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "L3 Active Power",
+            "type": "number"
+        },
+        "activePowerL2": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "L2 Active Power",
+            "type": "number"
+        },
+        "activePowerL1": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "L1 Active Power",
+            "type": "number"
+        },
+        "stateOfHealth": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "State of Health",
+            "type": "integer",
+            "minimum": 0
+        },
+        "vehicleConnectionStatus": {
+            "readOnly": true,
+            "title": "Vehicle Connected",
+            "type": "boolean"
+        },
+        "locationLongitude": {
+            "unit": "%C2%B0",
+            "maximum": 360,
+            "readOnly": true,
+            "title": "Longitude",
+            "type": "number",
+            "minimum": 0
+        },
+        "activeEnergyPositive": {
+            "unit": "kWh",
+            "readOnly": true,
+            "title": "Active Energy Positive",
+            "type": "number",
+            "minimum": 0
+        },
+        "activePowerTotalSetPoint": {
+            "unit": "kW",
+            "readOnly": false,
+            "title": "Active Power Set-Point",
+            "type": "number"
+        },
+        "batteryLevel": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "Battery Level",
+            "type": "number",
+            "minimum": 0
+        },
+        "locationLatitude": {
+            "unit": "%C2%B0",
+            "maximum": 360,
+            "readOnly": true,
+            "title": "Latitude",
+            "type": "number",
+            "minimum": 0
+        },
+        "reactivePowerTotal": {
+            "unit": "kvar",
+            "readOnly": true,
+            "title": "Reactive Power Total",
+            "type": "number"
+        },
+        "maxActiveTotalPower": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "Maximum Active Power Total",
+            "type": "number"
+        },
+        "currentL1": {
+            "unit": "A",
+            "readOnly": true,
+            "title": "L1 Current",
+            "type": "number"
+        },
+        "currentL2": {
+            "unit": "A",
+            "readOnly": true,
+            "title": "L2 Current",
+            "type": "number"
+        },
+        "reactiveEnergyNegative": {
+            "unit": "kvarh",
+            "readOnly": true,
+            "title": "Reactive Energy Negative",
+            "type": "number",
+            "minimum": 0
+        },
+        "activeEnergyNegative": {
+            "unit": "kWh",
+            "readOnly": true,
+            "title": "Active Energy Negative",
+            "type": "number",
+            "minimum": 0
+        },
+        "minActiveTotalPower": {
+            "unit": "kW",
+            "readOnly": true,
+            "title": "Minimum Active Power Total",
+            "type": "number"
+        },
+        "reactivePowerL1": {
+            "unit": "kvar",
+            "readOnly": true,
+            "title": "L1 Reactive Power",
+            "type": "number"
+        },
+        "reactiveEnergyPositive": {
+            "unit": "kvarh",
+            "readOnly": true,
+            "title": "Reactive Energy Positive",
+            "type": "number",
+            "minimum": 0
+        },
+        "reactivePowerL3": {
+            "unit": "kvar",
+            "readOnly": true,
+            "title": "L3 Reactive Power",
+            "type": "number"
+        },
+        "reactivePowerL2": {
+            "unit": "kvar",
+            "readOnly": true,
+            "title": "L2 Reactive Power",
+            "type": "number"
+        },
+        "currentTotal": {
+            "unit": "A",
+            "readOnly": true,
+            "title": "Current Total",
+            "type": "number"
+        }
+    },
+    "$id": "http://iolite.de#ElectricVehicle"
+}

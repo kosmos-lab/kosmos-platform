@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "State of the vehicle e.g. connected, charging",
+    "readOnly": false,
+    "title": "vehicleState",
+    "type": "integer",
+    "$id": "https://kosmos-lab.de/schema/vehicleState.json"
+}

@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Presence detection",
+    "readOnly": true,
+    "title": "presence",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/presence.json"
+}

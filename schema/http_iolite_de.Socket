@@ -1,0 +1,206 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Socket",
+    "required": [],
+    "properties": {
+        "pushButtonState": {
+            "readOnly": true,
+            "title": "Push Button State",
+            "type": "boolean"
+        },
+        "standby": {
+            "readOnly": false,
+            "title": "Standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "%C2%B0",
+            "maximum": 90,
+            "readOnly": false,
+            "title": "Latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "readOnly": true,
+            "title": "Battery Charging State",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "readOnly": false,
+            "title": "Lock Bit",
+            "type": "boolean"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "readOnly": true,
+            "title": "Power Usage",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "readOnly": true,
+            "title": "Device Status",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready",
+                "Internal Driver Error",
+                "Configuration Error",
+                "Gateway Unreachable",
+                "Network Gateway Unreachable",
+                "USB Gateway Unreachable",
+                "Wrong Gateway Response",
+                "Gateway Firmware Update Ongoing",
+                "Internal Gateway Error",
+                "Device Not Responding",
+                "Wrong Device Response",
+                "Access Denied",
+                "Battery Low",
+                "Device Firmware Update Ongoing",
+                "Internal Device Error",
+                "Device Is Being Removed",
+                "Driver Not Available",
+                "No Driver Assigned",
+                "Not Mounted",
+                "Mechanical Error",
+                "Device No Longer Available"
+            ]
+        },
+        "current": {
+            "unit": "A",
+            "readOnly": true,
+            "title": "Current",
+            "type": "number"
+        },
+        "apiUrl": {
+            "readOnly": true,
+            "title": "API URL",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Repeater Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "readOnly": true,
+            "title": "Supported Communication Intervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%25",
+            "maximum": 100,
+            "readOnly": true,
+            "title": "Battery Level",
+            "type": "number",
+            "minimum": 0
+        },
+        "on": {
+            "readOnly": false,
+            "title": "On / Off Status",
+            "type": "boolean"
+        },
+        "longitude": {
+            "unit": "%C2%B0",
+            "maximum": 180,
+            "readOnly": false,
+            "title": "Longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "powerLineFrequency": {
+            "unit": "Hz",
+            "maximum": 150,
+            "readOnly": true,
+            "title": "Line Frequency",
+            "type": "number",
+            "minimum": 0
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "readOnly": false,
+            "title": "Communication Interval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "currentEnvironmentTemperature": {
+            "unit": "%C2%B0C",
+            "maximum": 60,
+            "readOnly": true,
+            "title": "Current Temperature",
+            "type": "number",
+            "minimum": -60
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "readOnly": true,
+            "title": "Signal Strength",
+            "type": "number",
+            "minimum": -150
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "readOnly": true,
+            "title": "Power Usage",
+            "type": "number",
+            "minimum": 0
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "readOnly": true,
+            "title": "Battery Voltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "cumulativePowerUsage": {
+            "unit": "Wh",
+            "readOnly": true,
+            "title": "Cumulative Power Usage",
+            "type": "integer",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "readOnly": false,
+            "title": "Declared maximum power",
+            "type": "number",
+            "minimum": 0
+        },
+        "voltage": {
+            "unit": "V",
+            "readOnly": true,
+            "title": "Voltage",
+            "type": "number"
+        },
+        "connectionStatus": {
+            "readOnly": false,
+            "title": "Connection Status",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "readOnly": true,
+            "title": "Gateway Identifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "readOnly": true,
+            "title": "Location Name",
+            "type": "string"
+        }
+    },
+    "$id": "http://iolite.de#Socket"
+}

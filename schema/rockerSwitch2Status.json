@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Status of rocker switch 2",
+    "readOnly": true,
+    "title": "rockerSwitch2Status",
+    "type": "string",
+    "enum": [
+        "up",
+        "released",
+        "down"
+    ],
+    "$id": "https://kosmos-lab.de/schema/rockerSwitch2Status.json"
+}

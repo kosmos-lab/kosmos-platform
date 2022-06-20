@@ -1,0 +1,51 @@
+{
+    "failures": [
+        {
+            "mediaTitle": "9FKxWsjvaD",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "7ABeb1O8Oq",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "kpCctjuMCJ",
+            "deviceStatus": "Driver Not Ready"
+        },
+        {
+            "mediaTitle": "xz1ITtFpRj",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "ICxKRE0zVU",
+            "deviceStatus": "Driver Not Ready"
+        }
+    ],
+    "examples": [
+        {
+            "mediaTitle": "9FKxWsjvaD",
+            "liveImageURI": "4pSi1uXYlx",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "7ABeb1O8Oq",
+            "liveImageURI": "RFBbtzKXl4",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "kpCctjuMCJ",
+            "liveImageURI": "CfrqC3bNmp",
+            "deviceStatus": "Driver Not Ready"
+        },
+        {
+            "mediaTitle": "xz1ITtFpRj",
+            "liveImageURI": "Y1RZc3S0oT",
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "mediaTitle": "ICxKRE0zVU",
+            "liveImageURI": "wkiXXwNHAC",
+            "deviceStatus": "Driver Not Ready"
+        }
+    ]
+}

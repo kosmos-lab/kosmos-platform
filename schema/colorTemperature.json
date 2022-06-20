@@ -1,0 +1,12 @@
+{
+    "multipleOf": 25,
+    "unit": "K",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 7000,
+    "description": "Color temperature",
+    "readOnly": false,
+    "title": "colorTemperature",
+    "type": "integer",
+    "minimum": 1500,
+    "$id": "https://kosmos-lab.de/schema/colorTemperature.json"
+}

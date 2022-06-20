@@ -1,0 +1,11 @@
+{
+    "unit": "°C",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 500,
+    "description": "Extruder 2 target temperature",
+    "readOnly": false,
+    "title": "extruder2TargetTemperature",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/extruder2TargetTemperature.json"
+}

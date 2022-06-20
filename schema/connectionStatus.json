@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Connection status of a device that needs to",
+    "readOnly": false,
+    "title": "connectionStatus",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/connectionStatus.json"
+}

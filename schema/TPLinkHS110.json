@@ -1,0 +1,57 @@
+{
+  "failures": [],
+  "$schema": "http://json-schema.org/draft-07/schema#",
+
+  "additionalProperties": false,
+  "title": "TPLinkHS110",
+  "type": "object",
+  "properties": {
+
+    "current_power_w": {
+      "unit": "W",
+      "maximum": 3680,
+      "description": "The current electric power load of a home",
+      "readOnly": true,
+      "title": "current_power_w",
+      "type": "number",
+      "minimum": 0
+    },
+
+    "on": {
+      "description": "Stores the on/off status of the device",
+      "readOnly": false,
+      "title": "on",
+      "type": "boolean"
+    },
+
+    "voltage": {
+      "unit": "V",
+      "description": "Electric voltage",
+      "readOnly": true,
+      "title": "voltage",
+      "type": "number"
+    },
+    "current_a": {
+      "unit": "A",
+      "description": "Electric Power",
+      "readOnly": true,
+      "title": "current_a",
+      "type": "number"
+    },
+    "today_energy_kwh": {
+      "unit": "KWh",
+      "description": "Electric Power",
+      "readOnly": true,
+      "title": "today_energy_kwh",
+      "type": "number"
+    },
+    "total_energy_kwh": {
+      "unit": "KWh",
+      "description": "Electric Power",
+      "readOnly": true,
+      "title": "total_energy_kwh",
+      "type": "number"
+    }
+  },
+  "$id": "https://kosmos-lab.de/schema/TPLinkHS110.json"
+}

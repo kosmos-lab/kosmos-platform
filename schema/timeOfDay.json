@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Time of day",
+    "readOnly": true,
+    "title": "timeOfDay",
+    "type": "string",
+    "enum": [
+        "Day",
+        "Night",
+        "Sunrise",
+        "Sunset"
+    ],
+    "$id": "https://kosmos-lab.de/schema/timeOfDay.json"
+}

@@ -1,0 +1,9 @@
+{
+    "unit": "kW",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Minimum total active power.",
+    "readOnly": true,
+    "title": "minActiveTotalPower",
+    "type": "number",
+    "$id": "https://kosmos-lab.de/schema/minActiveTotalPower.json"
+}

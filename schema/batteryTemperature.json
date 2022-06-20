@@ -1,0 +1,10 @@
+{
+    "unit": "°C",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Temperature of the battery.",
+    "readOnly": true,
+    "title": "batteryTemperature",
+    "type": "number",
+    "minimum": -273.15,
+    "$id": "https://kosmos-lab.de/schema/batteryTemperature.json"
+}

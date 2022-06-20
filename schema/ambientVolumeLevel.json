@@ -1,0 +1,12 @@
+{
+    "multipleOf": 1,
+    "unit": "dB",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 150,
+    "description": "Sound volume of the environment.",
+    "readOnly": true,
+    "title": "ambientVolumeLevel",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/ambientVolumeLevel.json"
+}

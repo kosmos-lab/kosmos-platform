@@ -1,0 +1,11 @@
+{
+    "unit": "hPa",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 1150,
+    "description": "Barometric air pressure",
+    "readOnly": true,
+    "title": "airPressure",
+    "type": "number",
+    "minimum": 500,
+    "$id": "https://kosmos-lab.de/schema/airPressure.json"
+}

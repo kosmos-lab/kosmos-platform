@@ -1,0 +1,276 @@
+{
+
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+
+    ],
+    "additionalProperties": true,
+    "title": "Config",
+    "type": "object",
+
+    "properties": {
+        "pushButtonState": {
+            "description": "Describes the state of a push button, which",
+            "readOnly": true,
+            "title": "pushButtonState",
+            "type": "boolean"
+        },
+        "standby": {
+            "description": "Standby mode status.",
+            "readOnly": false,
+            "title": "standby",
+            "type": "boolean"
+        },
+        "latitude": {
+            "unit": "°",
+            "maximum": 90,
+            "description": "Latitude",
+            "readOnly": false,
+            "title": "latitude",
+            "type": "number",
+            "minimum": -90
+        },
+        "batteryChargingState": {
+            "description": "Indicates if the battery of the device is",
+            "readOnly": true,
+            "title": "batteryChargingState",
+            "type": "boolean"
+        },
+        "lockBit": {
+            "description": "Lock bit disables the controls of the device",
+            "readOnly": false,
+            "title": "lockBit",
+            "type": "boolean"
+        },
+        "recordingPhotoDestination": {
+            "description": "Stores the destination path for the captured",
+            "readOnly": false,
+            "title": "recordingPhotoDestination",
+            "type": "string"
+        },
+        "powerUsageEstimate": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsageEstimate",
+            "type": "number",
+            "minimum": 0
+        },
+        "deviceStatus": {
+            "description": "Holds the status of the device.",
+            "readOnly": true,
+            "title": "deviceStatus",
+            "type": "string",
+            "enum": [
+                "OK",
+                "Driver Stopped",
+                "Driver Not Ready"
+            ]
+        },
+        "availableAlarmSounds": {
+            "description": "Available alarm sound files",
+            "readOnly": true,
+            "title": "availableAlarmSounds",
+            "type": "string"
+        },
+        "alarmLampOn": {
+            "description": "Holds the status of the alarm lamp.",
+            "readOnly": false,
+            "title": "alarmLampOn",
+            "type": "boolean"
+        },
+        "liveVideoSupportedResolutions": {
+            "description": "Comma-separated list of supported live",
+            "readOnly": true,
+            "title": "liveVideoSupportedResolutions",
+            "type": "string"
+        },
+        "apiUrl": {
+            "description": "URL to extended device API",
+            "readOnly": true,
+            "title": "apiUrl",
+            "type": "string"
+        },
+        "repeaterRssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication of",
+            "readOnly": true,
+            "title": "repeaterRssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "supportedCommunicationIntervals": {
+            "description": "Supported communication interval times in",
+            "readOnly": true,
+            "title": "supportedCommunicationIntervals",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "longitude": {
+            "unit": "°",
+            "maximum": 180,
+            "description": "Longitude",
+            "readOnly": false,
+            "title": "longitude",
+            "type": "number",
+            "minimum": -180
+        },
+        "on": {
+            "description": "Stores the on/off status of the device, with",
+            "readOnly": false,
+            "title": "on",
+            "type": "boolean"
+        },
+        "communicationInterval": {
+            "unit": "s",
+            "maximum": 86400,
+            "description": "Maximum time between two data packets of",
+            "readOnly": false,
+            "title": "communicationInterval",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rssi": {
+            "unit": "dBm",
+            "maximum": 0,
+            "description": "Received Signal Strength Indication",
+            "readOnly": true,
+            "title": "rssi",
+            "type": "number",
+            "minimum": -150
+        },
+        "recordingPhoto": {
+            "description": "Indicates whether the camera is currently",
+            "readOnly": false,
+            "title": "recordingPhoto",
+            "type": "boolean"
+        },
+        "liveVideoResolution": {
+            "description": "Resolution of the live video image.",
+            "readOnly": false,
+            "title": "liveVideoResolution",
+            "type": "string",
+            "enum": [
+                "160x120",
+                "320x176",
+                "320x240",
+                "480x272"
+            ]
+        },
+        "batteryVoltage": {
+            "unit": "V",
+            "maximum": 25,
+            "description": "Battery voltage indicating the power left in",
+            "readOnly": true,
+            "title": "batteryVoltage",
+            "type": "number",
+            "minimum": 0
+        },
+        "powerUsage": {
+            "unit": "W",
+            "maximum": 3680,
+            "description": "The current electric power load of a home",
+            "readOnly": true,
+            "title": "powerUsage",
+            "type": "number",
+            "minimum": 0
+        },
+        "declaredMaximumPower": {
+            "unit": "W",
+            "maximum": 3600,
+            "description": "Declared maximum power of a home",
+            "readOnly": false,
+            "title": "declaredMaximumPower",
+            "type": "number",
+            "minimum": 0
+        },
+        "liveVideoURI": {
+            "description": "URI (possibly relative to IOLITE host)",
+            "readOnly": true,
+            "title": "liveVideoURI",
+            "type": "string"
+        },
+        "liveImageURI": {
+            "description": "URI to the current still image.",
+            "readOnly": true,
+            "title": "liveImageURI",
+            "type": "string"
+        },
+        "alarmSound": {
+            "description": "Alarm sound file",
+            "readOnly": false,
+            "title": "alarmSound",
+            "type": "string"
+        },
+        "voltage": {
+            "unit": "V",
+            "description": "Electric voltage",
+            "readOnly": true,
+            "title": "voltage",
+            "type": "number"
+        },
+        "recordingVideo": {
+            "description": "Indicates whether the camera is currently",
+            "readOnly": false,
+            "title": "recordingVideo",
+            "type": "boolean"
+        },
+        "acousticAlarmSignalOn": {
+            "description": "Describes if the acoustic alarm signal is on",
+            "readOnly": false,
+            "title": "acousticAlarmSignalOn",
+            "type": "boolean"
+        },
+        "recordingVideoDestination": {
+            "description": "Stores the destination path for the captured",
+            "readOnly": false,
+            "title": "recordingVideoDestination",
+            "type": "string"
+        },
+        "connectionStatus": {
+            "description": "Connection status of a device that needs to",
+            "readOnly": false,
+            "title": "connectionStatus",
+            "type": "boolean"
+        },
+        "gatewayIdentifier": {
+            "description": "Identifier of the gateway of this device",
+            "readOnly": true,
+            "title": "gatewayIdentifier",
+            "type": "string"
+        },
+        "configuredLocationName": {
+            "description": "Location configured in the device",
+            "readOnly": true,
+            "title": "configuredLocationName",
+            "type": "string"
+        },
+        "ambientVolumeLevel": {
+            "multipleOf": 1,
+            "unit": "dB",
+            "maximum": 150,
+            "description": "Sound volume of the environment.",
+            "readOnly": true,
+            "title": "ambientVolumeLevel",
+            "type": "number",
+            "minimum": 0
+        },
+        "movementDetected": {
+            "description": "Defines whether a movement has been",
+            "readOnly": true,
+            "title": "movementDetected",
+            "type": "boolean"
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/Camera.json"
+}

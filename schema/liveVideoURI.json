@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "URI (possibly relative to IOLITE host)",
+    "readOnly": true,
+    "title": "liveVideoURI",
+    "type": "string",
+    "$id": "https://kosmos-lab.de/schema/liveVideoURI.json"
+}

@@ -1,0 +1,52 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HAZone.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HAZone",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "latitude","longitude","entity_id"
+  ],
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state": {
+      "type": "string",
+      "enum": ["zoning"],
+      "readOnly": true
+    },
+    "name": {
+      "type": "string",
+      "readOnly": true
+    },
+    "latitude": {
+      "type": "number",
+      "readOnly": true
+    },
+    "longitude": {
+      "type": "number",
+      "readOnly": true
+    },
+    "radius": {
+      "type": "number",
+      "readOnly": true
+    },
+    "icon": {
+      "type": "string",
+      "readOnly": true
+    },
+    "passive":
+    {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "editable": {
+      "type": "boolean",
+      "readOnly": true
+    }
+  }
+}

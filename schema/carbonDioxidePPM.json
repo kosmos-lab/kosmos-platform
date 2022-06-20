@@ -1,0 +1,11 @@
+{
+    "unit": "ppm",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100000,
+    "description": "Carbon dioxide level in ppm",
+    "readOnly": true,
+    "title": "carbonDioxidePPM",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/carbonDioxidePPM.json"
+}

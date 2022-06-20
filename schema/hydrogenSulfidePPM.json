@@ -1,0 +1,11 @@
+{
+    "unit": "ppm",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 1000000,
+    "description": "Hydrogen sulfide level in ppm",
+    "readOnly": true,
+    "title": "hydrogenSulfidePPM",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/hydrogenSulfidePPM.json"
+}

@@ -1,0 +1,9 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 1,
+    "readOnly": true,
+    "title": "friction",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/friction.json"
+}

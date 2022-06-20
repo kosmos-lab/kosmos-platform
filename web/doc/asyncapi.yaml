@@ -1,0 +1,253 @@
+asyncapi: '2.1.0'
+info:
+  title: KosmoS API
+  version: '1.0.0'
+  description: |
+    The KosmoS SmartLab API
+
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  websocket:
+    url: ws://localhost:18080
+    protocol: ws
+    security:
+      - user-password: []
+  mqtt:
+    url: mqtt://localhost:1883
+    protocol: mqtt
+    security:
+      - user-password: []
+channels:
+  user/auth:
+
+    publish:
+      summary: Used to auth against the system, should always be the first command on WebSocket connection.
+      message:
+        contentType: application/json
+        name: user_auth
+        payload:
+          additionalProperties: false
+          type: object
+          properties:
+            user:
+              type: string
+            pass:
+              type: string
+        examples:
+          - name: 'login as user'
+            payload:
+              user: user
+              pass: apassword
+
+  device/{uuid}/config:
+    parameters:
+      uuid:
+        description: the unique id of the device
+        schema:
+          type: string
+    publish:
+      summary: add a new device to the system, or delete the device from the system if the payload is empty
+      operationId: deviceadd
+      message:
+        contentType: application/json
+        name: device_add
+        payload:
+          type: object
+          properties:
+            additionalProperties: false
+            name:
+              type: string
+              description: the friendly name the device shall have
+            schema:
+              type: string
+              description: the schema to use, can be
+            state:
+              type: object
+              description: the current state of the device - MUST contain all properties required by the schema!
+            scopes:
+              type: object
+              properties:
+                read:
+                  type: string
+                write:
+                  type: string
+                del:
+                  type: string
+          required:
+            - schema
+            - state
+        examples:
+          - name: 'multi2'
+            payload:
+
+              name: multi2
+              uuid: multi2
+              schema: https://kosmos-lab.de/schema/MultiSensor.json
+              state:
+                currentEnvironmentTemperature: 17
+                humidityLevel: 10
+  device/{uuid}/set:
+    parameters:
+      uuid:
+        description: the unique id of the device
+        schema:
+          type: string
+    publish:
+      summary: update the state of the device to a new state
+      operationId: deviceset
+      message:
+        name: device_set
+        description: needs to be valid against the schema, the payload can have multiple keys that will be applied.
+        payload:
+          contentType: application/json
+          type: object
+        examples:
+          - name: on
+            payload:
+              on: true
+          - name: off
+            payload:
+              on: false
+          - name: on, 100 hue
+            payload:
+              on: true
+              hue: 180
+              saturation: 100
+          - name: on, yellow
+            payload:
+              on: true
+              color:
+                r: 255
+                g: 255
+                b: 0
+  device/{uuid}/{property}/set:
+    parameters:
+      uuid:
+        description: unique id of the device
+        schema:
+          type: string
+      property:
+        description: the property to change
+        schema:
+          type: string
+    publish:
+      message:
+        $ref: '#/components/messages/propertyvalue'
+
+
+  device/{uuid}/state:
+    parameters:
+      uuid:
+        description: unique id of the device
+        schema:
+          type: string
+    subscribe:
+      message:
+        $ref: '#/components/messages/devicestate'
+  device/{uuid}/location:
+    parameters:
+      uuid:
+        description: the unique id of the device
+        schema:
+          type: string
+    publish:
+      message:
+        $ref: '#/components/messages/devicelocation'
+    subscribe:
+      message:
+        $ref: '#/components/messages/devicelocation'
+
+  device/locations:
+    parameters:
+      uuid:
+        description: the unique id of the device
+        schema:
+          type: string
+    publish:
+      summary: sending any payload here makes the system return all of the locations via device/{uuid}/location
+      operationId: devicelocations
+
+
+
+components:
+  parameters:
+    uuid:
+      description: the unique id of the device
+      schema:
+        type: string
+  messages:
+    devicestate:
+      contentType: application/json
+      summary: Device location
+      payload:
+        type: object
+
+    propertyvalue:
+      contentType: application/json
+      payload:
+        type:
+          - number
+          - boolean
+          - string
+          - array
+          - object
+    devicelocation:
+      contentType: application/json
+      summary: Device location
+      payload:
+        type: object
+        properties:
+          x:
+            type: integer
+            description: the distance on the X axis to a predefined point in mm
+          y:
+            type: integer
+            description: the distance on the Y axis to a predefined point in mm
+          z:
+            type: integer
+            description: the distance on the Z axis to a predefined point in mm
+          w:
+            type: integer
+            description: the height of the object in mm
+          d:
+            type: integer
+            description: the width of the object in mm
+          h:
+            type: integer
+            description: the height of the object in mm
+          roll:
+            type: integer
+            description: the roll applied to the default object
+          pitch:
+            type: integer
+            description: the pitch applied to the default object
+          yaw:
+            type: integer
+            description: the yaw applied to the default object
+          area:
+            type: string
+            description: the name of the area the object is located in
+      examples:
+        - name: 'no location'
+          payload: {}
+        - name: 'only xzy'
+          payload:
+            x: 124
+            y: 1987
+            z: 192
+        - name: 'full location'
+          payload:
+            x: 145
+            y: 125
+            z: 125
+            roll: 12
+            pitch: 24
+            yaw: 46
+            w: 10
+            d: 10
+            h: 10
+  securitySchemes:
+    user-password:
+      type: userPassword

@@ -1,0 +1,35 @@
+{
+    "failures": [],
+    "examples": [
+        {
+            "vehicleDriveRange": 759484.9,
+            "locationLatitude": 349.005,
+            "locationLongitude": 229.696,
+            "deviceStatus": "OK"
+        },
+        {
+            "vehicleDriveRange": 683574.5,
+            "locationLatitude": 245.803,
+            "locationLongitude": 127.953,
+            "deviceStatus": "OK"
+        },
+        {
+            "vehicleDriveRange": 436194.5,
+            "locationLatitude": 300.457,
+            "locationLongitude": 253.321,
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "vehicleDriveRange": 498427.9,
+            "locationLatitude": 218.802,
+            "locationLongitude": 93.445,
+            "deviceStatus": "Driver Stopped"
+        },
+        {
+            "vehicleDriveRange": 440987,
+            "locationLatitude": 293.468,
+            "locationLongitude": 154.378,
+            "deviceStatus": "Driver Not Ready"
+        }
+    ]
+}

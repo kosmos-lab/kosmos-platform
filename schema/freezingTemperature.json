@@ -1,0 +1,11 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "readOnly": true,
+    "title": "freezingTemperature",
+    "type": "string",
+    "enum": [
+        "NotDetectable",
+        "EqualsRoadTemperature"
+    ],
+    "$id": "https://kosmos-lab.de/schema/freezingTemperature.json"
+}

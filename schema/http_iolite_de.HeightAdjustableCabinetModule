@@ -1,0 +1,35 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "vendor": "IOLITE GmbH",
+    "additionalProperties": false,
+    "type": "object",
+    "title": "Cabinet Module",
+    "required": ["cabinetWorkingHeight"],
+    "properties": {
+        "cabinetWorkingHeight": {
+            "unit": "cm",
+            "maximum": 200,
+            "readOnly": false,
+            "title": "Working Height",
+            "type": "number",
+            "minimum": 0
+        },
+        "cabinetWorkingHeightMax": {
+            "unit": "cm",
+            "maximum": 200,
+            "readOnly": true,
+            "title": "Max Working Height",
+            "type": "number",
+            "minimum": 0
+        },
+        "cabinetWorkingHeightMin": {
+            "unit": "cm",
+            "maximum": 200,
+            "readOnly": true,
+            "title": "Min Working Height",
+            "type": "number",
+            "minimum": 0
+        }
+    },
+    "$id": "http://iolite.de#HeightAdjustableCabinetModule"
+}

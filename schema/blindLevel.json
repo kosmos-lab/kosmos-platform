@@ -1,0 +1,11 @@
+{
+    "unit": "%",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100,
+    "description": "Level of the blind in percent, between 0",
+    "readOnly": false,
+    "title": "blindLevel",
+    "type": "integer",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/blindLevel.json"
+}

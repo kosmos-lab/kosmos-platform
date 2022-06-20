@@ -1,0 +1,86 @@
+{
+    "failures": [
+        {
+            "cabinetWorkingHeightMax": 35.5,
+            "cabinetWorkingHeightMin": 113.1
+        },
+        {
+            "cabinetWorkingHeightMax": 21.2,
+            "cabinetWorkingHeightMin": 105.7
+        },
+        {
+            "cabinetWorkingHeightMax": 43.1,
+            "cabinetWorkingHeightMin": 157.8
+        },
+        {
+            "cabinetWorkingHeightMax": 89.8,
+            "cabinetWorkingHeightMin": 6.6
+        },
+        {
+            "cabinetWorkingHeightMax": 57.6,
+            "cabinetWorkingHeightMin": 117.9
+        }
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+        {
+            "cabinetWorkingHeight": 123.7,
+            "cabinetWorkingHeightMax": 35.5,
+            "cabinetWorkingHeightMin": 113.1
+        },
+        {
+            "cabinetWorkingHeight": 82.6,
+            "cabinetWorkingHeightMax": 21.2,
+            "cabinetWorkingHeightMin": 105.7
+        },
+        {
+            "cabinetWorkingHeight": 43.2,
+            "cabinetWorkingHeightMax": 43.1,
+            "cabinetWorkingHeightMin": 157.8
+        },
+        {
+            "cabinetWorkingHeight": 111.5,
+            "cabinetWorkingHeightMax": 89.8,
+            "cabinetWorkingHeightMin": 6.6
+        },
+        {
+            "cabinetWorkingHeight": 20,
+            "cabinetWorkingHeightMax": 57.6,
+            "cabinetWorkingHeightMin": 117.9
+        }
+    ],
+    "additionalProperties": false,
+    "title": "HeightAdjustableCabinetModule",
+    "type": "object",
+    "required": ["cabinetWorkingHeight"],
+    "properties": {
+        "cabinetWorkingHeight": {
+            "unit": "cm",
+            "maximum": 200,
+            "description": "Cabinet working height",
+            "readOnly": false,
+            "title": "cabinetWorkingHeight",
+            "type": "number",
+            "minimum": 0
+        },
+        "cabinetWorkingHeightMax": {
+            "unit": "cm",
+            "maximum": 200,
+            "description": "Cabinet maximum working height",
+            "readOnly": true,
+            "title": "cabinetWorkingHeightMax",
+            "type": "number",
+            "minimum": 0
+        },
+        "cabinetWorkingHeightMin": {
+            "unit": "cm",
+            "maximum": 200,
+            "description": "Cabinet minimum working height",
+            "readOnly": true,
+            "title": "cabinetWorkingHeightMin",
+            "type": "number",
+            "minimum": 0
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/HeightAdjustableCabinetModule.json"
+}

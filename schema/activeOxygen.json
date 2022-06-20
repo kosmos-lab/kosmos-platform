@@ -1,0 +1,11 @@
+{
+    "unit": "g/m³",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 1000000,
+    "description": "Active oxygen level",
+    "readOnly": true,
+    "title": "activeOxygen",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/activeOxygen.json"
+}

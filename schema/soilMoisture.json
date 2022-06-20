@@ -1,0 +1,11 @@
+{
+    "unit": "%",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 100,
+    "description": "Soil moisture level",
+    "readOnly": true,
+    "title": "soilMoisture",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/soilMoisture.json"
+}

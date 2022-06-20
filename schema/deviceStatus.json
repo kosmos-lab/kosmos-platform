@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Holds the status of the device.",
+    "readOnly": true,
+    "title": "deviceStatus",
+    "type": "string",
+    "enum": [
+        "OK",
+        "Driver Stopped",
+        "Driver Not Ready"
+    ],
+    "$id": "https://kosmos-lab.de/schema/deviceStatus.json"
+}

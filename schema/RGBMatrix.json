@@ -1,0 +1,57 @@
+{
+  "$id": "https://kosmos-lab.de/schema/RGBMatrix.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RGBMatrix",
+  "type": "object",
+  "additionalProperties": true,
+  "examples": [
+    {
+      "color": {
+        "r": 0,
+        "g": 2,
+        "b": 55
+      },
+      "brightness": 255,
+      "text": "test",
+      "speed": 40
+    }
+  ],
+  "required": [
+    "color",
+    "brightness",
+    "speed"
+  ],
+  "properties": {
+    "color": {
+      "description": "The color that should be displayed on the Patch",
+      "$ref": "/schema/properties/color_rgb.json"
+    },
+    "brightness": {
+      "$ref": "/schema/properties/brightness.json"
+    },
+    "text": {
+      "description": "the text that should be displayed on the RGB Matrix, '' meaning no text will be shown, just the plain color",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "test",
+        ""
+      ]
+    },
+    "speed": {
+      "description": "the speed with which the text will be scrolled if its too long to be displayed",
+      "type": "integer",
+      "default": 40,
+      "examples": [
+        40
+      ],
+      "maximum": 100,
+      "minimum": 0
+    },
+    "on": {
+      "description": "is the led active?",
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

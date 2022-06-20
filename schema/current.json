@@ -1,0 +1,9 @@
+{
+    "unit": "A",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Electric current",
+    "readOnly": true,
+    "title": "current",
+    "type": "number",
+    "$id": "https://kosmos-lab.de/schema/current.json"
+}

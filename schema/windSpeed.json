@@ -1,0 +1,11 @@
+{
+    "unit": "m/s",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 130,
+    "description": "Wind speed",
+    "readOnly": true,
+    "title": "windSpeed",
+    "type": "number",
+    "minimum": 0,
+    "$id": "https://kosmos-lab.de/schema/windSpeed.json"
+}

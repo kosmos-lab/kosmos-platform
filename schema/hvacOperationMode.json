@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Determines if the HVAC is heating or",
+    "readOnly": false,
+    "title": "hvacOperationMode",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/hvacOperationMode.json"
+}

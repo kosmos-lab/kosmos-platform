@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Indicates whether a device is ringing, e.g. a",
+    "readOnly": false,
+    "title": "ringing",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/ringing.json"
+}

@@ -1,0 +1,51 @@
+{
+    "failures": [
+        {
+            "cabinetWorkingHeightMax": 35.5,
+            "cabinetWorkingHeightMin": 113.1
+        },
+        {
+            "cabinetWorkingHeightMax": 21.2,
+            "cabinetWorkingHeightMin": 105.7
+        },
+        {
+            "cabinetWorkingHeightMax": 43.1,
+            "cabinetWorkingHeightMin": 157.8
+        },
+        {
+            "cabinetWorkingHeightMax": 89.8,
+            "cabinetWorkingHeightMin": 6.6
+        },
+        {
+            "cabinetWorkingHeightMax": 57.6,
+            "cabinetWorkingHeightMin": 117.9
+        }
+    ],
+    "examples": [
+        {
+            "cabinetWorkingHeight": 123.7,
+            "cabinetWorkingHeightMax": 35.5,
+            "cabinetWorkingHeightMin": 113.1
+        },
+        {
+            "cabinetWorkingHeight": 82.6,
+            "cabinetWorkingHeightMax": 21.2,
+            "cabinetWorkingHeightMin": 105.7
+        },
+        {
+            "cabinetWorkingHeight": 43.2,
+            "cabinetWorkingHeightMax": 43.1,
+            "cabinetWorkingHeightMin": 157.8
+        },
+        {
+            "cabinetWorkingHeight": 111.5,
+            "cabinetWorkingHeightMax": 89.8,
+            "cabinetWorkingHeightMin": 6.6
+        },
+        {
+            "cabinetWorkingHeight": 20,
+            "cabinetWorkingHeightMax": 57.6,
+            "cabinetWorkingHeightMin": 117.9
+        }
+    ]
+}

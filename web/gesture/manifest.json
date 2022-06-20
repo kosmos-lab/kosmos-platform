@@ -1,0 +1,15 @@
+{
+  "name": "KosmoS Gesture",
+  "short_name": "KosmoS Gesture",
+  "start_url": "/gesture/index.html",
+  "icons": [
+    {
+      "src": "icon_512_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen",
+  "background_color": "#fff",
+  "description": "KosmoS Gesture Demo"
+}

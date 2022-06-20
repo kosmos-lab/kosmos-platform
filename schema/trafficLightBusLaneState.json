@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "readOnly": true,
+    "title": "trafficLightBusLaneState",
+    "type": "string",
+    "enum": [
+        "CloseDoors",
+        "GreenConsideringRTA",
+        "Halt"
+    ],
+    "$id": "https://kosmos-lab.de/schema/trafficLightBusLaneState.json"
+}

@@ -1,0 +1,12 @@
+{
+  "$id": "https://kosmos-lab.de/schema/properties/brightness.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "the brightness in which the given color should be displayed [0..255]",
+  "type": "integer",
+  "default": 255,
+  "examples": [
+    255,27
+  ],
+  "minimum": 0,
+  "maximum": 255
+}

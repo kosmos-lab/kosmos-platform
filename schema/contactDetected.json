@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Defines whether a contact has been",
+    "readOnly": true,
+    "title": "contactDetected",
+    "type": "boolean",
+    "$id": "https://kosmos-lab.de/schema/contactDetected.json"
+}

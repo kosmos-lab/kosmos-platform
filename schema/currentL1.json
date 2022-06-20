@@ -1,0 +1,9 @@
+{
+    "unit": "A",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Phase 1 (L1) current.",
+    "readOnly": true,
+    "title": "currentL1",
+    "type": "number",
+    "$id": "https://kosmos-lab.de/schema/currentL1.json"
+}

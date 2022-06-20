@@ -1,0 +1,11 @@
+{
+    "unit": "°C",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "maximum": 60,
+    "description": "Perceived temperature outside of the home",
+    "readOnly": true,
+    "title": "outsideEnvironmentApparentTemperature",
+    "type": "number",
+    "minimum": -60,
+    "$id": "https://kosmos-lab.de/schema/outsideEnvironmentApparentTemperature.json"
+}
