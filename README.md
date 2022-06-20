@@ -1,17 +1,7 @@
 # KosmoS Platform
 
+[![test](https://github.com/kosmos-lab/kosmos-platform/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/kosmos-lab/kosmos-platform/actions/workflows/test.yml)
+[![docker](https://github.com/kosmos-lab/kosmos-platform/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/kosmos-lab/kosmos-platform/actions/workflows/docker.yml)
 
 
-
-## installation of kosmos platform
-```
-docker-compose up -d
-```
-## reference for kosmos HTTP Api
-
-https://kosmos-lab.de/doc/
-
-
-
-
- 
+See documentation on github-pages: https://kosmos-lab.github.io/
