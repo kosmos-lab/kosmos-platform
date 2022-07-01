@@ -1,0 +1,43 @@
+{
+    "failures": [],
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "examples": [
+
+    ],
+    "additionalProperties": false,
+    "title": "StabiloPen2",
+    "type": "object",
+    "properties": {
+        "wordList": {
+            "description": "last words written",
+            "readOnly": true,
+            "title": "wordlist",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "sentence": {
+            "description": "last words written as a string",
+            "readOnly": true,
+            "title": "sentence",
+            "type": "string"
+        },
+        "text": {
+            "description": "last word written as a string",
+            "readOnly": true,
+            "title": "text",
+            "type": "string"
+        },
+        "batteryLevel": {
+            "unit": "%",
+            "maximum": 100,
+            "description": "Battery level where 100% is a fully charged",
+            "readOnly": true,
+            "title": "batteryLevel",
+            "type": "number",
+            "minimum": 0
+        }
+    },
+    "$id": "https://kosmos-lab.de/schema/StabiloPen2.json"
+}

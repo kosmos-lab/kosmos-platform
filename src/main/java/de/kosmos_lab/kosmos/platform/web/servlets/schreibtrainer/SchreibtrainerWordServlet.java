@@ -40,15 +40,15 @@ public class SchreibtrainerWordServlet extends KosmoSServlet {
             throw new ParameterNotFoundException("uuid");
         }
         
-        
-        logger.warn("got new word {} on {}: ", uuid, o.getString("text"));
+        String newword = o.getString("text");
+        logger.warn("got new word {} on {}: ", uuid, newword);
         try {
             Device device = SchreibtrainerConstants.getDevice(this.controller, server, uuid);
             TimedList wl = SchreibtrainerConstants.getWordList(this.controller, server, device);
-            wl.addEntry(o.getString("text"));
+            wl.addEntry(newword);
             //device.set("wordList", wl.toJSONArray(), false);
             
-            device.updateFromJSON(this.server,new JSONObject().put("text", String.join(" ",wl.toStringList())).put("wordList",wl.toJSONArray()),controller.getSource(SchreibtrainerConstants.SOURCENAME));
+            device.updateFromJSON(this.server,new JSONObject().put("text", newword).put("sentence",String.join(" ",wl.toStringList())).put("wordList",wl.toJSONArray()),controller.getSource(SchreibtrainerConstants.SOURCENAME));
             sendJSON(request, response, o);
             return;
             

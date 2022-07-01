@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 public class SchreibtrainerConstants {
 
-    public static final String Schema = "https://kosmos-lab.de/schema/StabiloPen.json";
+    public static final String Schema = "https://kosmos-lab.de/schema/StabiloPen2.json";
     public static final long wordtimeout = 10000l;
     public static final String SOURCENAME = "stabilo";
 

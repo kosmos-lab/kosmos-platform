@@ -2749,7 +2749,7 @@ kosmos.timestamp = function () {
 }
 kosmos.ws = undefined;
 kosmos.connect = function () {
-    const ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/kreews');
+    const ws = new WebSocket((window.location.protocol=="https:"?('wss://'):('ws://')) + window.location.hostname + ':' + window.location.port + '/kreews');
     ws.onopen = function () {
         kosmos.ws = ws;
 

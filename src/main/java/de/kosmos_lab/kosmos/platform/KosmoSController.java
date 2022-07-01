@@ -206,6 +206,7 @@ public class KosmoSController implements IController {
      */
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     public KosmoSController(@Nonnull File configFile, RunMode runMode) {
+
         logger.info("Starting KosmoSController with config {} in runMode {}", configFile, runMode);
         this.runMode = runMode;
 
