@@ -2,6 +2,7 @@ package CI.HTTP;
 
 import common.CommonBase;
 
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.utils.KosmosFileUtils;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
@@ -20,7 +21,7 @@ public class TestSchema {
 
         JSONObject schema = new JSONObject(KosmosFileUtils.readFile(new File("schema/MultiSensor.json")));
 
-        if (response.getStatus() == 404) {
+        if (response.getStatus() == KosmoSServlet.STATUS_NOT_FOUND) {
             //Assert.assertEquals(response.getStatus(), 404, "Could not get MultiSensor!");
             
             response = CommonBase.clientAdmin.getResponse("/schema/add", HttpMethod.POST, schema);
@@ -30,10 +31,10 @@ public class TestSchema {
 
         String buffer = response.getContentAsString();
         //System.out.println("buffer" + buffer);
-        Assert.assertEquals(response.getStatus(), 200, "Schema add did fail!");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Schema add did fail!");
         response = CommonBase.clientAdmin.getResponse("/schema/get?id=https%3A%2F%2Fkosmos-lab.de%2Fschema%2FMultiSensor.json", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200, "Could not get MultiSensor!");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Could not get MultiSensor!");
         
         buffer = response.getContentAsString();
         JSONObject object = new JSONObject(buffer);

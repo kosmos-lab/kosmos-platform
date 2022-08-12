@@ -10,6 +10,7 @@ import de.kosmos_lab.utils.HashFunctions;
 import de.kosmos_lab.utils.StringFunctions;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -153,7 +154,7 @@ public abstract class WebServer implements ControllerWithPersistence {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setUrls(Arrays.asList(ClasspathHelper.forClass(MyServlet.class))));
         for (Class<? extends MyServlet> c : reflections.getSubTypesOf(MyServlet.class)) {
-            javax.servlet.annotation.WebServlet f = c.getAnnotation(javax.servlet.annotation.WebServlet.class);
+            jakarta.servlet.annotation.WebServlet f = c.getAnnotation(jakarta.servlet.annotation.WebServlet.class);
             if (f != null) {
                 try {
                     MyServlet s = c.getConstructor(WebServer.class).newInstance(this);

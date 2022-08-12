@@ -1,61 +1,187 @@
 package de.kosmos_lab.kosmos.platform.web;
 
-import de.dfki.baall.helper.webserver.JWT;
-import de.dfki.baall.helper.webserver.data.IUser;
-import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.data.DataSchema;
+import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
+import de.kosmos_lab.kosmos.annotations.enums.SecurityIn;
+import de.kosmos_lab.kosmos.annotations.enums.SecurityType;
+import de.kosmos_lab.kosmos.annotations.info.Contact;
+import de.kosmos_lab.kosmos.annotations.info.Info;
+import de.kosmos_lab.kosmos.annotations.info.License;
+import de.kosmos_lab.kosmos.annotations.media.ObjectSchema;
+import de.kosmos_lab.kosmos.annotations.media.Schema;
+import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
+import de.kosmos_lab.kosmos.annotations.security.SecuritySchema;
 import de.kosmos_lab.kosmos.data.Device;
-import de.kosmos_lab.kosmos.exceptions.DeviceAlreadyExistsException;
-import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
-import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
-import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.kosmos.exceptions.UserNotFoundException;
+import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.kosmos.doc.openapi.OpenApiParser;
 import de.kosmos_lab.kosmos.platform.IController;
-import de.kosmos_lab.kosmos.platform.persistence.Constants;
 import de.kosmos_lab.kosmos.platform.rules.RulesService;
 import de.kosmos_lab.kosmos.platform.smarthome.CommandInterface;
 import de.kosmos_lab.kosmos.platform.smarthome.CommandSourceName;
 import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
+import jakarta.websocket.server.ServerEndpoint;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
+import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.json.JSONObject;
 import org.reflections.Reflections;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.websocket.Session;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystem;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.time.Duration;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.regex.Matcher;
 
+@Info(description = "# Kosmos Platform Synchron HTTP API \n" +
+        "### [Asyncron WS/MQTT Documentation](async.html) \n" +
+        "This is the OpenAPI 3.0 specifaction for KosmoS, it can be found on https://kosmos-lab.de/doc/openapi.yaml \n" +
+        "Please make sure you are logged in if you want to try to execute any request to the server.\n" +
+        "You can simply login with the form injected to the top of the page.\n" +
+        "(Almost) all POST requests with simple a datatype for parameters can be used either with parameters in query or a JSONObject in the request body. Exceptions are more complex datatypes like JSONObjects themselves (for example for /schema/add).",
+        title = "KosmoS OpenAPI",
+        version = "filled-by-code",
+        license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"),
+        contact = @Contact(name = "Jan Janssen", email = "Jan.Janssen@dfki.de"))
+@SecuritySchema(
+        componentName = "bearerAuth",
+
+        description = "contains a JSON Web Tokens (JWT) obtainable from #post-/user/login",
+        type = SecurityType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+@SecuritySchema(
+        componentName = "secret",
+        name = "token",
+        description = "Contains a secret known to both parties",
+        type = SecurityType.APIKEY,
+        in = SecurityIn.QUERY
+)
+@ObjectSchema(
+        componentName = "groupNameID",
+        properties = {
+                @SchemaProperty(
+                        name = "name",
+                        schema = @Schema(
+                                description = "The name of the group",
+                                type = SchemaType.STRING,
+                                required = true
+
+                        )
+                ),
+                @SchemaProperty(
+                        name = "id",
+                        schema = @Schema(
+                                description = "The ID of the group",
+                                type = SchemaType.INTEGER,
+                                required = true
+
+                        )
+                )
+        }
+)
+@ObjectSchema(
+        componentName = "scopeNameID",
+        properties = {
+                @SchemaProperty(
+                        name = "name",
+                        schema = @Schema(
+                                description = "The name of the scope",
+                                type = SchemaType.STRING,
+                                required = true
+
+                        )
+                ),
+                @SchemaProperty(
+                        name = "id",
+                        schema = @Schema(
+                                description = "The ID of the scope",
+                                type = SchemaType.INTEGER,
+                                required = true
+
+                        )
+                )
+        }
+)
+@ObjectSchema(
+        componentName = "userNameID",
+        properties = {
+                @SchemaProperty(
+                        name = "name",
+                        schema = @Schema(
+                                description = "The name of the user",
+                                type = SchemaType.STRING,
+                                required = true
+
+                        )
+                ),
+                @SchemaProperty(
+                        name = "id",
+                        schema = @Schema(
+                                description = "The ID of the user",
+                                type = SchemaType.INTEGER,
+                                required = true
+
+                        )
+                )
+        }
+)
+@ObjectSchema(
+        componentName = "objectID",
+        properties = {
+                @SchemaProperty(
+                        name = "id",
+                        schema = @Schema(
+                                description = "The ID",
+                                type = SchemaType.INTEGER,
+                                required = true
+
+                        )
+                )
+        }
+)
+@ObjectSchema(
+        componentName = "nameID",
+        properties = {
+                @SchemaProperty(
+                        name = "name",
+                        schema = @Schema(
+                                description = "The name",
+                                type = SchemaType.STRING,
+                                required = true
+
+                        )
+                ),
+                @SchemaProperty(
+                        name = "id",
+                        schema = @Schema(
+                                description = "The ID",
+                                type = SchemaType.INTEGER,
+                                required = true
+
+                        )
+                )
+        }
+)
+@Schema(name = "userID", type = SchemaType.INTEGER, description = "The ID of a user")
+@Schema(name = "userName", type = SchemaType.STRING, description = "The name of a user")
+@Schema(name = "scopeID", type = SchemaType.INTEGER, description = "The ID of a scope")
+@Schema(name = "scopeName", type = SchemaType.STRING, description = "The name of a scope")
+@Schema(name = "groupID", type = SchemaType.INTEGER, description = "The ID of a group")
+@Schema(name = "groupName", type = SchemaType.STRING, description = "The name of a group")
+@de.kosmos_lab.kosmos.annotations.servers.Server(description = "Current Host", url = "http://none/ #ignore this")
+@de.kosmos_lab.kosmos.annotations.servers.Server(description = "Local Test", url = "http://localhost:18080")
+@de.kosmos_lab.kosmos.annotations.servers.Server(description = "Production", url = "https://example.cloud:18081")
 public class WebServer implements CommandInterface {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("WebServer");
 
@@ -64,6 +190,7 @@ public class WebServer implements CommandInterface {
 
     private final int port;
     private final ServletContextHandler context;
+    HashSet<Class<? extends KosmoSServlet>> loadedServlets = new HashSet<>();
     private KosmoSWebSocketService webSocketService = null;
     private boolean stopped = false;
 
@@ -82,28 +209,141 @@ public class WebServer implements CommandInterface {
         this.port = webserverConfig.getInt("port");
         connector.setPort(port);
         server.addConnector(connector);
+        ContextHandlerCollection handlers = new ContextHandlerCollection();
 
-        this.context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
+        //this.context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        ServletContextHandler servletContextHandler = new ServletContextHandler();
+        this.context = servletContextHandler;
+        servletContextHandler.setContextPath("/");
+        //context.setContextPath("/");
         ServletHolder staticFiles = new ServletHolder("default", new DefaultServlet());
 
         staticFiles.setInitParameter("resourceBase", "./web/");
         staticFiles.setInitParameter("dirAllowed", "false");
 
-        context.addServlet(staticFiles, "/*");
-
+        servletContextHandler.addServlet(staticFiles, "/*");
 
         //dont judge :p
         //reflections magic to work around the fact that embedded jetty does not want to read the annotations by itself..
-        Reflections r = new Reflections("de.kosmos_lab.kosmos");
-        for (Class<? extends KosmoSServlet> c : r.getSubTypesOf(KosmoSServlet.class)) {
-            javax.servlet.annotation.WebServlet f = c.getAnnotation(javax.servlet.annotation.WebServlet.class);
+
+        HashSet<String> paths = new HashSet<>();
+        HashSet<Class<? extends KosmoSServlet>> servlets = new HashSet<>();
+        HashSet<Class<? extends WebSocketService>> wsservices = new HashSet<>();
+        for (Reflections r : new Reflections[]{new Reflections(""), new Reflections("de.kosmos_lab.kosmos.platform.web")}) {
+            for (Class<? extends WebSocketService> c : r.getSubTypesOf(WebSocketService.class)) {
+                if (!wsservices.contains(c)) {
+                    logger.info("Reflections found WebSocketService: {}", c.getName());
+                    wsservices.add(c);
+                }
+            }
+            for (Class<? extends KosmoSServlet> c : r.getSubTypesOf(KosmoSServlet.class)) {
+                if (!servlets.contains(c)) {
+                    logger.info("Reflections found KosmoSServlet: {}", c.getName());
+                    servlets.add(c);
+                }
+            }
+            for (Class<? extends WebSocketService> c : controller.getPluginManager().getClassesFor(WebSocketService.class)) {
+                if (!wsservices.contains(c)) {
+                    logger.info("PMM found WebSocketService: {}", c.getName());
+                    wsservices.add(c);
+                }
+            }
+            for (Class<? extends KosmoSServlet> c : controller.getPluginManager().getClassesFor(KosmoSServlet.class)) {
+                if (!servlets.contains(c)) {
+                    logger.info("PMM found KosmoSServlet: {}", c.getName());
+                    servlets.add(c);
+                }
+            }
+            for (Class c : r.getTypesAnnotatedWith(ServerEndpoint.class)) {
+                if (c.isAssignableFrom(WebSocketService.class)) {
+                    if (!wsservices.contains(c)) {
+                        logger.info("Annotations found WebSocketService: {}", c.getName());
+                        wsservices.add(c);
+                    }
+                }
+                if (WebSocketService.class.isAssignableFrom(c)) {
+                    if (!wsservices.contains(c)) {
+                        logger.info("Annotations2 found WebSocketService: {}", c.getName());
+                        wsservices.add(c);
+                    }
+                }
+            }
+            for (Class c : r.getTypesAnnotatedWith(ApiEndpoint.class)) {
+                if (c.isAssignableFrom(KosmoSServlet.class)) {
+                    if (!servlets.contains(c)) {
+                        logger.info("Annotations found KosmoSServlet: {}", c.getName());
+                        servlets.add(c);
+                    }
+                }
+                if (KosmoSServlet.class.isAssignableFrom(c)) {
+                    if (!servlets.contains(c)) {
+                        logger.info("Annotations2 found KosmoSServlet: {}", c.getName());
+                        servlets.add(c);
+                    }
+                }
+            }
+            for (Class c : r.getTypesAnnotatedWith(jakarta.servlet.annotation.WebServlet.class)) {
+                if (c.isAssignableFrom(KosmoSServlet.class)) {
+                    if (!servlets.contains(c)) {
+                        logger.info("Annotations3 found KosmoSServlet: {}", c.getName());
+                        servlets.add(c);
+                    }
+                }
+                if (KosmoSServlet.class.isAssignableFrom(c)) {
+                    if (!servlets.contains(c)) {
+                        logger.info("Annotations4 found KosmoSServlet: {}", c.getName());
+                        servlets.add(c);
+                    }
+                }
+            }
+        }
+        for (Class<? extends KosmoSServlet> c : servlets) {
+/*            if (loadedServlets.contains(c)) {
+                continue;
+            }*/
+            ApiEndpoint api = c.getAnnotation(ApiEndpoint.class);
+            if (api != null) {
+                try {
+                    if (paths.contains(api.path())) {
+                        continue;
+                    }
+                    KosmoSServlet s;
+                    if (api.userLevel() >= 0) {
+                        s = c.getConstructor(WebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
+                    } else {
+                        s = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
+                    }
+
+                    servletContextHandler.addServlet(new ServletHolder(s), api.path());
+                    loadedServlets.add(c);
+                    paths.add(api.path());
+                    logger.info("registered web servlet {} ", s.getClass());
+                    continue;
+
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+            jakarta.servlet.annotation.WebServlet f = c.getAnnotation(jakarta.servlet.annotation.WebServlet.class);
             if (f != null) {
                 try {
                     KosmoSServlet s = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
                     for (String url : f.urlPatterns()) {
-                        context.addServlet(new ServletHolder(s), url);
+                        if (paths.contains(url)) {
+                            continue;
+                        }
+                        servletContextHandler.addServlet(new ServletHolder(s), url);
+                        paths.add(url);
+                        loadedServlets.add(c);
+                        logger.info("registered web servlet {} ", s.getClass());
                     }
+
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -115,15 +355,53 @@ public class WebServer implements CommandInterface {
                 }
             }
         }
-        for (Class<? extends KosmoSServlet> c : controller.getPluginManager().getClassesFor(KosmoSServlet.class)) {
 
+        /*
+            if (loadedServlets.contains(c)) {
+                continue;
+            }
             logger.info("Plugin manager found: KosmoSServlet: {}", c.getName());
-            javax.servlet.annotation.WebServlet f = c.getAnnotation(javax.servlet.annotation.WebServlet.class);
+            ApiEndpoint api = c.getAnnotation(ApiEndpoint.class);
+            if (api != null) {
+                if (paths.contains(api.path())) {
+                    continue;
+                }
+                try {
+                    KosmoSServlet s;
+                    if (api.userLevel() >= 0) {
+                        s = c.getConstructor(WebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
+                    } else {
+                        s = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
+                    }
+
+                    servletContextHandler.addServlet(new ServletHolder(s), api.path());
+                    loadedServlets.add(c);
+                    paths.add(api.path());
+                    logger.info("PMM registered web servlet {} ",s.getClass());
+                    continue;
+
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+            jakarta.servlet.annotation.WebServlet f = c.getAnnotation(jakarta.servlet.annotation.WebServlet.class);
             if (f != null) {
                 try {
                     KosmoSServlet s = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
                     for (String url : f.urlPatterns()) {
-                        context.addServlet(new ServletHolder(s), url);
+                        if (paths.contains(url)) {
+                            continue;
+                        }
+                        servletContextHandler.addServlet(new ServletHolder(s), url);
+                        loadedServlets.add(c);
+                        paths.add(url);
+
                     }
                 } catch (InstantiationException e) {
                     e.printStackTrace();
@@ -136,42 +414,64 @@ public class WebServer implements CommandInterface {
                 }
             }
 
-        }
+        }*/
 
-
-        server.setHandler(context);
 
         try {
-            // Initialize javax.websocket layer
-            ServerContainer wscontainer = WebSocketServerContainerInitializer.configureContext(context);
+            JettyWebSocketServlet websocketServlet;
+            // Initialize jakarta.websocket layer
+            this.webSocketService = new KosmoSWebSocketService(this, controller);
 
-            // Add WebSocket endpoint to javax.websocket layer
-            this.webSocketService = new KosmoSWebSocketService(controller, this);
-            ServerEndpoint a = webSocketService.getClass().getAnnotation(ServerEndpoint.class);
-            wscontainer.addEndpoint(ServerEndpointConfig.Builder
-                    .create(KosmoSWebSocketEndpoint.class, a.value()) // the endpoint url
-                    .configurator(new KosmoSWebSocketEndpointConfiguration(webSocketService))
-                    .build());
-            if (this.getRulesService() != null) {
-                a = this.getRulesService().getClass().getAnnotation(ServerEndpoint.class);
-                wscontainer.addEndpoint(ServerEndpointConfig.Builder
-                        .create(KosmoSWebSocketEndpoint.class, a.value()) // the endpoint url
-                        .configurator(new KosmoSWebSocketEndpointConfiguration(this.getRulesService()))
-                        .build());
+            //ServerContainer wscontainer = WebSocketServerContainerInitializer.configureContext(context);
+            websocketServlet = new JettyWebSocketServlet() {
+                @Override
+                protected void configure(JettyWebSocketServletFactory factory) {
+
+                    factory.setCreator(new KosmosWebSocketCreator(webSocketService, null));
+                }
+            };
+            wsservices.remove(KosmoSWebSocketService.class);
+            servletContextHandler.addServlet(new ServletHolder(websocketServlet), this.webSocketService.getClass().getAnnotation(ServerEndpoint.class).value());
+            if (getRulesService() != null) {
+                websocketServlet = new JettyWebSocketServlet() {
+                    @Override
+                    protected void configure(JettyWebSocketServletFactory factory) {
+                        factory.setIdleTimeout(Duration.ofSeconds(60));
+                        factory.setCreator(new KosmosWebSocketCreator(getRulesService(), null));
+                    }
+                };
+                servletContextHandler.addServlet(new ServletHolder(websocketServlet), this.getRulesService().getClass().getAnnotation(ServerEndpoint.class).value());
+                wsservices.remove(getRulesService().getClass());
             }
 
-            for (Class<? extends WebSocketService> c : controller.getPluginManager().getClassesFor(WebSocketService.class)) {
 
-                logger.info("Plugin manager found: WebSocketService: {}", c.getName());
+            // Add WebSocket endpoint to jakarta.websocket layer
+
+
+            for (Class<? extends WebSocketService> c : wsservices) {
+                //logger.info("found: WebSocketService: {}", c.getName());
                 ServerEndpoint endpoint = c.getAnnotation(ServerEndpoint.class);
-                logger.info("Plugin manager found: WebSocketService: {} endpoint {}", c.getName(), endpoint.value());
+                logger.info("found: WebSocketService: {} endpoint {}", c.getName(), endpoint.value());
                 if (endpoint != null) {
                     try {
-                        WebSocketService s = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
-                        wscontainer.addEndpoint(ServerEndpointConfig.Builder
-                                .create(KosmoSWebSocketEndpoint.class, endpoint.value()) // the endpoint url
-                                .configurator(new KosmoSWebSocketEndpointConfiguration(s))
-                                .build());
+
+                        WebSocketService service = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
+                         /*websocketServlet = new JettyWebSocketServlet() {
+                            @Override
+                            protected void configure(JettyWebSocketServletFactory factory) {
+                                factory.addMapping("/", (req, res) -> service);
+                            }
+                        };*/
+                        websocketServlet = new JettyWebSocketServlet() {
+                            @Override
+                            protected void configure(JettyWebSocketServletFactory factory) {
+                                factory.setIdleTimeout(Duration.ofSeconds(60));
+                                factory.setCreator(new KosmosWebSocketCreator(service, null));
+                            }
+                        };
+
+                        servletContextHandler.addServlet(new ServletHolder(websocketServlet), endpoint.value());
+
                     } catch (InstantiationException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {
@@ -185,6 +485,14 @@ public class WebServer implements CommandInterface {
 
 
             }
+            JettyWebSocketServletContainerInitializer.configure(servletContextHandler, null);
+
+
+            handlers.addHandler(servletContextHandler);
+
+            server.setHandler(handlers);
+            OpenApiParser.create(this.loadedServlets);
+
             server.start();
             //server.dump(System.err);
 
@@ -196,6 +504,18 @@ public class WebServer implements CommandInterface {
 
     }
 
+    // Convenience method to create and configure a ContextHandler.
+    private static ContextHandler createContextHandler(String contextPath, Handler wrappedHandler) {
+        ContextHandler ch = new ContextHandler(contextPath);
+        ch.setHandler(wrappedHandler);
+        ch.clearAliasChecks();
+        ch.setAllowNullPathInfo(true);
+        return ch;
+    }
+
+    public HashSet<Class<? extends KosmoSServlet>> getLoadedServlets() {
+        return this.loadedServlets;
+    }
 
     public IController getIController() {
         return this.controller;

@@ -7,13 +7,16 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.WebSocketService;
 import de.kosmos_lab.utils.KosmosFileUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import org.eclipse.jetty.websocket.api.Session;
+import jakarta.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ServerEndpoint("/kreews")
+@WebSocket
 public class RulesService extends WebSocketService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("RulesService");
     private final HashMap<Session, IUser> webSocketClients = new HashMap<>();
@@ -30,7 +34,7 @@ public class RulesService extends WebSocketService {
     private final HashMap<IUser, RulesExecuter> executors = new HashMap<>();
     private final String ruleDirectory;
     private final File ruleDirectoryFile;
-    private final HashMap<String, IUser> logins = new HashMap<String, IUser>();
+    private final HashMap<Session, IUser> logins = new HashMap<Session, IUser>();
 
 
     public RulesService(IController controller) {
@@ -77,6 +81,7 @@ public class RulesService extends WebSocketService {
 
 
     @Override
+    @OnWebSocketConnect
     public void addWebSocketClient(@Nonnull Session sess) {
 
         synchronized (webSocketClients) {
@@ -90,7 +95,7 @@ public class RulesService extends WebSocketService {
             for (Map.Entry<Session, IUser> entry : this.webSocketClients.entrySet()) {
                 if (user == entry.getValue()) {
                     try {
-                        entry.getKey().getBasicRemote().sendText(text);
+                        entry.getKey().getRemote().sendString(text);
                     } catch (org.eclipse.jetty.io.EofException ex) {
                         //Nothing here
                     } catch (Exception ex) {
@@ -136,10 +141,11 @@ public class RulesService extends WebSocketService {
     }
 
     @Override
+    @OnWebSocketMessage
     public void onWebSocketMessage(@Nonnull Session sess,@Nonnull  String message) {
         if (message.equalsIgnoreCase("ping")) {
             try {
-                sess.getBasicRemote().sendText("pong");
+                sess.getRemote().sendString("pong");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -155,7 +161,7 @@ public class RulesService extends WebSocketService {
 
                 if (u != null) {
                     webSocketClients.put(sess, u);
-                    logins.put(sess.getId(), u);
+                    logins.put(sess, u);
                 }
 
             } catch (Exception ex) {
@@ -173,16 +179,16 @@ public class RulesService extends WebSocketService {
                 IUser u = controller.getUser(s.getString("name"));
                 if (u != null) {
                     webSocketClients.put(sess, u);
-                    logins.put(sess.getId(), u);
+                    logins.put(sess, u);
                     try {
-                        sess.getBasicRemote().sendText("auth successful");
+                        sess.getRemote().sendString("auth successful");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                 } else {
                     try {
-                        sess.getBasicRemote().sendText("auth failed");
+                        sess.getRemote().sendString("auth failed");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -251,4 +257,5 @@ public class RulesService extends WebSocketService {
             }
         }
     }
+
 }

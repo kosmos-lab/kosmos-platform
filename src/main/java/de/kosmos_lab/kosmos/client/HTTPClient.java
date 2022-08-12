@@ -2,11 +2,13 @@ package de.kosmos_lab.kosmos.client;
 
 
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.HttpClientTransport;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.ssl.SslContextFactory.Client;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +25,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class HTTPClient extends HttpClient {
     public HTTPClient() throws Exception {
-        super(new SslContextFactory.Client());
+        super();
         this.start();
     }
 

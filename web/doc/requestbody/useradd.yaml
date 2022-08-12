@@ -1,7 +1,6 @@
 content:
   application/json:
     schema:
-
       type: object
       properties:
         user:

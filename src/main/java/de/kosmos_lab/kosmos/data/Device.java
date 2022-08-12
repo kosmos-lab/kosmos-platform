@@ -30,10 +30,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This is used as an actual Device.
- * It holds the current states, scopes and so on.
+ * This is used as an actual Device. It holds the current states, scopes and so on.
  */
 public class Device extends DataEntry {
     protected static final Logger logger = LoggerFactory.getLogger("Device");
@@ -42,6 +42,7 @@ public class Device extends DataEntry {
     private final IUser owner;
     protected HashMap<String, Object> hidden = new HashMap<>();
     ConcurrentHashMap<String, Long> lastChangeMap = new ConcurrentHashMap<>();
+    ReentrantLock lock = new ReentrantLock();
     private String name;
     private CommandSourceName source;
     private Date lastUpdate;
@@ -50,23 +51,25 @@ public class Device extends DataEntry {
     private Scope readScope;
     private Scope writeScope;
     private Location location = null;
-    
-    public Device(@Nonnull IController controller,@Nonnull  CommandSourceName source,@Nonnull  DataSchema schema,@Nonnull  JSONObject json, @Nonnull String name, @Nonnull String uuid, @Nonnull IUser owner,boolean force) throws ValidationException {
-        super(schema, json,force);
+
+    public Device(@Nonnull IController controller, @Nonnull CommandSourceName source, @Nonnull DataSchema schema, @Nonnull JSONObject json, @Nonnull String name, @Nonnull String uuid, @Nonnull IUser owner, boolean force) throws ValidationException {
+        super(schema, json, force);
         this.controller = controller;
         this.source = source;
         this.name = name;
         this.uuid = uuid;
         Date now = new Date();
-        
+
         this.lastUpdate = now;
         this.lastChange = now;
         this.owner = owner;
     }
-    
+
     /**
      * @param user
+     *
      * @return
+     *
      * @throws NoAccessToScope
      */
     public boolean canDel(@Nonnull IUser user) throws NoAccessToScope {
@@ -79,10 +82,10 @@ public class Device extends DataEntry {
         if (delScope.hasAccess(user)) {
             return true;
         }
-        
+
         throw new NoAccessToScope(delScope);
     }
-    
+
     public boolean canHave(@Nonnull String key, boolean def) {
         if (has(key)) {
             return true;
@@ -92,14 +95,14 @@ public class Device extends DataEntry {
         }
         return def;
     }
-    
+
     public boolean canHave(@Nonnull String key) {
-        
-        
+
+
         return canHave(key, true);
-        
+
     }
-    
+
     public boolean canRead(@Nonnull IUser user) throws NoAccessToScope {
         //logger.info("CAN READ? {} {}",readScope,user.getID());
         if (readScope == null) {
@@ -111,10 +114,10 @@ public class Device extends DataEntry {
         if (readScope.hasAccess(user)) {
             return true;
         }
-        
+
         throw new NoAccessToScope(readScope);
     }
-    
+
     public boolean canWrite(@Nonnull IUser user) throws NoAccessToScope {
         if (writeScope == null) {
             return true;
@@ -125,11 +128,11 @@ public class Device extends DataEntry {
         if (writeScope.hasAccess(user)) {
             return true;
         }
-        
+
         throw new NoAccessToScope(writeScope);
     }
-    
-    public boolean canWrite(@Nonnull String key,@Nonnull  IUser user) {
+
+    public boolean canWrite(@Nonnull String key, @Nonnull IUser user) {
 
         if (owner == null) {
             logger.error("Device {} has NO OWNER?!", this.getUniqueID());
@@ -142,31 +145,31 @@ public class Device extends DataEntry {
                     return true;
                 }
                 if (schema.isReadOnly()
-                        
+
                         && !canWriteReadOnly(user)) {
                     return false;
                 }
-                
-                
+
+
             }
         } catch (Exception ex) {
             //ex.printStackTrace();
             logger.warn("could not verify readonly state of {} in {}", key, this.getSchema().getId(), ex);
         }
         return true;
-        
-        
+
+
     }
-    
+
     public boolean canWriteReadOnly(@Nonnull IUser u) {
-        
+
         if (owner.equals(u)) {
             return true;
         }
         return u.isAdmin();
 
     }
-    
+
     @CheckForNull
     public StateUpdates getChanges(long maxage) {
         if (this.length() > 0) {
@@ -179,22 +182,22 @@ public class Device extends DataEntry {
                     //updates.add(new StateUpdated(this,entry.getKey(),delta));
                     upd.addUpdate(entry.getKey(), delta);
                 }
-                
+
             }
-            
+
             return upd;
-            
-            
+
+
         }
         return null;
-        
+
     }
 
     @CheckForNull
     public Object getHidden(@Nonnull String key) {
         return hidden.get(key);
     }
-    
+
     public Date getLastUpdated() {
         return this.lastUpdate;
     }
@@ -203,36 +206,38 @@ public class Device extends DataEntry {
     public Location getLocation() {
         return this.location;
     }
-    
+
     public void setLocation(@Nullable Location location) {
         this.location = location;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public void setName(@Nonnull String name) {
         this.name = name;
     }
-    
+
     public IUser getOwner() {
         return this.owner;
     }
-    
+
     public CommandSourceName getSource() {
         return source;
     }
-    
+
     public void setSource(@Nonnull CommandSourceName source) {
         this.source = source;
     }
-    
-    @Nonnull public String getUniqueID() {
+
+    @Nonnull
+    public String getUniqueID() {
         return uuid;
     }
-    
-    @CheckForNull public String getUnit(@Nonnull String property) {
+
+    @CheckForNull
+    public String getUnit(@Nonnull String property) {
         JSONObject properties = this.getDataSchema().getRawSchema().optJSONObject("properties");
         if (properties != null) {
             JSONObject p = properties.optJSONObject(property);
@@ -240,17 +245,17 @@ public class Device extends DataEntry {
                 return p.optString("unit", null);
             }
         }
-        
+
         return null;
     }
-    
+
     public boolean hasDelScope() {
         return this.delScope != null;
     }
-    
+
     public boolean set(String key, Object value, boolean round) throws ValidationException {
         Date now = new Date();
-        
+
         this.lastUpdate = now;
         if (controller != null) {
             controller.updateLastUpdate(this);
@@ -269,16 +274,16 @@ public class Device extends DataEntry {
                         if (ns.requiresInteger()) {
                             //logger.info("value should be an int2");
                             //is it also an integer?
-                            
+
                             Number multiplier = ns.getMultipleOf();
                             if (multiplier != null) {
                                 value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.intValue()).intValue();
-                                
+
                             } else {
                                 value = ((Number) value).intValue();
                             }
-                            
-                            
+
+
                         } else {
                             //logger.info("value should be a double");
                             //its "just" a number, so its a double
@@ -288,7 +293,7 @@ public class Device extends DataEntry {
                             Number multiplier = ns.getMultipleOf();
                             if (multiplier != null) {
                                 value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.doubleValue());
-                                
+
                             }
                         }
                     } catch (NumberFormatException ex) {
@@ -307,7 +312,7 @@ public class Device extends DataEntry {
                                 found = true;
                                 //logger.info("found matching enum {}", f);
                                 value = f.toString();
-                                
+
                                 break;
                             }
                         }
@@ -317,10 +322,10 @@ public class Device extends DataEntry {
                     }
                 } else if (schema instanceof StringSchema) {
                     //logger.info("should be string");
-                    
+
                     try {
                         value = value.toString();
-                        
+
                     } catch (NumberFormatException ex) {
                         //this means the number could not be read -but we can just ignore this here
                         //this essentially just means that we could not round the value
@@ -329,7 +334,7 @@ public class Device extends DataEntry {
                 } else if (schema instanceof CombinedSchema) {
                     //logger.info("should be CombinedSchema");
                     CombinedSchema cs = (CombinedSchema) schema;
-                    
+
                     schemaloop:
                     for (Schema sub : cs.getSubschemas()) {
                         if (sub instanceof EnumSchema) {
@@ -343,7 +348,7 @@ public class Device extends DataEntry {
                                         found = true;
                                         //logger.info("found matching enum {}", f);
                                         value = f.toString();
-                                        
+
                                         break schemaloop;
                                     }
                                 }
@@ -354,8 +359,8 @@ public class Device extends DataEntry {
                         } else if (schema instanceof StringSchema) {
                             //logger.info("should be string");
                             value = value.toString();
-                            
-                            
+
+
                         }
                     }
                 }
@@ -363,10 +368,10 @@ public class Device extends DataEntry {
         }
         if (value instanceof String) {
             //logger.info("value is a string");
-            
-            
+
+
             Schema schema = getSchema().getPropertySchemas().get(key);
-            
+
             if (schema instanceof BooleanSchema) {
                 //check if the schema of the property should be boolean
                 if ("true".equalsIgnoreCase((String) value) || "on".equalsIgnoreCase((String) value) || value.equals("1") || value.equals("heat")) {
@@ -375,8 +380,8 @@ public class Device extends DataEntry {
                     value = false;
                 }
             } else if (schema instanceof NumberSchema) {
-                
-                
+
+
                 try {
                     //check if it should be a number
                     NumberSchema ns = ((NumberSchema) schema);
@@ -387,7 +392,7 @@ public class Device extends DataEntry {
                         Number multiplier = ns.getMultipleOf();
                         if (multiplier != null) {
                             value = DoubleFunctions.roundToNearest((Double) value, multiplier.intValue()).intValue();
-                            
+
                         } else {
                             value = ((Number) value).intValue();
                         }
@@ -398,7 +403,7 @@ public class Device extends DataEntry {
                         Number multiplier = ns.getMultipleOf();
                         if (multiplier != null) {
                             value = DoubleFunctions.roundToNearest((Double) value, multiplier.doubleValue());
-                            
+
                         }
                     }
                 } catch (NumberFormatException ex) {
@@ -415,7 +420,7 @@ public class Device extends DataEntry {
                         if (((String) value).equalsIgnoreCase(f.toString())) {
                             found = true;
                             value = f.toString();
-                            
+
                             break;
                         }
                     }
@@ -426,64 +431,64 @@ public class Device extends DataEntry {
             } else if (schema instanceof CombinedSchema) {
                 //logger.info("should be CombinedSchema");
                 CombinedSchema cs = (CombinedSchema) schema;
-                
+
                 schemaloop:
                 for (Schema sub : cs.getSubschemas()) {
                     if (sub instanceof EnumSchema) {
                         //logger.info("should be enum");
                         EnumSchema es = ((EnumSchema) sub);
-                        
+
                         List<Object> list = es.getPossibleValuesAsList();
                         if (!list.isEmpty()) {
                             for (Object f : list) {
                                 if ((value.toString()).equalsIgnoreCase(f.toString())) {
                                     //logger.info("found matching enum {}", f);
                                     value = f.toString();
-                                    
+
                                     break schemaloop;
                                 }
                             }
-                            
+
                         }
-                        
+
                         value = list.get(0).toString();
-                        
+
                     } else if (schema instanceof StringSchema) {
                         //logger.info("should be string");
                         value = value.toString();
-                        
-                        
+
+
                     }
                 }
             } else if (schema instanceof ArraySchema) {
                 //logger.info("should be CombinedSchema");
-                
+
                 //logger.info("should be string");
                 value = new JSONArray(value);
-                
-                
+
+
                 //}
-                
+
             } else if (schema instanceof ObjectSchema) {
                 //logger.info("should be CombinedSchema");
-                
+
                 //logger.info("should be string");
                 value = new JSONObject(value);
-                
-                
+
+
                 //}
-                
+
             }
         }
-        
+
         try {
             Object old = this.get(key);
-            
-            
+
+
             if (old instanceof JSONObject && value instanceof JSONObject) {
                 //check if the old and new instance are both jsonobjects
                 if (((JSONObject) old).toMap().equals(((JSONObject) value).toMap())) {
-                    
+
                     return false;
                 }
                 if (old.toString().equals(value.toString())) {
@@ -509,51 +514,51 @@ public class Device extends DataEntry {
         }
         //copy the current data
         JSONObject newState = new JSONObject(this.toMap());
-        
+
         //set the new state
         newState.put(key, value);
         //logger.info(newState.toString(4));
-        
+
         //validate the new state
         logger.info("state to validate {}", newState);
         this.getSchema().validate(newState);
-        
+
         //can only be reached if value is valid for schema, so we can also modifiy the real version now
         put(key, value);
         this.lastChangeMap.put(key, System.currentTimeMillis());
         this.lastChange = now;
         //notify that we actually did have a change
         return true;
-        
-        
+
+
     }
-    
+
     public void setDelScope(Scope scope) {
         this.delScope = scope;
     }
-    
+
     public void setHidden(String key, Object value) {
         hidden.put(key, value);
     }
-    
+
     public void setReadScope(Scope scope) {
         this.readScope = scope;
     }
-    
+
     public void setState(JSONObject o, boolean b) throws ValidationException {
         Date now = new Date();
         this.getSchema().validate(o);
         silentOverwrite(o);
         this.lastUpdate = now;
         this.lastChange = now;
-        
-        
+
+
     }
-    
+
     public void setWriteScope(Scope scope) {
         this.writeScope = scope;
     }
-    
+
     public JSONObject toJSON() {
         JSONObject o = new JSONObject();
         JSONObject state = new JSONObject();
@@ -569,7 +574,7 @@ public class Device extends DataEntry {
         o.put("lastChange", lastChange.getTime());
         return o;
     }
-    
+
     public boolean updateFromJSON(CommandInterface from, JSONObject o, CommandSourceName source) {
         HashSet<String> dirtyKeys = new HashSet<>();
         for (String key : o.keySet()) {
@@ -582,11 +587,20 @@ public class Device extends DataEntry {
         }
         return dirtyKeys.size() > 0;
     }
-    
+
+    public void lock() {
+        lock.lock();
+
+    }
+
+    public void unlock() {
+        lock.unlock();
+    }
+
     public static class Location {
         private Integer x, y, z, w, d, h, roll, pitch, yaw;
         private String area;
-        
+
         public Location(Integer x, Integer y, Integer z, Integer w, Integer d, Integer h, Integer roll, Integer pitch, Integer yaw, String area) {
             this.x = x;
             this.y = y;
@@ -599,7 +613,7 @@ public class Device extends DataEntry {
             this.yaw = yaw;
             this.area = area;
         }
-        
+
         public Location(JSONObject json) {
             if (json.has("x")) {
                 try {
@@ -647,7 +661,7 @@ public class Device extends DataEntry {
                 } catch (JSONException ex) {
                     this.d = null;
                     ex.printStackTrace();
-                    
+
                 }
             }
             if (json.has("roll")) {
@@ -673,52 +687,52 @@ public class Device extends DataEntry {
                     ex.printStackTrace();
                 }
             }
-            
+
             this.area = json.optString("area", null);
-            
-            
+
+
         }
-        
+
         public String getArea() {
             return area;
         }
-        
+
         public Integer getD() {
             return d;
         }
-        
+
         public Integer getH() {
             return h;
         }
-        
+
         public Integer getPitch() {
             return pitch;
         }
-        
+
         public Integer getRoll() {
             return roll;
         }
-        
+
         public Integer getW() {
             return w;
         }
-        
+
         public Integer getX() {
             return x;
         }
-        
+
         public Integer getY() {
             return y;
         }
-        
+
         public Integer getYaw() {
             return yaw;
         }
-        
+
         public Integer getZ() {
             return z;
         }
-        
+
         public JSONObject toJSON() {
             JSONObject json = new JSONObject();
             if (x != null) {
@@ -745,7 +759,7 @@ public class Device extends DataEntry {
             if (pitch != null) {
                 json.put("pitch", pitch);
             }
-            
+
             if (yaw != null) {
                 json.put("yaw", yaw);
             }
@@ -754,7 +768,7 @@ public class Device extends DataEntry {
             }
             return json;
         }
-        
+
         public boolean updateFromJSON(JSONObject json) {
             boolean dirty = false;
             if (json.has("x")) {
@@ -827,7 +841,7 @@ public class Device extends DataEntry {
                     dirty = true;
                 }
             }
-            
+
             return dirty;
         }
     }

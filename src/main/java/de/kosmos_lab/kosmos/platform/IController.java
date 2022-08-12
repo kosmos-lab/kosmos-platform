@@ -130,6 +130,7 @@ public interface IController {
      * @param group
      */
     void addScopeGroup(@Nonnull Scope scope, @Nonnull Group group);
+    void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group);
 
     /**
      * add a user to the scope
@@ -138,6 +139,7 @@ public interface IController {
      * @param u
      */
     void addScopeUser(@Nonnull Scope scope, @Nonnull IUser u);
+    void addScopeAdmin(@Nonnull Scope scope, @Nonnull IUser u);
 
     /**
      * add a smart home

@@ -16,14 +16,19 @@ import de.kosmos_lab.kosmos.platform.persistence.Constants;
 import de.kosmos_lab.kosmos.platform.rules.RulesService;
 import de.kosmos_lab.kosmos.platform.smarthome.CommandInterface;
 import de.kosmos_lab.kosmos.platform.smarthome.CommandSourceName;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -40,6 +45,7 @@ import java.util.regex.Matcher;
  * This is the Service used to control the KosmoS Websocket on /ws
  */
 @ServerEndpoint("/ws")
+@WebSocket
 public class KosmoSWebSocketService extends WebSocketService implements CommandInterface {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("KosmoSWebSocketService");
     private final IController controller;
@@ -47,10 +53,10 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
     public HashMap<String, MessageTimer> messageTimers = new HashMap<>();
 
     private final HashMap<Session, IUser> webSocketClients = new HashMap<Session, IUser>();
-    private final HashMap<String, IUser> logins = new HashMap<String, IUser>();
-    private final HashMap<String, String> types = new HashMap<String, String>();
+    private final HashMap<Session, IUser> logins = new HashMap<Session, IUser>();
+    private final HashMap<Session, String> types = new HashMap<Session, String>();
 
-    public KosmoSWebSocketService(IController c, WebServer server) {
+    public KosmoSWebSocketService(WebServer server,IController c) {
         this.controller = c;
         this.server = server;
         controller.addCommandInterface(this);
@@ -60,14 +66,14 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
     private CommandSourceName getSourceName(Session session) {
 
 
-        return controller.getSource("WebSocket" + session.getId());
+        return controller.getSource("WebSocket" + session.getLocalAddress().toString());
 
     }
 
     private CommandSourceName getSourceName(Session session, String pre) {
 
 
-        return controller.getSource(pre + "WebSocket" + session.getId());
+        return controller.getSource(pre + "WebSocket" + session.getLocalAddress().toString());
 
     }
 
@@ -82,7 +88,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                 if (e.getValue() != null) {
                     if (sess != e.getKey()) {
                         try {
-                            e.getKey().getBasicRemote().sendText(text);
+                            e.getKey().getRemote().sendString(text);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -111,7 +117,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                                     continue;
                                 }
                             }
-                            e.getKey().getBasicRemote().sendText(text);
+                            e.getKey().getRemote().sendString(text);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -161,38 +167,42 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
 
 
 
+    @OnWebSocketConnect
     public void addWebSocketClient(Session sess) {
 
         synchronized (webSocketClients) {
             this.webSocketClients.put(sess, null);
         }
-        logger.trace("new Websocket connection from {}", sess.getUserProperties().get("javax.websocket.endpoint.remoteAddress"));
+        //logger.trace("new Websocket connection from {}", sess.getUserProperties().get("jakarta.websocket.endpoint.remoteAddress"));
 
     }
 
+
+    @OnWebSocketClose
     public void delWebSocketClient(Session sess) {
         synchronized (webSocketClients) {
             this.webSocketClients.remove(sess);
         }
     }
 
+    @OnWebSocketMessage
     public void onWebSocketMessage(Session sess, String message) {
 
-        IUser user = logins.get(sess.getId());
+        IUser user = logins.get(sess);
         if (user != null) {
-            String type = types.get(sess.getId());
+            String type = types.get(sess);
             if (type != null) {
-                logger.info("Received TEXT message: {} from: {} {} ({}) ", message, sess.getId(), user.getName(), type);
+                logger.info("Received TEXT message: {} from: {} {} ({}) ", message, sess, user.getName(), type);
             } else {
-                logger.info("Received TEXT message: {} from: {} {} ", message, sess.getId(), user.getName());
+                logger.info("Received TEXT message: {} from: {} {} ", message, sess, user.getName());
             }
         } else {
-            logger.info("Received TEXT message: {} from {}", message, sess.getId());
+            logger.info("Received TEXT message: {} from {}", message, sess);
         }
 
         if (message.equalsIgnoreCase("ping")) {
             try {
-                sess.getBasicRemote().sendText("pong");
+                sess.getRemote().sendString("pong");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -221,7 +231,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                     IUser u = controller.tryLogin(usern, pass);
                     if (u != null) {
                         webSocketClients.put(sess, u);
-                        logins.put(sess.getId(), u);
+                        logins.put(sess, u);
                         logger.info("auth successful");
                         afterAuth(sess, u);
                         return;
@@ -232,7 +242,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                 }
                 try {
                     logger.warn("json auth failed!");
-                    sess.getBasicRemote().sendText("auth failed");
+                    sess.getRemote().sendString("auth failed");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -245,10 +255,10 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                         JSONObject o = this.controller.getJwt().verify(payload);
                         IUser u = this.controller.getUser(o.getInt("id"));
                         webSocketClients.put(sess, u);
-                        logins.put(sess.getId(), u);
+                        logins.put(sess, u);
                         logger.info("auth successful");
 
-                        sess.getBasicRemote().sendText("auth successful");
+                        sess.getRemote().sendString("auth successful");
                         afterAuth(sess, u);
 
 
@@ -274,13 +284,13 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                 try {
                     logger.info("token auth failed!");
 
-                    sess.getBasicRemote().sendText("auth failed");
+                    sess.getRemote().sendString("auth failed");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
             } else if (topic.equals("user/type")) {
-                types.put(sess.getId(), payload);
+                types.put(sess, payload);
             } else {
 
                 if (user != null) {
@@ -327,7 +337,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                                     if (device.canRead(user)) {
                                         Device.Location loc = device.getLocation();
                                         if (loc != null) {
-                                            sess.getBasicRemote().sendText("device/" + device.getUniqueID() + "/location:" + loc.toJSON().toString());
+                                            sess.getRemote().sendString("device/" + device.getUniqueID() + "/location:" + loc.toJSON().toString());
                                         }
                                     }
                                 } catch (NoAccessToScope e) {
@@ -353,7 +363,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                             } catch (JSONException ex) {
 
                             }
-                            String type = types.get(sess.getId());
+                            String type = types.get(sess);
                             if (type != null) {
                                 if (type.equals("HAIntegration")) {
                                     controller.parseHASet(this, uuid, pl, getSourceName(sess, "haset/"), user);
@@ -475,7 +485,7 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
     }
     private void afterAuth(Session sess, IUser u) {
         try {
-            sess.getBasicRemote().sendText("auth successful");
+            sess.getRemote().sendString("auth successful");
             HashSet<DataSchema> schemas = new HashSet<>();
 
             JSONArray arr = new JSONArray();
@@ -507,14 +517,16 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
             for (DataSchema schema : schemas) {
                 s.put(schema.getSchema().getId(), schema.getRawSchema());
             }
-            sess.getBasicRemote().sendText("schemas:" + s);
-            sess.getBasicRemote().sendText("devices:" + arr);
+            sess.getRemote().sendString("schemas:" + s);
+            sess.getRemote().sendString("devices:" + arr);
 
             return;
         } catch (Exception e) {
             logger.warn("Exception:", e);
         }
     }
+
+
 
     private static class MessageTimer {
         public ConcurrentLinkedQueue<MessageTimerEntry> entries = new ConcurrentLinkedQueue<>();

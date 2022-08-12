@@ -4,8 +4,8 @@ import de.dfki.baall.helper.webserver.MyHttpServletRequest;
 import de.dfki.baall.helper.webserver.MyServlet;
 import de.dfki.baall.helper.webserver.WebServer;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/hello_world"}, loadOnStartup = 1)

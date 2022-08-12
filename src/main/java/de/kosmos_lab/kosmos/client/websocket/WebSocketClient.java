@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class WebSocketClient extends HttpClient {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger("HomeAssistantHTTPClient");
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger("WebSocketClient");
 
     private final String user;
     private final String pass;

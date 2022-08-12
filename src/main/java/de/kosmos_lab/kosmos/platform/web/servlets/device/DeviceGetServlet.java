@@ -2,34 +2,150 @@ package de.kosmos_lab.kosmos.platform.web.servlets.device;
 
 import de.dfki.baall.helper.webserver.data.IUser;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.kosmos.annotations.Operation;
+import de.kosmos_lab.kosmos.annotations.Parameter;
+import de.kosmos_lab.kosmos.annotations.enums.ParameterIn;
+import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
+import de.kosmos_lab.kosmos.annotations.media.Content;
+import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
+import de.kosmos_lab.kosmos.annotations.media.ObjectSchema;
+import de.kosmos_lab.kosmos.annotations.media.Schema;
+import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
+import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
+import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
 import de.kosmos_lab.kosmos.data.Device;
+import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
-@WebServlet(urlPatterns = {"/device/get"}, loadOnStartup = 1)
+@ApiEndpoint(
+        path = "/device/get",
+        userLevel = 1
+)
+@ApiResponse(
+        componentName = "deviceGet",
+        responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),
+        description = "Details about the scope",
+
+        content = @Content(
+
+                mediaType = MediaType.APPLICATION_JSON,
+                examples = {
+                        @ExampleObject(
+                                name = "hsv1",
+                                value = "{\"schema\":\"https://kosmos-lab.de/schema/HSVLamp.json\",\"lastUpdate\":1603442792048,\"name\":\"hsv1\",\"state\":{\"saturation\":100,\"dimmingLevel\":8,\"hue\":285,\"on\":true,\"colorTemperature\":6175},\"uuid\":\"hsv1\"}"
+                        )
+                },
+                schema = @Schema(ref = "#/components/schemas/deviceInfo")
+        )
+)
+@ObjectSchema(
+        componentName = "deviceInfo",
+        properties = {
+                @SchemaProperty(
+                        name = "state",
+                        schema = @Schema(
+                                description = "The current state of the device",
+                                type = SchemaType.OBJECT,
+                                defaultValue = "{}",
+                                required = true
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "name",
+                        schema = @Schema(
+                                description = "The name of the device",
+                                type = SchemaType.STRING,
+                                required = false
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "uuid",
+                        schema = @Schema(
+                                description = "The uuid of the device",
+                                type = SchemaType.STRING,
+                                required = true
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "schema",
+                        schema = @Schema(
+                                description = "The $id/url of the schema used by the device",
+                                type = SchemaType.STRING,
+                                required = true
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "lastUpdate",
+                        schema = @Schema(
+                                description = "The timestamp of the last update, an update also includes setting a state to the state its already in.",
+                                type = SchemaType.INTEGER,
+                                required = true
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "lastChange",
+                        schema = @Schema(
+                                description = "The timestamp of the last change in the state.",
+                                type = SchemaType.INTEGER,
+                                required = false
+                        )
+
+                )
+
+        }
+)
 public class DeviceGetServlet extends AuthedServlet {
-    
-    
-    public DeviceGetServlet(WebServer webServer, IController controller) {
-        super(webServer, controller);
+
+
+    public DeviceGetServlet(WebServer webServer, IController controller, int level) {
+        super(webServer, controller, level);
     }
-    
-    
+
+    @Operation(
+            tags = {"device"},
+            summary = "get",
+            description = "Get information about the device",
+            parameters = {@Parameter(name = "uuid",
+                    in = ParameterIn.QUERY,
+                    schema = @Schema(
+                            description = "The uuid of the device to get",
+                            type = SchemaType.STRING,
+                            minLength = 3,
+                            required = true
+                    )
+            )
+            },
+            responses = {
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/deviceGet"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+            })
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response) throws IOException, ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope {
-        
-        
+
+
         String id = request.getUUID();
-        
-        
+
+
         Device device = controller.getDevice(id);
         if (device == null) {
             throw new DeviceNotFoundException(id);
@@ -37,13 +153,13 @@ public class DeviceGetServlet extends AuthedServlet {
         IUser user = request.getKosmoSUser();
         if (device.canRead(user)) {
             sendJSON(request, response, device.toJSON());
-            
+
             return;
         }
-        
-        
+
+
     }
-    
-    
+
+
 }
 

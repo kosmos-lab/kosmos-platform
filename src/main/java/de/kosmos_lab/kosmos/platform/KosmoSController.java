@@ -853,6 +853,10 @@ public class KosmoSController implements IController {
         this.getPersistence().addScopeGroup(scope, group);
 
     }
+    public void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group) {
+        this.getPersistence().addScopeAdminGroup(scope, group);
+
+    }
 
     /**
      * add a user to the scope
@@ -1905,44 +1909,50 @@ public class KosmoSController implements IController {
     public Device parseSet(@Nonnull CommandInterface from, @Nonnull Device device, @Nonnull JSONObject json, @Nonnull CommandSourceName source, @Nonnull IUser user) throws DeviceNotFoundException, ValidationException, NoAccessToScope {
         json.remove("uuid");
         json.remove("id");
-        if (device.canWrite(user)) { //throws NoAccessToScope
-            HashSet<String> newKeys = new HashSet<>();
-            for (String key : json.keySet()) {
-                if (!device.has(key)) {
-                    newKeys.add(key);
-                }
-            }
-            if (!newKeys.isEmpty()) {
-                PropertyTranslator.transform(device, json, newKeys);
-            }
-
-
-            if (!(from instanceof IPersistence)) {
-
-                //force fix broken keys for devices which cannot return a real error
-                Iterator<String> iter = json.keySet().iterator();
-                while (iter.hasNext()) {
-
-                    String k2 = iter.next();
-                    if (from != webServer) {
-                        if (!device.canHave(k2)) {
-                            json.remove(k2);
-                        }
-
-                        if (!device.canWrite(k2, user)) {
-                            json.remove(k2);
-                        }
-                    } else {
-                        if (!device.canWrite(k2, user)) {
-                            throw new ValidationException("cannot change value of " + k2);
-                        }
+        try {
+            device.lock();
+            if (device.canWrite(user)) { //throws NoAccessToScope
+                HashSet<String> newKeys = new HashSet<>();
+                for (String key : json.keySet()) {
+                    if (!device.has(key)) {
+                        newKeys.add(key);
                     }
-
-
                 }
+                if (!newKeys.isEmpty()) {
+                    PropertyTranslator.transform(device, json, newKeys);
+                }
+
+
+                if (!(from instanceof IPersistence)) {
+
+                    //force fix broken keys for devices which cannot return a real error
+                    Iterator<String> iter = json.keySet().iterator();
+                    while (iter.hasNext()) {
+
+                        String k2 = iter.next();
+                        if (from != webServer) {
+                            if (!device.canHave(k2)) {
+                                json.remove(k2);
+                            }
+
+                            if (!device.canWrite(k2, user)) {
+                                json.remove(k2);
+                            }
+                        } else {
+                            if (!device.canWrite(k2, user)) {
+                                throw new ValidationException("cannot change value of " + k2);
+                            }
+                        }
+
+
+                    }
+                }
+                device.updateFromJSON(from, json, source);
+                return device;
             }
-            device.updateFromJSON(from, json, source);
-            return device;
+        } finally {
+            device.unlock();
+
         }
         return null;
     }

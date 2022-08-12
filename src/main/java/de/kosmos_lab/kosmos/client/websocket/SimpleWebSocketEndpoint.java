@@ -3,23 +3,26 @@ package de.kosmos_lab.kosmos.client.websocket;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.CloseReason;
-import javax.websocket.ContainerProvider;
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
+import org.slf4j.LoggerFactory;
 
 @ClientEndpoint
 public class SimpleWebSocketEndpoint {
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger("SimpleWebSocketEndpoint");
 
     Session userSession = null;
     private MessageHandler messageHandler;
 
     public SimpleWebSocketEndpoint(URI endpointURI) {
         try {
+            logger.info("creating new SimpleWebSocketEndpoint for {}",endpointURI.toString());
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, endpointURI);
         } catch (Exception e) {
@@ -34,7 +37,7 @@ public class SimpleWebSocketEndpoint {
      */
     @OnOpen
     public void onOpen(Session userSession) {
-        System.out.println("opening websocket");
+        logger.info("opening websocket");
         this.userSession = userSession;
     }
 
@@ -46,7 +49,7 @@ public class SimpleWebSocketEndpoint {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
-        System.out.println("closing websocket");
+        logger.info("closing websocket");
         this.userSession = null;
     }
 
@@ -64,7 +67,7 @@ public class SimpleWebSocketEndpoint {
 
     @OnMessage
     public void onMessage(ByteBuffer bytes) {
-        System.out.println("Handle byte buffer");
+        logger.info("Handle byte buffer");
     }
 
 

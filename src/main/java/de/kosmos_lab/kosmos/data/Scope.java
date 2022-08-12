@@ -16,6 +16,13 @@ import java.util.HashSet;
  * - admin can additionally manage the users of a scope
  */
 public class Scope {
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_USERS = "users";
+    public static final String FIELD_ADMINS = "admins";
+    public static final String FIELD_USER_GROUPS = "userGroups";
+    public static final String FIELD_ADMIN_GROUPS = "adminGroups";
+
     public enum ScopeType {
         read,
         write,
@@ -117,28 +124,28 @@ public class Scope {
 
     @Nonnull public JSONObject toJSON() {
         JSONObject o = new JSONObject();
-        o.put("name",name);
-        o.put("id",id);
+        o.put(FIELD_NAME,name);
+        o.put(FIELD_ID,id);
         JSONArray arr = new JSONArray();
         for (IUser u : admins) {
             arr.put(new JSONObject().put("id",u.getUUID()).put("name",u.getName()));
         }
-        o.put("admins",arr);
+        o.put(FIELD_ADMINS,arr);
         arr = new JSONArray();
         for (IUser u : users) {
             arr.put(new JSONObject().put("id",u.getUUID()).put("name",u.getName()));
         }
-        o.put("users",arr);
+        o.put(FIELD_USERS,arr);
         arr = new JSONArray();
         for (Group g : adminGroups) {
             arr.put(new JSONObject().put("id",g.getID()).put("name",g.getName()));
         }
-        o.put("adminGroups",arr);
+        o.put(FIELD_ADMIN_GROUPS,arr);
         arr = new JSONArray();
         for (Group g : userGroups) {
             arr.put(new JSONObject().put("id",g.getID()).put("name",g.getName()));
         }
-        o.put("userGroups",arr);
+        o.put(FIELD_USER_GROUPS,arr);
         return o;
     }
     

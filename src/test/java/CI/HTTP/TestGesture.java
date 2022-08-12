@@ -1,5 +1,6 @@
 package CI.HTTP;
 
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.utils.StringFunctions;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
@@ -18,7 +19,7 @@ public class TestGesture {
     public void testGesture() {
         ContentResponse response = clientAdmin.getResponse("/gesture/list", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
         JSONArray arr = new JSONArray(response.getContentAsString());
         Assert.assertEquals(arr.length(), 0);
         JSONObject object = new JSONObject();
@@ -38,10 +39,10 @@ public class TestGesture {
             object.put("points", gest.points);
             response = clientAdmin.getResponse("/gesture/add", HttpMethod.POST, object);
             Assert.assertNotNull(response);
-            Assert.assertEquals(response.getStatus(), 200);
+            Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
             response = clientAdmin.getResponse("/gesture/guess", HttpMethod.POST, gest.points);
             Assert.assertNotNull(response);
-            Assert.assertEquals(response.getStatus(), 200);
+            Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
             JSONObject o = new JSONObject(response.getContentAsString());
             Assert.assertEquals(o.getString("result"), gest.name);
             
@@ -51,15 +52,15 @@ public class TestGesture {
         object.put("points", gest2.points);
         response = clientAdmin.getResponse("/gesture/add", HttpMethod.POST, object);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 409);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_DUPLICATE);
         response = clientAdmin.getResponse("/gesture/guess", HttpMethod.POST, gest2.points);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
         JSONObject o = new JSONObject(response.getContentAsString());
         Assert.assertEquals(o.getString("result"), gest2.name);
         response = clientAdmin.getResponse("/gesture/list", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
         arr = new JSONArray(response.getContentAsString());
         Assert.assertEquals(arr.length(), gests.length);
         for (TGesture gest : new TGesture[]{
@@ -70,7 +71,7 @@ public class TestGesture {
         }) {
             response = clientAdmin.getResponse("/gesture/guess", HttpMethod.POST, gest.points);
             Assert.assertNotNull(response);
-            Assert.assertEquals(response.getStatus(), 200);
+            Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
             o = new JSONObject(response.getContentAsString());
             Assert.assertEquals(o.getString("result"), gest.name);
             
@@ -78,18 +79,18 @@ public class TestGesture {
         
         response = clientAdmin.getResponse("/gesture/list", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
         arr = new JSONArray(response.getContentAsString());
         Assert.assertEquals(arr.length(), gests.length);
-        response = clientAdmin.getResponse("/gesture/delete", HttpMethod.POST, new JSONObject().put("id", arr.getJSONObject(0).getString("id")));
+        response = clientAdmin.getResponse("/gesture/delete", HttpMethod.DELETE, new JSONObject().put("id", arr.getJSONObject(0).getString("id")));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
         arr = new JSONArray(response.getContentAsString());
         Assert.assertEquals(arr.length(), gests.length - 1);
         String randomKey = StringFunctions.generateRandomKey(32); //cant match our keys differ in size
-        response = clientAdmin.getResponse("/gesture/delete", HttpMethod.POST, new JSONObject().put("id", randomKey));
+        response = clientAdmin.getResponse("/gesture/delete", HttpMethod.DELETE, new JSONObject().put("id", randomKey));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 404);
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NOT_FOUND);
         Assert.assertEquals(arr.length(), gests.length - 1);
         String newName = StringFunctions.generateRandomKey(26);
         boolean found = false;
@@ -108,14 +109,14 @@ public class TestGesture {
                     //actually rename it
                     response = clientAdmin.getResponse("/gesture/rename", HttpMethod.POST, new JSONObject().put("from", name).put("to", newName));
                     Assert.assertNotNull(response);
-                    Assert.assertEquals(response.getStatus(), 200);
+                    Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
                     //check if the old file is gone
                     Assert.assertFalse(f.exists());
                     //check if the known good gesture will still be detected (with the new name!)
                     TGesture gest = new TGesture(newName, "[[[374,237],[375,237],[376,237],[377,237],[378,237],[378,236],[379,236],[381,235],[382,233],[384,231],[386,229],[389,226],[392,223],[394,219],[396,214],[399,209],[401,203],[404,196],[405,190],[406,183],[407,177],[408,170],[408,163],[408,157],[408,150],[408,144],[407,138],[406,131],[404,125],[402,119],[400,112],[398,107],[395,100],[392,94],[389,89],[386,84],[383,79],[379,75],[376,71],[372,66],[368,62],[365,59],[360,55],[357,52],[353,50],[348,47],[344,45],[340,43],[335,41],[330,39],[325,37],[320,37],[313,35],[308,35],[301,34],[296,34],[291,34],[285,34],[281,34],[276,34],[271,35],[267,37],[263,39],[259,41],[254,44],[250,46],[246,49],[243,52],[238,56],[235,60],[231,64],[228,68],[225,73],[221,79],[219,85],[216,90],[214,96],[212,101],[210,107],[209,112],[207,117],[206,122],[205,128],[204,132],[204,138],[203,143],[203,148],[203,152],[203,156],[203,160],[203,163],[205,167],[206,170],[207,172],[210,176],[212,180],[214,183],[217,187],[220,192],[224,196],[226,199],[229,202],[232,206],[235,209],[239,212],[242,214],[246,217],[250,219],[255,221],[260,223],[265,225],[271,227],[276,227],[281,228],[286,229],[292,230],[296,230],[301,230],[305,230],[310,231],[313,231],[317,231],[320,231],[324,231],[327,231],[331,231],[334,231],[336,231],[339,231],[341,231],[344,231],[346,231],[349,231],[351,231],[353,230],[356,229],[357,229],[359,229],[360,229],[362,228],[363,228],[364,228],[365,228],[366,228],[367,228],[368,228],[369,228],[369,227],[370,227],[371,227],[372,227],[373,227],[374,227],[375,227],[376,227],[377,227],[379,227],[380,227],[381,227],[383,227],[384,227],[385,227],[386,227]]]");
                     response = clientAdmin.getResponse("/gesture/guess", HttpMethod.POST, gest.points);
                     Assert.assertNotNull(response);
-                    Assert.assertEquals(response.getStatus(), 200);
+                    Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK);
                     JSONObject o2 = new JSONObject(response.getContentAsString());
                     
                     Assert.assertEquals(o2.getString("result"), newName);

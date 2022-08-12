@@ -165,7 +165,13 @@ public class KosmoSPersistence extends SQLPersistence implements CommandInterfac
         
         this.doAdd(Models.SQL_Scope_Group_User.add, new Object[]{group.getID(), scope.getID()});
     }
-    
+    @Override
+    public void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group) {
+        scope.addAdminGroup(group);
+
+        this.doAdd(Models.SQL_Scope_Group_Admins.add, new Object[]{group.getID(), scope.getID()});
+    }
+
     @Override
     public void addScopeUser(@Nonnull Scope scope, @Nonnull IUser user) {
         scope.addUser(user);

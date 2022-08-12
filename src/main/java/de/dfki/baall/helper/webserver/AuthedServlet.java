@@ -8,8 +8,8 @@ import de.dfki.baall.helper.webserver.data.User;
 import de.dfki.baall.helper.webserver.exceptions.LoginFailedException;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public abstract class AuthedServlet extends MyServlet {
     protected final int level;

@@ -8,8 +8,8 @@ import de.dfki.baall.helper.webserver.WebServer;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
 import org.json.JSONObject;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/session/kill"}, loadOnStartup = 1)

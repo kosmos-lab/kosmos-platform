@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.kosmos-lab.platform</groupId>
-    <version>0.8.2</version>
+    <version>0.8.3</version>
     <artifactId>kosmos-platform</artifactId>
     <name>kosmos-platform</name>
     <description>The KosmoS Platform</description>
@@ -41,7 +41,9 @@
         <skipTests>false</skipTests>
         <maven.compiler.release>11</maven.compiler.release>
         <mavenplugin.version>3.2.0</mavenplugin.version>
-        <jettyVersion>9.4.32.v20200930</jettyVersion>
+        <!--<jettyVersion>9.4.32.v20200930</jettyVersion>-->
+
+        <jettyVersion>11.0.11</jettyVersion>
         <spotbugsVersion>4.5.3</spotbugsVersion>
         <pf4jVersion>3.6.0</pf4jVersion>
 
@@ -147,6 +149,23 @@
     </repositories>
     <dependencies>
 
+        <dependency>
+            <groupId>org.jfairy</groupId>
+            <artifactId>jfairy</artifactId>
+            <version>0.2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>me.bazhenov</groupId>
@@ -183,6 +202,11 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.3.9</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
         <dependency>
@@ -234,15 +258,26 @@
             <artifactId>jetty-server</artifactId>
             <version>${jettyVersion}</version>
         </dependency>
-
-        <!-- To run javax.websocket in embedded server -->
         <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>javax-websocket-server-impl</artifactId>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
             <version>${jettyVersion}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>${jettyVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-jetty-client</artifactId>
+            <version>${jettyVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-jetty-server</artifactId>
+            <version>${jettyVersion}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -435,24 +470,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.googlecode.maven-download-plugin</groupId>
-                <artifactId>download-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>swagger-ui</id>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://github.com/swagger-api/swagger-ui/archive/master.tar.gz</url>
-                            <unpack>true</unpack>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
@@ -466,13 +484,13 @@
                         <configuration>
                             <outputDirectory>target/${project.artifactId}-${project.version}</outputDirectory>
                             <resources>
+
+
                                 <resource>
-                                    <directory>${project.build.directory}/swagger-ui-master/dist</directory>
+                                    <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
-                                    <excludes>
-                                        <exclude>index.html</exclude>
-                                    </excludes>
                                 </resource>
+
                             </resources>
                         </configuration>
                     </execution>
@@ -484,6 +502,8 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+
+
                 </configuration>
             </plugin>
             <plugin>
@@ -576,6 +596,7 @@
             <properties>
             </properties>
             <build>
+
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

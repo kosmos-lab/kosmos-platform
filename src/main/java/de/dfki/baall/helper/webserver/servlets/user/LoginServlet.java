@@ -10,8 +10,8 @@ import de.dfki.baall.helper.webserver.data.User;
 import de.dfki.baall.helper.webserver.exceptions.LoginFailedException;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

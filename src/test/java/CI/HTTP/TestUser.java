@@ -2,6 +2,7 @@ package CI.HTTP;
 
 import common.CommonBase;
 import de.kosmos_lab.kosmos.client.KosmoSClient;
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.utils.StringFunctions;
 import org.apache.commons.lang3.CharSet;
 import org.eclipse.jetty.client.HttpClient;
@@ -94,18 +95,18 @@ public class TestUser {
         //Assert.assertTrue(CommonBase.clientFakeUser.refreshToken(), "Login should have failed!");
         ContentResponse response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", clientAdmin.getUserName()).put("pass", clientAdmin.getPassword()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 200, "raw Login failed");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "raw Login failed");
 
 
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", clientAdmin.getUserName()).put("pass", StringFunctions.generateRandomKey()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 403, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "raw Login should have failed");
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", StringFunctions.generateRandomKey()).put("pass", StringFunctions.generateRandomKey()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 403, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "raw Login should have failed");
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject());
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), 422, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_MISSING_VALUE, "raw Login should have failed");
     }
 
     @Test(dependsOnGroups = {"login"}, groups = {"createUser"})

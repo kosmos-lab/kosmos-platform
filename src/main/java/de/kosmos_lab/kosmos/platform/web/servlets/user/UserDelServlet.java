@@ -2,30 +2,69 @@ package de.kosmos_lab.kosmos.platform.web.servlets.user;
 
 import de.dfki.baall.helper.webserver.data.IUser;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.kosmos.annotations.Operation;
+import de.kosmos_lab.kosmos.annotations.Parameter;
+import de.kosmos_lab.kosmos.annotations.enums.ParameterIn;
+import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
+import de.kosmos_lab.kosmos.annotations.media.Schema;
+import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
 
-
-@WebServlet(urlPatterns = {"/user/delete"}, loadOnStartup = 1)
+@ApiEndpoint(
+        path = "/user/delete",
+        userLevel = 100
+)
 public class UserDelServlet extends AuthedServlet {
-    public UserDelServlet(WebServer webServer, IController controller) {
-        super(webServer, controller, 100);
-        
+    private static final String FIELD_USER = "user";
+
+    public UserDelServlet(WebServer webServer, IController controller, int level) {
+        super(webServer, controller, level);
+
     }
+
+    @Operation(
+
+            tags = {"user"},
+            summary = "delete",
+            description = "This endpoint can be used to delete a user from the system.",
+            parameters = {
+                    @Parameter(
+                            name = FIELD_USER,
+                            in = ParameterIn.QUERY,
+                            schema = @Schema(
+                                    description = "The username of the user to delete",
+                                    type = SchemaType.STRING,
+                                    minLength = 3,
+                                    required = true
+                            )
+                    )
+            },
+            responses = {
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "OK - user was deleted"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), description = "The user could not be found"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_ERROR), description = "#/components/responses/FailedError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+            }
+    )
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
             throws ParameterNotFoundException {
-        String user = request.getString("user");
+        String user = request.getString(FIELD_USER);
         IUser u = controller.getUser(user);
         if (u == null) {
             response.setStatus(STATUS_NOT_FOUND);
             return;
         }
-    
+
         IUser me = request.getKosmoSUser();
         if (u.getLevel() >= me.getLevel()) {
             response.setStatus(STATUS_FORBIDDEN);
@@ -33,11 +72,10 @@ public class UserDelServlet extends AuthedServlet {
         }
         controller.deleteUser(u);
         response.setStatus(STATUS_NO_RESPONSE);
-        return;
-        
-        
+
+
     }
-    
-    
+
+
 }
 

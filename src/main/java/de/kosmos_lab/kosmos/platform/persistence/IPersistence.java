@@ -84,7 +84,8 @@ public interface IPersistence {
      * @param group
      */
     void addScopeGroup(@Nonnull Scope scope, @Nonnull Group group);
-    
+    void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group);
+
     /**
      * add a user with user access to the scope
      *

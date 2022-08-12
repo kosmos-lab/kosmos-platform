@@ -1,6 +1,18 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.device;
 
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.kosmos.annotations.Operation;
+import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
+import de.kosmos_lab.kosmos.annotations.media.ArraySchema;
+import de.kosmos_lab.kosmos.annotations.media.Content;
+import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
+import de.kosmos_lab.kosmos.annotations.media.ObjectSchema;
+import de.kosmos_lab.kosmos.annotations.media.Schema;
+import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
+import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
+import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.DeviceAlreadyExistsException;
 import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
@@ -8,38 +20,152 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
+import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
-@WebServlet(urlPatterns = {"/device/add"}, loadOnStartup = 1)
-public class DeviceAddServlet extends AuthedServlet {
-    
-    
-    public DeviceAddServlet(WebServer webServer, IController controller) {
-        super(webServer, controller);
-    }
-    
-    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-        
-            throws NotObjectSchemaException, ParameterNotFoundException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException {
-        
-        
-        JSONObject o = request.getBodyAsJSONObject();
-        if ( o != null ) {
-            
-                //logger.info("type of request: {}", request.getClass());
-                controller.parseAddDevice(this.server, o, this.getSource(request), request.getKosmoSUser());
-                response.setStatus(STATUS_NO_RESPONSE);
-        
-            
+@ApiEndpoint(
+        path = "/device/add",
+        userLevel = 1
+)
+
+@ObjectSchema(
+        componentName = "deviceScopes",
+        properties = {
+
+                @SchemaProperty(
+                        name = "read",
+                        schema = @Schema(
+                                description = "The scope that has read access to this device",
+                                type = SchemaType.STRING,
+                                required = false
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "write",
+                        schema = @Schema(
+                                description = "The scope that has write access to this device",
+                                type = SchemaType.STRING,
+                                required = false
+                        )
+
+                ),
+                @SchemaProperty(
+                        name = "delete",
+                        schema = @Schema(
+                                description = "The scope that has delete access to this device",
+                                type = SchemaType.STRING,
+                                required = false
+                        )
+
+                )
         }
-        
+)
+public class DeviceAddServlet extends AuthedServlet {
+
+
+    public DeviceAddServlet(WebServer webServer, IController controller, int level) {
+        super(webServer, controller, level);
     }
-    
-    
+
+    @Operation(
+            tags = {"device"},
+            summary = "add",
+            description = "Add a device to the system",
+            requestBody = @RequestBody(
+                    required = true,
+                    content = {
+                            @Content(
+                                    mediaType = MediaType.APPLICATION_JSON,
+                                    schemaProperties = {
+                                            @SchemaProperty(
+                                                    name = "schema",
+                                                    schema = @Schema(
+                                                            description = "The $id/url of the schema to use",
+                                                            type = SchemaType.STRING,
+                                                            required = true
+                                                    )
+                                            ),
+                                            @SchemaProperty(
+                                                    name = "uuid",
+                                                    schema = @Schema(
+                                                            description = "The uuid to use for the new device",
+                                                            type = SchemaType.STRING,
+                                                            minLength = 3,
+                                                            required = true
+                                                    )
+                                            ),
+                                            @SchemaProperty(
+                                                    name = "name",
+                                                    schema = @Schema(
+                                                            description = "The name to use for the new device",
+                                                            type = SchemaType.STRING,
+                                                            minLength = 3,
+                                                            required = false
+                                                    )
+                                            ),
+                                            @SchemaProperty(
+                                                    name = "state",
+                                                    schema = @Schema(
+                                                            description = "The starting state of the device, needs to contain all required values if the schema has any",
+                                                            type = SchemaType.OBJECT,
+                                                            defaultValue = "{}",
+                                                            required = false
+                                                    )
+                                            ),
+                                            @SchemaProperty(
+                                                    name = "scopes",
+                                                    schema = @Schema(
+                                                            description = "The name to use for the new device",
+                                                            ref = "#/components/schemas/deviceScopes"
+                                                    )
+                                            ),
+                                    }, examples = {
+                                    @ExampleObject(
+                                            name = "MultiSensor2",
+                                            value = "{\"name\":\"multi2\",\"uuid\":\"multi2\",\"schema\":\"https://kosmos-lab.de/schema/MultiSensor.json\",\"state\":{\"currentEnvironmentTemperature\":17,\"humidityLevel\":10}}"
+                                    ),
+                                    @ExampleObject(
+                                            name = "MultiSensor17 with scopes",
+                                            value = "{\"name\":\"kosmos_multi17\",\"uuid\":\"kosmos_multi17\",\"schema\":\"https://kosmos-lab.de/schema/MultiSensor.json\",\"state\":{\"currentEnvironmentTemperature\":17,\"humidityLevel\":10},\"scopes\":{\"read\":\"kosmos:read\",\"write\":\"kosmos:write\",\"del\":\"kosmos:del\"}}"
+                                    ),
+                                    @ExampleObject(
+                                            name = "Lamp1",
+                                            value = "{\"name\":\"lamp1\",\"uuid\":\"lamp1\",\"schema\":\"https://kosmos-lab.de/schema/Lamp.json\",\"state\":{\"on\":true}}"
+                                    )
+                            }
+
+                            )
+                    }
+            ),
+            responses = {
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The device was added successfully"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "There is already a device with that uuid."),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+            })
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+
+            throws NotObjectSchemaException, ParameterNotFoundException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException {
+
+
+        JSONObject o = request.getBodyAsJSONObject();
+        if (o != null) {
+
+            //logger.info("type of request: {}", request.getClass());
+            controller.parseAddDevice(this.server, o, this.getSource(request), request.getKosmoSUser());
+            response.setStatus(STATUS_NO_RESPONSE);
+
+
+        }
+
+    }
+
+
 }
 
