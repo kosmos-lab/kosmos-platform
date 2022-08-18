@@ -138,7 +138,7 @@ public class GestureListServlet extends AuthedServlet {
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/gestureList"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 

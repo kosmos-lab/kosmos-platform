@@ -9,6 +9,7 @@ import de.kosmos_lab.kosmos.annotations.media.Schema;
 import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
 import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.kosmos_lab.kosmos.exceptions.GestureNotFoundException;
 import de.kosmos_lab.kosmos.exceptions.NotFoundException;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
@@ -47,19 +48,19 @@ public class GestureDeleteServlet extends AuthedServlet {
             },
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), description = "The gesture was added successfully", ref = "#/components/responses/gestureList"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), description = "This gestures was not found"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), description = "This gestures was not found"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
             
-            throws IOException, ParameterNotFoundException, NotFoundException {
+            throws IOException, ParameterNotFoundException, GestureNotFoundException {
         String id = request.getString("id");
         if (controller.getGestureProvider().deleteGesture(id)) {
             sendJSON(request, response, GestureListServlet.getGestureList(this.controller));
             return;
         }
-        throw new NotFoundException("Gesture " + id + " was not found");
+        throw new GestureNotFoundException(id);
         
     }
     

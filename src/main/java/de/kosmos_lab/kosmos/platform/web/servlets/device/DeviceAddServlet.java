@@ -36,7 +36,7 @@ import java.io.IOException;
 @ObjectSchema(
         componentName = "deviceScopes",
         properties = {
-
+                
                 @SchemaProperty(
                         name = "read",
                         schema = @Schema(
@@ -44,7 +44,7 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-
+                
                 ),
                 @SchemaProperty(
                         name = "write",
@@ -53,7 +53,7 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-
+                
                 ),
                 @SchemaProperty(
                         name = "delete",
@@ -62,21 +62,21 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-
+                
                 )
         }
 )
 public class DeviceAddServlet extends AuthedServlet {
-
-
+    
+    
     public DeviceAddServlet(WebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
-
+    
     @Operation(
             tags = {"device"},
-            summary = "add",
-            description = "Add a device to the system",
+            summary = "Add a device",
+            description = "Add a device to the system.",
             requestBody = @RequestBody(
                     required = true,
                     content = {
@@ -86,7 +86,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "schema",
                                                     schema = @Schema(
-                                                            description = "The $id/url of the schema to use",
+                                                            description = "The $id/url of the schema to use. If its a schema not already in the system the $id MUST be a reachable Url describing the schema.",
                                                             type = SchemaType.STRING,
                                                             required = true
                                                     )
@@ -94,7 +94,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "uuid",
                                                     schema = @Schema(
-                                                            description = "The uuid to use for the new device",
+                                                            description = "The uuid to use for the new device, must be unique.",
                                                             type = SchemaType.STRING,
                                                             minLength = 3,
                                                             required = true
@@ -103,7 +103,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "name",
                                                     schema = @Schema(
-                                                            description = "The name to use for the new device",
+                                                            description = "The name to use for the new device, if no name is set uuid will be used. Does not need to be unique.",
                                                             type = SchemaType.STRING,
                                                             minLength = 3,
                                                             required = false
@@ -112,7 +112,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "state",
                                                     schema = @Schema(
-                                                            description = "The starting state of the device, needs to contain all required values if the schema has any",
+                                                            description = "The starting state of the device, needs to contain all required values if the schema has any and needs to be valid against the schema.",
                                                             type = SchemaType.OBJECT,
                                                             defaultValue = "{}",
                                                             required = false
@@ -121,7 +121,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "scopes",
                                                     schema = @Schema(
-                                                            description = "The name to use for the new device",
+                                                            description = "The name of the scope to use for the new device.",
                                                             ref = "#/components/schemas/deviceScopes"
                                                     )
                                             ),
@@ -139,33 +139,27 @@ public class DeviceAddServlet extends AuthedServlet {
                                             value = "{\"name\":\"lamp1\",\"uuid\":\"lamp1\",\"schema\":\"https://kosmos-lab.de/schema/Lamp.json\",\"state\":{\"on\":true}}"
                                     )
                             }
-
+                            
                             )
                     }
             ),
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The device was added successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "There is already a device with that uuid."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-
-            throws NotObjectSchemaException, ParameterNotFoundException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException {
-
-
+            
+            throws NotObjectSchemaException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException {
+        
+        
         JSONObject o = request.getBodyAsJSONObject();
         if (o != null) {
-
-            //logger.info("type of request: {}", request.getClass());
             controller.parseAddDevice(this.server, o, this.getSource(request), request.getKosmoSUser());
             response.setStatus(STATUS_NO_RESPONSE);
-
-
+           
         }
-
+        
     }
-
-
+    
+    
 }
 

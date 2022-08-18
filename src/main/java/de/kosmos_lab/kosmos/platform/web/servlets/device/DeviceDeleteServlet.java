@@ -16,6 +16,7 @@ import de.kosmos_lab.kosmos.data.Device;
 import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
+import de.kosmos_lab.kosmos.exceptions.NoAccessException;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
@@ -42,12 +43,12 @@ public class DeviceDeleteServlet extends AuthedServlet {
 
     @Operation(
             tags = {"device"},
-            summary = "delete",
-            description = "delete a device",
+            summary = "Delete a device",
+            description = "Delete a device",
             parameters = {@Parameter(name = "uuid",
                     in = ParameterIn.QUERY,
                     schema = @Schema(
-                            description = "The uuid of the device to delete",
+                            description = "The uuid of the device to delete.",
                             type = SchemaType.STRING,
                             minLength = 3,
                             required = true
@@ -55,12 +56,12 @@ public class DeviceDeleteServlet extends AuthedServlet {
             )
             },
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The device was removed successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
-    public void delete(KosmoSHttpServletRequest request, HttpServletResponse response) throws ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope {
+    public void delete(KosmoSHttpServletRequest request, HttpServletResponse response) throws ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope, NoAccessException {
         
         
         String id = request.getUUID();
@@ -92,8 +93,9 @@ public class DeviceDeleteServlet extends AuthedServlet {
                     return;
                 }
             }
-            response.setStatus(STATUS_FORBIDDEN);
-            return;
+            
+            throw new NoAccessException("You are not allowed to delete this device.");
+            
         }
         
         

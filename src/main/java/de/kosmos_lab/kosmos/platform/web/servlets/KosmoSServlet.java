@@ -123,7 +123,7 @@ public class KosmoSServlet extends HttpServlet {
 
     }
 
-    public void delete(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup {
+    public void delete(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NoAccessException {
 
         response.setStatus(STATUS_METHOD_NOT_ALLOWED);
     }
@@ -305,7 +305,7 @@ public class KosmoSServlet extends HttpServlet {
 
     }
 
-    public void post(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NotFoundInPersistenceException, AlreadyExistsException {
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NotFoundInPersistenceException, AlreadyExistsException, NoAccessException {
         //logger.info("HITTING POST");
         response.setStatus(STATUS_METHOD_NOT_ALLOWED);
     }

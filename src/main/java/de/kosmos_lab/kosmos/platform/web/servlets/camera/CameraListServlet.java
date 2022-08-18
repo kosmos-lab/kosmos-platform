@@ -32,7 +32,7 @@ import java.io.IOException;
         path = "/camera/list",
         userLevel = 1
 )
-@ApiResponseDescription(name= "CameraNotFoundError",description = "The camera was not found")
+@ApiResponseDescription(name = "CameraNotFoundError", description = "The camera was not found")
 
 @ObjectSchema(
         componentName = "camera",
@@ -78,11 +78,11 @@ public class CameraListServlet extends AuthedServlet {
 
     @Operation(
             tags = {"camera"},
-            summary = "list cameras",
-            description = "List all known cameras",
+            summary = "List available cameras",
+            description = "List all known cameras.",
             parameters = {
                     @Parameter(
-                            description = "Include more details in the response",
+                            description = "Include more details in the response. If true the response will also contain the currently available recordings of the camera (the recordings you made).",
                             in = ParameterIn.QUERY,
                             name = FIELD_DETAILS,
                             schema = @Schema(
@@ -113,19 +113,15 @@ public class CameraListServlet extends AuthedServlet {
                                     )
                             }
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             throws IOException {
-        boolean details = false;
-        try {
-            details = request.getBoolean(FIELD_DETAILS);
+        boolean details = request.getBoolean(FIELD_DETAILS, false);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         JSONArray arr = new JSONArray();
         for (ICamera camera : this.controller.getAllCameras()) {
             JSONObject json = new JSONObject().put("name", camera.getName()).put("recording", camera.isRecording());

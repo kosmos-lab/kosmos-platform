@@ -36,8 +36,8 @@ public class CameraSnapshotServlet extends AuthedServlet {
 
     @Operation(
             tags = {"camera"},
-            summary = "get snapshot",
-            description = "Get a current snapshot from the camera",
+            summary = "Get camera snapshot",
+            description = "Get a current snapshot from the camera.",
             parameters = {
                     @Parameter(
                             description = "The name of the camera",
@@ -77,11 +77,9 @@ public class CameraSnapshotServlet extends AuthedServlet {
                                             mediaType = "image/*"
                                     )
                             },
-                            description = "An actual image to display"
+                            description = "An actual binary image to display."
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/CameraNotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)

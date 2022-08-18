@@ -10,6 +10,7 @@ import de.kosmos_lab.kosmos.annotations.Operation;
 import de.kosmos_lab.kosmos.annotations.Parameter;
 import de.kosmos_lab.kosmos.annotations.enums.Explode;
 import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
+import de.kosmos_lab.kosmos.annotations.headers.Header;
 import de.kosmos_lab.kosmos.annotations.info.Contact;
 import de.kosmos_lab.kosmos.annotations.info.Info;
 import de.kosmos_lab.kosmos.annotations.info.License;
@@ -65,14 +66,15 @@ public class OpenApiParser {
     private static HashSet<Schema> schemas = new HashSet<>();
     private static HashSet<ObjectSchema> oschemas = new HashSet<>();
     private static HashSet<ArraySchema> aschemas = new HashSet<>();
-
+    
     private static HashSet<Parameter> parameters = new HashSet<>();
     private static HashSet<Tag> tags = new HashSet<>();
     private static ResourceBundle labels = null;
     private static HashMap<String, JSONObject> mResponses = new HashMap<>();
     private static JSONObject components;
     private static LinkedList<Example> examples = new LinkedList<>();
-
+    private static JSONObject responses = new JSONObject();
+    
     public static String asYaml(String jsonString) throws JsonProcessingException, IOException {
         // parse JSON
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
@@ -80,12 +82,12 @@ public class OpenApiParser {
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
         return jsonAsYaml;
     }
-
-
+    
+    
     public static String getYAML() throws IOException {
         return asYaml(getJSON().toString());
     }
-
+    
     public static void create(HashSet<Class<? extends KosmoSServlet>> pservlets) {
         if (servlets == null) {
             servlets = pservlets;
@@ -94,9 +96,9 @@ public class OpenApiParser {
                 servlets.add(servlet);
             }
         }
-
+        
     }
-
+    
     public static JSONObject toJSON(Info info) {
         JSONObject jinfo = new JSONObject();
         add("description", info.description(), jinfo);
@@ -105,19 +107,19 @@ public class OpenApiParser {
         add("title", info.title(), jinfo);
         add("version", info.version(), jinfo);
         add("license", info.license(), jinfo);
-
+        
         return jinfo;
-
-
+        
+        
     }
-
+    
     public static void add(String tag, License license, JSONObject json) {
         JSONObject licenseJSON = new JSONObject();
         add("url", license.url(), licenseJSON);
         add("name", license.name(), licenseJSON);
         add(tag, licenseJSON, json);
     }
-
+    
     public static void add(String tag, Contact contact, JSONObject json) {
         JSONObject contactJSON = new JSONObject();
         add("email", contact.email(), contactJSON);
@@ -125,21 +127,21 @@ public class OpenApiParser {
         add("name", contact.name(), contactJSON);
         add(tag, contactJSON, json);
     }
-
+    
     public static JSONObject getJSON() {
         if (json != null) {
             return json;
         }
         json = new JSONObject();
-
+        
         ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.reflections")).setLevel(Level.OFF);
         Reflections r = new Reflections("");
-
+        
         add("openapi", "3.0.0", json);
-
+        
         JSONObject info = new JSONObject();
-
-
+        
+        
         Info infoAnnotation = WebServer.class.getAnnotation(Info.class);
         if (infoAnnotation != null) {
             info = toJSON(infoAnnotation);
@@ -150,19 +152,19 @@ public class OpenApiParser {
         try {
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader("pom.xml"));
-
+            
             info.put("version", model.getVersion());
-
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         add("info", info, json);
-
+        
         components = new JSONObject();
         JSONObject securitySchemes = new JSONObject();
         for (Schema schema : WebServer.class.getAnnotationsByType(Schema.class)) {
             String name = schema.name();
-
+            
             if (name.length() > 0) {
                 schemas.add(schema);
             }
@@ -192,7 +194,7 @@ public class OpenApiParser {
             }
         }
         add("securitySchemes", securitySchemes, components);
-        JSONObject responses = new JSONObject();
+        responses = new JSONObject();
 //        responses.put("DeviceNotFoundError", new JSONObject().put("description", "Could not find the given Device"));
         for (Field f : KosmoSServlet.class.getDeclaredFields()) {
             ApiResponseDescription ann = f.getAnnotation(ApiResponseDescription.class);
@@ -202,9 +204,16 @@ public class OpenApiParser {
         }
         for (Class<?> c : r.getTypesAnnotatedWith(ApiResponse.class)) {
             for (ApiResponse ann : c.getAnnotationsByType(ApiResponse.class)) {
+                /*if (c.isAssignableFrom(Exception.class)) {
+                    responses.put(c.getSimpleName().replace("Exception", "Error"), toJSON(ann));
+                }*/
+                if (Exception.class.isAssignableFrom(c)) {
+                    responses.put(c.getSimpleName().replace("Exception", "Error"), toJSON(ann));
+                }
                 if (ann.componentName().length() > 0) {
                     responses.put(ann.componentName(), toJSON(ann));
                 }
+                
             }
         }
         for (Class<?> c : r.getTypesAnnotatedWith(ApiResponseDescription.class)) {
@@ -222,7 +231,7 @@ public class OpenApiParser {
             add("url", s.url(), j);
             servers.put(j);
         }
-
+        
         for (Class<?> c : r.getTypesAnnotatedWith(Server.class)) {
             for (Server s : c.getAnnotationsByType(Server.class)) {
                 logger.info("found server {}", s);
@@ -237,8 +246,8 @@ public class OpenApiParser {
         JSONObject schemajson = new JSONObject();
         JSONObject parametersjson = new JSONObject();
         JSONArray tagarray = new JSONArray();
-
-
+        
+        
         JSONObject paths = new JSONObject();
         for (Class<? extends KosmoSServlet> c : servlets) {
             ApiEndpoint a = c.getAnnotation(ApiEndpoint.class);
@@ -249,6 +258,7 @@ public class OpenApiParser {
                         try {
                             Method m = c.getMethod(method, KosmoSHttpServletRequest.class, HttpServletResponse.class);
                             Operation am = m.getAnnotation(Operation.class);
+                            
                             if (am != null) {
                                 OpenApiParser.add(a, am, m, paths);
                             }
@@ -303,7 +313,7 @@ public class OpenApiParser {
         checkExamples();
         return json;
     }
-
+    
     /**
      * used to check if the examples are all correct
      *
@@ -323,12 +333,12 @@ public class OpenApiParser {
         }
         if (failed > 0) {
             logger.error("Had {} Examples that failed", failed);
-
+            
         }
         return new Tuple(checked, failed);
-
+        
     }
-
+    
     public static void add(String tag, OAuthFlows flows, JSONObject json) {
         JSONObject flowsJSON = new JSONObject();
         add("implicit", flows.implicit(), flowsJSON);
@@ -336,7 +346,7 @@ public class OpenApiParser {
         add("clientCredentials", flows.clientCredentials(), flowsJSON);
         add("authorizationCode", flows.authorizationCode(), flowsJSON);
     }
-
+    
     public static void add(String tag, OAuthFlow flow, JSONObject json) {
         JSONObject flowJSON = new JSONObject();
         add("authorizationUrl", flow.authorizationUrl(), flowJSON);
@@ -348,9 +358,9 @@ public class OpenApiParser {
         }
         add("scopes", scopesJSON, flowJSON);
         add(tag, flowJSON, json);
-
+        
     }
-
+    
     public static void add(Tag tag, JSONArray array) {
         JSONObject j = new JSONObject();
         add("name", tag.name(), j);
@@ -359,11 +369,11 @@ public class OpenApiParser {
         if (j.length() > 0) {
             array.put(j);
         }
-
+        
     }
-
+    
     public static void add(ApiEndpoint endpoint, Operation operation, Method method, JSONObject paths) {
-
+        
         JSONObject epp = paths.optJSONObject(endpoint.path());
         if (epp == null) {
             epp = new JSONObject();
@@ -372,12 +382,12 @@ public class OpenApiParser {
         JSONObject j = new JSONObject();
         epp.put(method.getName(), j);
         add("tags", operation.tags(), j);
-
+        
         if (operation.description().length() > 0) {
             add("description", operation.description(), j);
         } else {
             add("description", operation.summary(), j);
-
+            
         }
         add("summary", operation.summary(), j);
         String operationId = operation.operationId();
@@ -387,30 +397,33 @@ public class OpenApiParser {
         add("operationId", operationId, j);
         JSONArray security = new JSONArray();
         if (operation.security().length == 0) {
-
+            
             if (endpoint.userLevel() >= KosmoSUser.LEVEL_ADMIN) {
 
                 security.put(new JSONObject().put("bearerAuth", new JSONArray().put("admin")));
-
+                security.put(new JSONObject().put("basicAuth", new JSONArray().put("admin")));
+                
             } else if (endpoint.userLevel() >= 0) {
                 security.put(new JSONObject().put("bearerAuth", new JSONArray().put("user")));
-            }
+                security.put(new JSONObject().put("basicAuth", new JSONArray().put("user")));
 
+            }
+            
         } else {
             for (SecurityRequirement s : operation.security()) {
                 JSONArray scopes = new JSONArray();
                 for (String scope : s.scopes()) {
                     scopes.put(scope);
                 }
-
+                
                 security.put(new JSONObject().put(s.name(), scopes));
-
+                
             }
         }
         add("security", security, j);
-
+        JSONObject resp = new JSONObject();
         if (operation.responses().length > 0) {
-            JSONObject resp = new JSONObject();
+            
             for (ApiResponse response : operation.responses()) {
                 JSONObject rjson = toJSON(response);
                 ResponseCode sc = response.responseCode();
@@ -420,17 +433,55 @@ public class OpenApiParser {
                     resp.put(String.valueOf(sc.status()), rjson);
                 }
             }
-
-            j.put("responses", resp);
+            
+            
         }
+        try {
+            for (Class<?> ex : method.getExceptionTypes()) {
+                String n = ex.getSimpleName().replace("Exception", "Error");
+                ApiResponse apiresp = ex.getAnnotation(ApiResponse.class);
+                if (apiresp != null) {
+                    //only add if we have a valid description for the Exception
+                    if (responses.has(n)) {
+                        //JSONObject rjson = toJSON(apiresp);
+                        ResponseCode sc = apiresp.responseCode();
+                        //add the response, but only if there is not already a description for that given exception
+                        if (sc.statusCode() != -1) {
+                            String ssc = String.valueOf(sc.statusCode());
+                            if (!resp.has(ssc)) {
+                                resp.put(ssc, new JSONObject().put("$ref", "#/components/responses/" + n));
+                            }
+                        } else {
+                            String ssc = String.valueOf(sc.status());
+                            if (!resp.has(ssc)) {
+                                resp.put(ssc, new JSONObject().put("$ref", "#/components/responses/" + n));
+                            }
+                        }
+                    }
+                }
+                
+                
+            }
+        } catch (Exception e) {
+        
+        }
+        if (endpoint.userLevel() != -1) {
+            if (!resp.has(String.valueOf(KosmoSServlet.STATUS_NO_AUTH))) {
+                resp.put(String.valueOf(KosmoSServlet.STATUS_NO_AUTH), new JSONObject().put("$ref", "#/components/responses/NoAuthError"));
+            }
+            /*if (!resp.has(String.valueOf(KosmoSServlet.STATUS_FORBIDDEN))) {
+                resp.put(String.valueOf(KosmoSServlet.STATUS_FORBIDDEN), new JSONObject().put("$ref", "#/components/responses/NoAuthError"));
+            }*/
+        }
+        j.put("responses", resp);
         JSONArray params = new JSONArray();
-
-
+        
+        
         for (Parameter p : operation.parameters()) {
             add(p, params);
         }
-
-
+        
+        
         if (params.length() > 0) {
             j.put("parameters", params);
         }
@@ -439,10 +490,10 @@ public class OpenApiParser {
         if (requestBody.length() > 0) {
             j.put("requestBody", requestBody);
         }
-
-
+        
+        
     }
-
+    
     private static JSONObject toJSON(ApiResponse response) {
         JSONObject rjson = new JSONObject();
         add("description", response.description(), rjson);
@@ -454,22 +505,23 @@ public class OpenApiParser {
             }
             add("$ref", response.ref(), rjson);
         }
-
-
+        
+        
         add("content", response.content(), rjson);
+        add("headers", response.headers(), rjson);
         return rjson;
     }
-
+    
     public static JSONObject toJSON(ArraySchema arraySchema) {
         //logger.info("called toJSON(ArraySchema) with {}", arraySchema);
         //if (arraySchema.schema().type().length() > 0 || arraySchema.arraySchema().type().length() > 0 || arraySchema.schema().ref().length() > 0 || arraySchema.arraySchema().ref().length() > 0) {
         JSONObject schema = new JSONObject();
-
-
+        
+        
         //schema.put("items",p.array().schema());
         add("items", arraySchema.arraySchema(), schema);
         add("items", arraySchema.schema(), schema);
-
+        
         add("minItems", arraySchema.minItems(), schema, Integer.MAX_VALUE);
         add("maxItems", arraySchema.maxItems(), schema, Integer.MIN_VALUE);
         add("uniqueItems", arraySchema.uniqueItems(), schema, false);
@@ -482,26 +534,26 @@ public class OpenApiParser {
             add("description", arraySchema.arraySchema().description(), schema);
             //  logger.info("returned toJSON ArraySchema {}", schema);
         }
-
+        
         return schema;
-
+        
         //}
         //return null;
     }
-
+    
     public static JSONObject createJSONSchemaFromSchema(JSONObject schema) {
         return new JSONObject().
                 put("components", new JSONObject().put("schemas", components.optJSONObject("schemas"))).
                 put("$schema", "http://json-schema.org/draft-07/schema#").
-
+                
                 put("type", "object").
                 put("properties",
                         new JSONObject().
                                 put("value", schema)
                 ).put("additionalProperties", false).put("required", new JSONArray().put("value"));
-
+        
     }
-
+    
     public static boolean checkExample(String value, JSONObject schema, SchemaType type) {
         JSONObject v = null;
         try {
@@ -513,18 +565,18 @@ public class OpenApiParser {
                     type = SchemaType.ARRAY;
                 }
             }
-
+            
             switch (type) {
                 case STRING:
-                    v =  new JSONObject().put("value", value);
+                    v = new JSONObject().put("value", value);
                     s.validate(v);
                     return true;
                 case INTEGER:
-                    v =  new JSONObject().put("value", Integer.parseInt(value));
+                    v = new JSONObject().put("value", Integer.parseInt(value));
                     s.validate(v);
                     return true;
                 case NUMBER:
-                    v =  new JSONObject().put("value", Double.parseDouble(value));
+                    v = new JSONObject().put("value", Double.parseDouble(value));
                     s.validate(v);
                     return true;
                 case ARRAY:
@@ -543,47 +595,47 @@ public class OpenApiParser {
                     logger.warn("DID NOT TEST {}", value);
             }
         } catch (Exception ex) {
-            logger.error("FAILED TO CHECK \nRaw:{}\nValue: {}\n Schema: {}\nReason:{}", value,v, schema, ex.getMessage(),ex);
+            logger.error("FAILED TO CHECK \nRaw:{}\nValue: {}\n Schema: {}\nReason:{}", value, v, schema, ex.getMessage(), ex);
         }
         return false;
-
+        
     }
-
+    
     public static boolean checkExample(ExampleObject e, JSONObject schema, SchemaType type) {
         String value = e.value();
         if (e.value().length() == 0) {
             value = e.name();
         }
         return checkExample(value, schema, type);
-
+        
     }
-
+    
     public static JSONObject toJSON(Parameter p) {
         JSONObject pjson = new JSONObject();
         if (p.ref().length() > 0) {
             add("$ref", p.ref(), pjson);
         } else {
             add("description", p.description(), pjson);
-
+            
             add("name", p.name(), pjson);
             JSONObject schema = toJSON(p.schema());
             add("examples", p.examples(), pjson);
             if (schema.length() > 0) {
                 add("schema", schema, pjson);
-
+                
                 JSONObject j = null;
                 try {
                     //j = createJSONSchemaFromSchema(schema);
-
+                    
                     if (p.example().length() > 0) {
                         examples.add(new Example(p.example(), schema, p.schema().type()));
-
-
+                        
+                        
                     }
                     if (p.examples().length > 0) {
-
+                        
                         for (ExampleObject e : p.examples()) {
-
+                            
                             //checkExample(e, j, p.schema().type());
                             String v = e.value();
                             if (v.length() == 0) {
@@ -598,16 +650,16 @@ public class OpenApiParser {
                     //throw new RuntimeException(e);
                     logger.error("COULD NOT PARSE SCHEMA! {}", j, e);
                 }
-
-
+                
+                
             }
-
+            
             if (p.explode() == Explode.TRUE) {
                 add("explode", true, pjson, null);
             } else if (p.explode() == Explode.FALSE) {
                 add("explode", false, pjson, null);
             }
-
+            
             add("example", p.example(), pjson);
             add("required", p.required(), pjson, null);
             add("deprecated", p.deprecated(), pjson, false);
@@ -640,12 +692,12 @@ public class OpenApiParser {
         }
         return pjson;
     }
-
+    
     public static void add(Parameter p, JSONArray params) {
-
+        
         params.put(toJSON(p));
     }
-
+    
     public static JSONObject toJSON(SchemaProperty[] properties) {
         JSONObject schemajson = new JSONObject();
         schemajson.put("type", "object");
@@ -656,7 +708,7 @@ public class OpenApiParser {
             //propjson.put(sp.name()
             add(sp.name(), sp.schema(), propjson);
             //add(sp.name(), toJSON(sp.array()), propjson);
-
+            
             JSONObject sj = toJSON(sp.array());
             if (sj != null) {
                 //add("description",sp)
@@ -669,29 +721,29 @@ public class OpenApiParser {
             } else if (sp.array().arraySchema().required()) {
                 reqarray.put(sp.name());
             }
-
+            
         }
         if (propjson.length() > 0) {
-
+            
             schemajson.put("properties", propjson);
         }
         if (reqarray.length() > 0) {
             schemajson.put("required", reqarray);
         }
         return schemajson;
-
+        
     }
-
+    
     public static void add(String tag, SchemaProperty[] properties, JSONObject json) {
-
+        
         json.put(tag, toJSON(properties));
     }
-
+    
     public static void add(String tag, Content[] value, JSONObject json) {
         if (value.length > 0) {
             JSONObject contentjson = new JSONObject();
             for (Content c : value) {
-
+                
                 if (c.mediaType().length() > 0) {
                     JSONObject cjson = new JSONObject();
                     add("schema", toJSON(c.array()), cjson);
@@ -702,12 +754,12 @@ public class OpenApiParser {
                         if (!cjson.has("schema")) {
                             add("schema", toJSON(c.schema()), cjson);
                         }
-
+                        
                     }
-
+                    
                     if (c.examples().length > 0) {
                         add("examples", c.examples(), cjson);
-
+                        
                     }
                     if (cjson.length() > 0) {
                         contentjson.put(c.mediaType(), cjson);
@@ -739,9 +791,40 @@ public class OpenApiParser {
                 json.put(tag, contentjson);
             }
         }
-
+        
     }
-
+    
+    public static void add(String tag, Header[] value, JSONObject json) {
+        if (value.length > 0) {
+            JSONObject contentjson = new JSONObject();
+            for (Header c : value) {
+                
+                if (c.description().length() > 0) {
+                    JSONObject cjson = new JSONObject();
+                    add("description", c.description(), cjson);
+                    //add("name", c.name(), cjson);
+                    add("schema", toJSON(c.schema()), cjson);
+                    
+                    //add("required", String.valueOf(c.required()), cjson);
+                    
+                    if ( c.deprecated()) {
+                        add("deprecated", String.valueOf(c.deprecated()), cjson);
+                    }
+                    add("$ref", c.ref(), cjson);
+                    
+                    if (cjson.length() > 0) {
+                        contentjson.put(c.name(), cjson);
+                    }
+                    
+                }
+            }
+            if (contentjson.length() > 0) {
+                json.put(tag, contentjson);
+            }
+        }
+        
+    }
+    
     public static JSONObject toJSON(ExampleObject example) {
         JSONObject json = new JSONObject();
         if (example.ref().length() > 0) {
@@ -750,37 +833,37 @@ public class OpenApiParser {
             add("summary", example.summary(), json);
             add("description", example.description(), json);
             add("value", example.value(), json, true);
-
+            
             if (!json.has("value")) {
                 add("value", example.value(), json);
             }
             if (!json.has("value")) {
                 add("value", example.name(), json);
             }
-
+            
             add("externalValue", example.externalValue(), json);
         }
-
-
+        
+        
         return json;
     }
-
+    
     public static void add(String tag, ExampleObject[] examples, JSONObject json) {
         JSONObject ex = new JSONObject();
         for (ExampleObject e : examples) {
             String name = e.name();
-
+            
             if (name.length() == 0) {
                 name = e.value();
             }
             ex.put(name, toJSON(e));
         }
-
+        
         if (ex.length() > 0) {
             json.put(tag, ex);
         }
     }
-
+    
     public static JSONObject toJSON(Schema schema) {
         JSONObject sjson = new JSONObject();
         if (schema.ref().length() > 0) {
@@ -825,7 +908,7 @@ public class OpenApiParser {
             } else {
                 add("allOf", schema.oneOf(), sjson);
             }
-
+            
             //add("name", schema.name(), sjson);
             add("title", schema.title(), sjson);
             add("multipleOf", schema.multipleOf(), sjson, 0.0);
@@ -851,12 +934,12 @@ public class OpenApiParser {
             add("maxProperties", schema.maxProperties(), sjson, 0);
             add("minProperties", schema.minProperties(), sjson, 0);
             add("requiredProperties", schema.requiredProperties(), sjson);
-
+            
             add("description", schema.description(), sjson);
             add("format", schema.format(), sjson);
-
+            
             add("nullable", schema.nullable(), sjson, false);
-
+            
             add("deprecated", schema.deprecated(), sjson, false);
             add("default", schema.defaultValue(), sjson);
             add("enum", schema.allowableValues(), sjson);
@@ -867,34 +950,34 @@ public class OpenApiParser {
             add("subTypes", schema.subTypes(), sjson);
             if (schema.example().length() > 0) {
                 add("example", schema.example(), sjson);
-
+                
                 examples.add(new Example(schema.example(), sjson, schema.type()));
-
-
+                
+                
             }
         }
         return sjson;
     }
-
+    
     public static void add(String tag, Schema schema, JSONObject json) {
         JSONObject sjson = toJSON(schema);
         if (sjson.length() > 0) {
             //only add the not optional things here so we always know if we need it
             //add("required", schema.required(), sjson, false);
             json.put(tag, sjson);
-
+            
         }
-
+        
     }
-
+    
     // TODO: 7/20/22 expand to correct values
     public static void add(String tag, DiscriminatorMapping[] value, JSONObject json) {
         if (value.length > 0) {
-
+        
         }
     }
-
-
+    
+    
     public static void add(String tag, ExternalDocumentation value, JSONObject json) {
         JSONObject j = new JSONObject();
         if (value.url().length() > 0) {
@@ -906,13 +989,13 @@ public class OpenApiParser {
             json.put(tag, j);
         }
     }
-
+    
     public static void add(String tag, double value, JSONObject json, Double ignoreIfThis) {
         if (ignoreIfThis == null || ignoreIfThis != value) {
             json.put(tag, value);
         }
     }
-
+    
     public static void add(String tag, Class<?>[] clzlist, JSONObject json) {
         JSONArray arr = new JSONArray();
         for (Class<?> clz : clzlist) {
@@ -924,43 +1007,43 @@ public class OpenApiParser {
             json.put(tag, arr);
         }
     }
-
+    
     public static void add(String tag, Class<?> clz, JSONObject json) {
         if (clz != Void.class) {
             json.put(tag, clz.getName());
         }
     }
-
+    
     public static void add(String tag, boolean value, JSONObject json, Boolean ignoreIfThis) {
         if (ignoreIfThis == null || ignoreIfThis != value) {
             json.put(tag, value);
         }
     }
-
+    
     public static void add(String tag, int value, JSONObject json, Integer ignoreIfThis) {
         if (ignoreIfThis == null || ignoreIfThis != value) {
             json.put(tag, value);
         }
     }
-
+    
     public static void add(String tag, JSONObject values, JSONObject json) {
         if (values != null && values.length() > 0) {
-
+            
             json.put(tag, values);
         }
     }
-
+    
     public static void add(String tag, JSONArray values, JSONObject json) {
         if (values != null && values.length() > 0) {
-
+            
             json.put(tag, values);
         }
     }
-
+    
     public static String getStringFromResource(String name) {
         if (labels == null) {
             Locale locale = new Locale("en", "US");
-
+            
             labels = ResourceBundle.getBundle("translation", locale);
         }
         String v = labels.getString(name);
@@ -971,9 +1054,9 @@ public class OpenApiParser {
         //logger.error("COULD NOT FIND KEY {} IN TRANSLATION FILE",name);
         missingFromResource.add(name);
         return name;
-
+        
     }
-
+    
     public static String prepareString(String input) {
         @Deprecated
         Matcher m = formatPattern.matcher(input);
@@ -988,14 +1071,14 @@ public class OpenApiParser {
         }
         return input.replace("\n", "  \n");
     }
-
+    
     public static void add(String tag, String value, JSONObject json) {
         if (value != null && value.length() > 0) {
             json.put(tag, prepareString(value));
         }
-
+        
     }
-
+    
     public static void add(String tag, String value, JSONObject json, boolean parseValue) {
         if (value != null && value.length() > 0) {
             if (parseValue) {
@@ -1008,29 +1091,29 @@ public class OpenApiParser {
                     return;
                 }
                 if (value.startsWith("{")) {
-
+                    
                     try {
                         json.put(tag, new JSONObject(value));
                         return;
                     } catch (Exception ex) {
-
+                    
                     }
                 }
                 if (value.startsWith("[")) {
-
+                    
                     try {
                         json.put(tag, new JSONArray(value));
                         return;
                     } catch (Exception ex) {
-
+                    
                     }
                 }
             }
             json.put(tag, prepareString(value));
         }
-
+        
     }
-
+    
     public static void add(String tag, String[] values, JSONObject json) {
         if (values != null && values.length > 0) {
             JSONArray arr = new JSONArray();
@@ -1039,22 +1122,22 @@ public class OpenApiParser {
             }
             json.put(tag, arr);
         }
-
+        
     }
-
-
+    
+    
 }
 
 class Example {
     final String value;
     final SchemaType type;
     final JSONObject schema;
-
+    
     public Example(String value, JSONObject schema, SchemaType type) {
         this.value = value;
         this.type = type;
         this.schema = schema;
     }
-
-
+    
+    
 }

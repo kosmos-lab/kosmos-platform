@@ -33,22 +33,8 @@ public class KreeLoadXMLServlet extends AuthedServlet {
     @Operation(
             tags = {"kree"},
             summary = "load xml",
-            description = "loads the block xml back from persistence",
-            requestBody = @RequestBody(
-                    content = {
-                            @Content(
-                                    mediaType = MediaType.APPLICATION_JSON,
-                                    schema = @Schema(
-                                            ref = "#/components/schemas/schema"
-
-                                    )
-
-
-                            )
-
-                    }
-
-            ),
+            description = "Loads the block xml back from persistence",
+            
             responses = {
                     @ApiResponse(
                             description = "XML Block definition",
@@ -61,7 +47,7 @@ public class KreeLoadXMLServlet extends AuthedServlet {
                             }
 
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
@@ -71,12 +57,11 @@ public class KreeLoadXMLServlet extends AuthedServlet {
         if (xml != null) {
             response.setStatus(STATUS_OK);
             sendXML(request, response, xml);
-            return;
         } else {
             sendXML(request, response, "<xml xmlns=\"https://developers.google.com/blockly/xml\">\n</xml>");
-            return;
         }
-
+        
+    
     }
 
 

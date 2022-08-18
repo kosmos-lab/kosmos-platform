@@ -37,8 +37,8 @@ import static de.kosmos_lab.kosmos.platform.web.servlets.schreibtrainer.Schreibt
 public class SchreibtrainerAddServlet extends AuthedServlet {
 
 
-    public SchreibtrainerAddServlet(WebServer webServer, IController controller) {
-        super(webServer, controller);
+    public SchreibtrainerAddServlet(WebServer webServer, IController controller, int level) {
+        super(webServer, controller, level);
     }
 
     @Operation(
@@ -69,9 +69,9 @@ public class SchreibtrainerAddServlet extends AuthedServlet {
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The pen was added successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 

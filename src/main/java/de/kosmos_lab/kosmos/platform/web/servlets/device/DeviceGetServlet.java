@@ -120,7 +120,7 @@ public class DeviceGetServlet extends AuthedServlet {
 
     @Operation(
             tags = {"device"},
-            summary = "get",
+            summary = "Get information about the device",
             description = "Get information about the device",
             parameters = {@Parameter(name = "uuid",
                     in = ParameterIn.QUERY,
@@ -134,11 +134,11 @@ public class DeviceGetServlet extends AuthedServlet {
             },
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/deviceGet"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+                    /*@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
 
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),*/
             })
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response) throws IOException, ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope {
 

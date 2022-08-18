@@ -36,8 +36,8 @@ import java.io.IOException;
 
     @Operation(
             tags = {"camera"},
-            summary = "stop recording",
-            description = "Stops the currently running recording of the given camera",
+            summary = "Stop recording of camera video",
+            description = "Stops the currently running recording of the given camera. You can only stop a recording if you started the recording, or if you are an admin.",
             parameters = {
                     @Parameter(
                             description = "The name of the camera",
@@ -55,13 +55,12 @@ import java.io.IOException;
                             responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),
                             description = "The recording is now stopped."
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/CameraNotFoundError"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "This camera is not recording at the moment."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), description = "You are not allowed to stop this recording."),
+
             }
     )
-    public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             throws IOException, CameraNotFoundException, NoAccessException, ParameterNotFoundException {
 

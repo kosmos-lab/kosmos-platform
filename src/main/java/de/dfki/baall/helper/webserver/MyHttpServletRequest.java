@@ -120,8 +120,9 @@ public class MyHttpServletRequest {
 
     public boolean getBoolean(String key, boolean defaultValue) {
         String v = this.getParameter(key);
+        //logger.info("found {} as {}",key,v);
         if (v != null) {
-            return Boolean.getBoolean(v);
+            return Boolean.parseBoolean(v);
         }
         try {
             return this.getBodyAsJSONObject().optBoolean(key, defaultValue);

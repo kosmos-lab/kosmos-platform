@@ -39,21 +39,19 @@ public class KreeSavePythonServlet extends AuthedServlet {
     @Operation(
             tags = {"kree"},
             summary = "save python",
-            description = "saves the block python to persistence and executes it",
+            description = "Saves the python to persistence and executes it, will also be automatically restarted if it crashed an on start",
             requestBody = @RequestBody(
                     description = "the python of the blocks",
                     content = {
                             @Content(
-
-                                    mediaType = jakarta.ws.rs.core.MediaType.APPLICATION_XML)
-
+                                    mediaType = "application/python")
                     }
-
             ),
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),description = "Python saved successfully" ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), ref = "The saving of this code was blocked - you are using unsafe code"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "The saving of this code was blocked - you are using unsafe code"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE),description = "Could not save python, the request body was empty." ),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
             }
     )
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
@@ -101,7 +99,7 @@ public class KreeSavePythonServlet extends AuthedServlet {
             
             return;
         }
-        response.setStatus(STATUS_FAILED);
+        response.setStatus(STATUS_MISSING_VALUE);
         return;
     }
     

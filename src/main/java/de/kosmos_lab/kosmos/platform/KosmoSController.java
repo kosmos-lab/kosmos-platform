@@ -2455,6 +2455,11 @@ public class KosmoSController implements IController {
         File dir = getRecordingDir(user);
         if (dir.exists()) {
             File[] files = dir.listFiles();
+            Arrays.sort(files, new Comparator<File>(){
+                public int compare(File f1, File f2)
+                {
+                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                } });
             if (files != null) {
                 for (File f : files) {
                     if (f.getName().startsWith(cam.getName() + "_")) {

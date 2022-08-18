@@ -42,7 +42,7 @@
         <maven.compiler.release>11</maven.compiler.release>
         <mavenplugin.version>3.2.0</mavenplugin.version>
         <!--<jettyVersion>9.4.32.v20200930</jettyVersion>-->
-
+        <finalName>kosmos</finalName>
         <jettyVersion>11.0.11</jettyVersion>
         <spotbugsVersion>4.5.3</spotbugsVersion>
         <pf4jVersion>3.6.0</pf4jVersion>
@@ -371,7 +371,7 @@
         <dependency>
             <groupId>de.kosmos-lab</groupId>
             <artifactId>kosmos-utils</artifactId>
-            <version>0.1.6</version>
+            <version>0.1.9</version>
         </dependency>
         <dependency>
             <groupId>de.kosmos-lab.platform</groupId>
@@ -399,7 +399,7 @@
     </dependencies>
     <build>
 
-        <finalName>kosmos</finalName>
+        <finalName>${finalName}</finalName>
 
 
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -432,7 +432,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.1.1</version>
                 <configuration>
                     <doclint>all,-missing</doclint>
                 </configuration>
@@ -581,24 +581,27 @@
                     </execution>
                 </executions>
             </plugin>-->
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>
+                            src/main/assembly/zip.xml
+                        </descriptor>
+                    </descriptors>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>attached</goal>
                         </goals>
-                        <configuration>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <descriptors>
-                                <descriptor>src/main/assembly/zip.xml</descriptor>
-                            </descriptors>
-                        </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 

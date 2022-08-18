@@ -34,8 +34,8 @@ public class CameraStartRecordingServlet extends AuthedServlet {
 
     @Operation(
             tags = {"camera"},
-            summary = "start recording",
-            description = "Start recording a video of the given camera",
+            summary = "Start recording of camera video",
+            description = "Start recording a video of the given camera.",
             parameters = {
                     @Parameter(
                             description = "The name of the camera",
@@ -53,14 +53,13 @@ public class CameraStartRecordingServlet extends AuthedServlet {
                             responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),
                             description = "The camera is now recording"
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/CameraNotFoundError"),
+                    
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "This camera is already recording."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+
             }
     )
 
-    public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             throws IOException, CameraNotFoundException, ParameterNotFoundException {
 
@@ -74,8 +73,6 @@ public class CameraStartRecordingServlet extends AuthedServlet {
 
         response.setStatus(STATUS_NO_RESPONSE);
         return;
-
-
     }
 
 }

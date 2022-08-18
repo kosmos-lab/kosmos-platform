@@ -29,20 +29,19 @@ public class KreeSaveXMLServlet extends AuthedServlet {
     @Operation(
             tags = {"kree"},
             summary = "save xml",
-            description = "saves the block xml to persistence",
+            description = "Saves the block xml to persistence",
             requestBody = @RequestBody(
                     description = "the XML of the blocks",
                     content = {
                             @Content(
-
                                     mediaType = jakarta.ws.rs.core.MediaType.APPLICATION_XML)
-
                     }
 
             ),
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),description = "XML saved successfully" ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE),description = "Could not save XML, the request body was empty." ),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
             }
     )
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
@@ -55,7 +54,7 @@ public class KreeSaveXMLServlet extends AuthedServlet {
 
             return;
         }
-        response.setStatus(STATUS_FAILED);
+        response.setStatus(STATUS_MISSING_VALUE);
         return;
     }
 

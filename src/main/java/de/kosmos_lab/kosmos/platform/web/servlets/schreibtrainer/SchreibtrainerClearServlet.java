@@ -17,6 +17,7 @@ import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
+import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
 import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import org.json.JSONObject;
 
@@ -32,11 +33,11 @@ import static de.kosmos_lab.kosmos.platform.web.servlets.schreibtrainer.Schreibt
         path = "/schreibtrainer/clear",
         userLevel = 1
 )
-public class SchreibtrainerClearServlet extends KosmoSServlet {
+public class SchreibtrainerClearServlet extends AuthedServlet {
     
     
-    public SchreibtrainerClearServlet(WebServer webServer, IController controller) {
-        super(webServer, controller);
+    public SchreibtrainerClearServlet(WebServer webServer, IController controller, int level) {
+        super(webServer, controller, level);
     }
     @Operation(
             tags = {"schreibtrainer"},
@@ -66,10 +67,10 @@ public class SchreibtrainerClearServlet extends KosmoSServlet {
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The pen was cleared successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_UNPROCESSABLE), ref = "The device has not the correct schema to be a pen"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_UNPROCESSABLE), description = "The device has not the correct schema to be a pen"),
 
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)

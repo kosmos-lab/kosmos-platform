@@ -27,6 +27,61 @@ class Kosmos {
         }
         this._self = this
     }
+    getBasicAuth() {
+        return btoa(`${this._username}:${this._password}`);
+    }
+    download(uri,filename,method='GET') {
+        /*return (this.prepareRequest(uri, data, method)).then(
+            //response => response.json()
+            $("a")
+                .attr({
+                    "href": response,
+                    "download": filename
+                })
+                .html($("a").attr("download"))
+                .get(0).click()
+        )*/
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('GET', uri+"?filename="+filename,true);
+        xhr.setRequestHeader("Authorization", `Basic ${this.getBasicAuth()}`);
+        xhr.responseType = 'blob';
+        xhr.set
+        xhr.onload = function () {
+            var urlCreator = window.URL || window.webkitURL;
+            var imageUrl = urlCreator.createObjectURL(this.response);
+            var tag = document.createElement('a');
+            tag.href = imageUrl;
+            tag.target = '_blank';
+            tag.download = filename;
+            document.body.appendChild(tag);
+            tag.click();
+            document.body.removeChild(tag);
+        };
+        xhr.onerror = err => {
+            console.log(err);
+            alert('Failed to download picture');
+        };
+        xhr.send();
+
+    }
+    getInit(method,body) {
+
+        return {
+            method: method,
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${this.getBasicAuth()}`
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: body // body data type must match "Content-Type" header
+        }
+    }
 
     async prepareRequest(raw_uri = '', data = {}, method = 'GET') {
         //data["username"] = this._username;
@@ -45,24 +100,8 @@ class Kosmos {
             body = JSON.stringify(data)
         }
 
-        const enc =btoa(`${this._username}:${this._password}`);
-        return await fetch(url, {
 
-
-            method: method,
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic  ${enc}`
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-
-            body: body // body data type must match "Content-Type" header
-        });
+        return await fetch(url, this.getInit(method,body));
     }
 
     fetchJSON(raw_uri = '', data = {}, method = 'GET') {
@@ -71,6 +110,8 @@ class Kosmos {
         return (this.prepareRequest(raw_uri, data, method)).then(response => response.json())
             ; // parses JSON response into native JavaScript objects
     }
+
+
 
     fetchData(raw_uri = '', data = {}, method = 'GET') {
         // Default options are marked with *

@@ -28,29 +28,29 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/group/add"}, loadOnStartup = 1)
 public class GroupAddServlet extends AuthedServlet {
-
+    
     public final static String FIELD_NAME = "name";
-
+    
     public GroupAddServlet(WebServer webServer, IController controller) {
         super(webServer, controller);
     }
-
+    
     @Operation(
             tags = {"group"},
             summary = "add",
             description = "Create a new group",
             requestBody = @RequestBody(
-
+                    
                     required = true,
                     content = {
-
+                            
                             @Content(
                                     examples = {
                                             @ExampleObject(
                                                     name = "add group with name 'testGroup'",
                                                     value = "{\"" + FIELD_NAME + "\":\"testGroup\"}"
                                             ),
-
+                                        
                                     },
                                     mediaType = MediaType.APPLICATION_JSON,
                                     schemaProperties = {
@@ -61,42 +61,37 @@ public class GroupAddServlet extends AuthedServlet {
                                                             type = SchemaType.STRING,
                                                             minLength = 3,
                                                             required = true
-
+                                                    
                                                     )
-
+                                            
                                             ),
-
+                                        
                                     }
-
+                            
                             )
                     }),
             responses = {
-
+                    
                     @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/scopeGet", description = "The group was added successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "There is already a group with that name."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
-
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "There is already a group with that name."),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException {
+            
+            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException, GroupAlreadyExistsException {
         String group_name = request.getString(FIELD_NAME);
         if (group_name.length() < 3) {
             response.sendError(STATUS_UNPROCESSABLE, "group name is not long enough (minLength is 3)");
             return;
         }
-
-
-        try {
-            controller.addGroup(group_name, request.getKosmoSUser());
-        } catch (GroupAlreadyExistsException ex) {
-            response.setStatus(STATUS_CONFLICT);
-            return;
-        }
+        
+        
+        controller.addGroup(group_name, request.getKosmoSUser());
         response.setStatus(STATUS_NO_RESPONSE);
         return;
-
+        
     }
-
+    
 }
 

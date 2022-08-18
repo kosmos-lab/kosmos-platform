@@ -67,8 +67,8 @@ public class CameraListRecordingServlet extends AuthedServlet {
 
     @Operation(
             tags = {"camera"},
-            summary = "list recordings",
-            description = "List the recordings of a camera",
+            summary = "List available camera recordings",
+            description = "List the recordings of a camera, only shows the recordings you have access to - the recordings you started yourself.",
             parameters = {
                     @Parameter(
                             description = "The name of the camera",
@@ -102,9 +102,6 @@ public class CameraListRecordingServlet extends AuthedServlet {
                                     )
                             }
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/CameraNotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)

@@ -105,9 +105,8 @@
             if (docEl == undefined) {
                 docEl = document.getElementsByTagName("rapi-doc")[0];
             }
-
-            docEl.addEventListener('spec-loaded', (e) => {
-                //ensure that the first slot is either "current host" or what was passed as a parameter
+            docEl.addEventListener('before-render',(e) => {
+                console.log(e);
                 let myurl = undefined;
                 const queryString = window.location.search;
                 if (queryString) {
@@ -117,12 +116,13 @@
                 if (myurl == undefined) {
                     myurl = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
                 }
-
-                e.detail.servers[0].url = myurl;
-                e.detail.servers[0].computedUrl = myurl;
-
+                console.log(e.detail.servers);
+                e.detail.spec.servers[0].url = myurl;
+                e.detail.spec.servers[0].computedUrl = myurl;
             });
+
         });
+
 
         function handleKey(e) {
             if (e.key === 'Enter') {
@@ -145,16 +145,13 @@
             }
             //kind of a dirty hack - but it works
             //iterate all servers and get the currently selected one
-            docEl.shadowRoot.getElementById("api-servers").querySelectorAll('*').forEach(function (node) {
+            docEl.shadowRoot.getElementById("servers").querySelectorAll('input').forEach(function (node) {
+//                console.log("found node ", node);
+                if (node.checked) {
+                    server = node.value;
+                    console.log("found server " + server);
+                }
 
-                node.querySelectorAll('div').forEach(function (node2) {
-
-                    //check if this is the selected one
-                    if (node2.textContent.startsWith("SELECTED:")) {
-                        //get rid of the text "SELECTED: "
-                        server = node2.textContent.substr(10);
-                    }
-                })
             })
             const xhr = new XMLHttpRequest();
             xhr.open("POST", `${server}/user/login`, true);
@@ -189,9 +186,12 @@
                             docEl = document.getElementsByTagName("rapi-doc")[0];
                         }
                         //inject the attributes to rapidoc
+                        console.log(docEl);
+                        docEl.setAttribute('api-key-value', 'Bearer ' + token);
+
                         docEl.setAttribute('api-key-name', 'Authorization');
                         docEl.setAttribute('api-key-location', 'header');
-                        docEl.setAttribute('api-key-value', 'Bearer ' + token);
+
 
                     }
                 }
@@ -219,11 +219,19 @@
         nav-accent-color="#f44236"
         primary-color="#5c7096"
         theme="light"
-        show-components="true"
+        sort-tags="true"
+        show-components="false"
         show-header="false"
         render-style="read"
         schema-style="tree"
+        show-info="true"
+        use-path-in-nav-bar="true"
+        show-method-in-nav-bar="as-colored-block"
         allow-server-selection="true"
+        api-key-name="Authorization"
+        api-key-location="header"
+        api-key-value=""
+
         server-url=" ">
     <!--
     below html is custom html that adds an input field and a button in header
