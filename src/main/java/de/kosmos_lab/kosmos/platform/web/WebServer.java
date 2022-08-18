@@ -470,8 +470,9 @@ public class WebServer implements CommandInterface {
             for (Class<? extends WebSocketService> c : wsservices) {
                 //logger.info("found: WebSocketService: {}", c.getName());
                 ServerEndpoint endpoint = c.getAnnotation(ServerEndpoint.class);
-                logger.info("found: WebSocketService: {} endpoint {}", c.getName(), endpoint.value());
+                
                 if (endpoint != null) {
+                    logger.info("found: WebSocketService: {} endpoint {}", c.getName(), endpoint.value());
                     try {
                         
                         WebSocketService service = c.getConstructor(WebServer.class, IController.class).newInstance(this, controller);
