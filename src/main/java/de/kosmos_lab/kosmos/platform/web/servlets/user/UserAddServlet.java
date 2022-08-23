@@ -2,22 +2,21 @@ package de.kosmos_lab.kosmos.platform.web.servlets.user;
 
 import de.dfki.baall.helper.webserver.data.IUser;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.media.SchemaProperty;
+import de.dfki.baall.helper.webserver.annotations.parameters.RequestBody;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
 import de.kosmos_lab.kosmos.data.KosmoSUser;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.utils.StringFunctions;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -101,12 +100,12 @@ public class UserAddServlet extends AuthedServlet {
                             )
                     }),
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "OK - user was added"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "Conflict - The user already exists"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_ERROR), description = "#/components/responses/FailedError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE), description = "OK - user was added"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_CONFLICT), description = "Conflict - The user already exists"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_ERROR), description = "#/components/responses/FailedError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
@@ -114,22 +113,22 @@ public class UserAddServlet extends AuthedServlet {
             throws IOException, ParameterNotFoundException {
         String user = request.getString(FIELD_USER);
         if (user.length() < 3) {
-            response.sendError(STATUS_UNPROCESSABLE, "username is not long enough (minLength is 3)");
+            response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE, "username is not long enough (minLength is 3)");
             return;
         }
         String pass = request.getString(FIELD_PASS);
         if (pass.length() < 6) {
-            response.sendError(STATUS_UNPROCESSABLE, "password is not long enough (minLength is 6)");
+            response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE, "password is not long enough (minLength is 6)");
             return;
         }
         int level = request.getInt(FIELD_LEVEL, 1);
         logger.info("trying to add user {} with level {}", user, level);
         IUser me = request.getKosmoSUser();
         if (level <=0) {
-            response.sendError(STATUS_UNPROCESSABLE, "The level is too low, minimum is 1");
+            response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE, "The level is too low, minimum is 1");
         }
         if (level >= me.getLevel()) {
-            response.sendError(STATUS_FORBIDDEN, String.format("You are not allowed to create a user with this level - maximum is %d", me.getLevel() - 1));
+            response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN, String.format("You are not allowed to create a user with this level - maximum is %d", me.getLevel() - 1));
             return;
         }
         logger.info("going to add user {} with level {}", user, level);
@@ -142,10 +141,10 @@ public class UserAddServlet extends AuthedServlet {
             u = new KosmoSUser(controller, user, 0, level, hash, salt);
             controller.addUser(u);
             logger.info("finished adding user {} with level {}", user, level);
-            response.setStatus(STATUS_NO_RESPONSE);
+            response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE);
             return;
         }
-        response.sendError(STATUS_CONFLICT, "This user already exists!");
+        response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_CONFLICT, "This user already exists!");
 
 
     }

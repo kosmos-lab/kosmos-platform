@@ -1,7 +1,7 @@
 package CI.HTTP;
 
 import common.CommonBase;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
+import de.dfki.baall.helper.webserver.WebServer;
 import de.kosmos_lab.utils.KosmosFileUtils;
 import de.kosmos_lab.kosmos.data.KosmoSUser;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -44,16 +44,16 @@ public class TestKREE {
         
         response = CommonBase.clientUser.getResponse("/kree/loadXML", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "XML Loading did fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "XML Loading did fail");
         xml = response.getContentAsString();
         Assert.assertEquals(xml,"<xml xmlns=\"https://developers.google.com/blockly/xml\">\n</xml>","empty XML was not correct");
         String postXML = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"text_print\" id=\"Wa+Xh46KKAx44(^88qwb\" x=\"388\" y=\"213\"><value name=\"TEXT\"><shadow type=\"text\" id=\"BR%,@t_#iTEW4Y70c)y~\"><field name=\"TEXT\">abc</field></shadow></value></block></xml>";
         response = CommonBase.clientUser.getResponse("/kree/saveXML", HttpMethod.POST,postXML);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "XML saving did fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
         response = CommonBase.clientUser.getResponse("/kree/loadXML", HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "XML Loading did fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "XML Loading did fail");
         xml = response.getContentAsString().trim();
         Assert.assertEquals(xml,postXML,"posted XML was not correct");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".xml");
@@ -96,7 +96,7 @@ public class TestKREE {
         String postPython = "test";
         response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "XML saving did fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");
         Assert.assertFalse(ruleFile.exists());
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u2.getID()+".py");
@@ -110,7 +110,7 @@ public class TestKREE {
         postPython = "import sys"+System.getProperty("line.separator")+"print('test')"+System.getProperty("line.separator");
         response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "XML saving did fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");
         Assert.assertFalse(ruleFile.exists());
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u2.getID()+".py");
@@ -122,7 +122,7 @@ public class TestKREE {
         String postPython2 = "import os"+System.getProperty("line.separator")+"print('test')"+System.getProperty("line.separator");
         response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython2);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_VALIDATION_FAILED, "Python saving did NOT fail");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Python saving did NOT fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");
         Assert.assertFalse(ruleFile.exists());
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u2.getID()+".py");

@@ -5,6 +5,7 @@ import de.dfki.baall.helper.persistence.IPersistence;
 import de.dfki.baall.helper.persistence.ISesssionPersistence;
 import de.dfki.baall.helper.persistence.JSONPersistence;
 import de.dfki.baall.helper.persistence.exceptions.NoPersistenceException;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiResponseDescription;
 import de.kosmos_lab.utils.FileUtils;
 import de.kosmos_lab.utils.HashFunctions;
 import de.kosmos_lab.utils.StringFunctions;
@@ -33,6 +34,31 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class WebServer implements ControllerWithPersistence {
+    public static final int STATUS_OK = 200;
+    public static final int STATUS_NO_RESPONSE = 204;
+    @ApiResponseDescription(name= "NoAccessError",description = "The request was aborted because your user does not have the correct privileges to execute the request.")
+    public static final int STATUS_FORBIDDEN = 403;
+    @ApiResponseDescription(name= "ValidationFailedErr" + "or",description = "The request was aborted because the payload could not be verified against the schema.  \nSee errormessage for details")
+
+    public static final int STATUS_VALIDATION_FAILED = 400;
+    @ApiResponseDescription(name= "DuplicateError",description = "The request was aborted because there was already a resource with that identifier.  \nSee errormessage for details")
+    public static final int STATUS_DUPLICATE = 409;
+    @ApiResponseDescription(name= "FailedError",description = "The request was aborted.  \nSee errormessage for details ")
+    public static final int STATUS_FAILED = 400;
+    @ApiResponseDescription(name= "NoAuthError",description = "This endpoint only works with authentication")
+    public static final int STATUS_NO_AUTH = 401;
+    @ApiResponseDescription(name= "NotFoundError",description = "The searched resource was not found  \nSee errormessage for details")
+    public static final int STATUS_NOT_FOUND = 404;
+    @ApiResponseDescription(name= "ConflictError",description = "The request was aborted because there was already a resource with that identifier.  \nSee errormessage for details")
+    public static final int STATUS_CONFLICT = 409;
+    @ApiResponseDescription(name= "UnproccessableError",description = "The request could not be processed, are all required properties/parameters filled?  \nSee errormessage for details")
+    public static final int STATUS_UNPROCESSABLE = 422;
+    @ApiResponseDescription(name= "MissingValuesError",description = "The request could not be processed, are all required properties/parameters filled?  \nSee errormessage for details")
+    public static final int STATUS_MISSING_VALUE = 422;
+    @ApiResponseDescription(name= "UnknownError",description = "The server ran into an error while processing the request")
+    public static final int STATUS_ERROR = 500;
+    @ApiResponseDescription(name= "MethodNotAllowedError",description = "The requested HTTP-method is not valid for this endpoint")
+    public static final int STATUS_METHOD_NOT_ALLOWED = 405;
     private static final Logger logger = LoggerFactory.getLogger("WebServer");
     
     private final static int DEFAULT_PORT = 8101;

@@ -1,15 +1,15 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.schema;
 
 import de.dfki.baall.helper.persistence.exceptions.AlreadyExistsException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.parameters.RequestBody;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
 import de.kosmos_lab.kosmos.data.DataSchema;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.kosmos.exceptions.SchemaAlreadyExistsException;
 import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
@@ -17,7 +17,6 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
@@ -71,7 +70,7 @@ public class SchemaAddServlet extends AuthedServlet {
                     @ApiResponse(
                             description = "Schema definition",
 
-                            responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK),
+                            responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK),
                             content = {
                                     @Content(
                                             mediaType = jakarta.ws.rs.core.MediaType.APPLICATION_JSON,
@@ -93,7 +92,7 @@ public class SchemaAddServlet extends AuthedServlet {
                             }
 
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
@@ -116,12 +115,12 @@ public class SchemaAddServlet extends AuthedServlet {
                     DataSchema ds = new DataSchema(o);
                     controller.addSchema(ds);
                     response.getWriter().print(o);
-                    response.setStatus(STATUS_OK);
+                    response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_OK);
                     return;
                 }
             }
         }
-        response.setStatus(STATUS_FAILED);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
     }
 
 

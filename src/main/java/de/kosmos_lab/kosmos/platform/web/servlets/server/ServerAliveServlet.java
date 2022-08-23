@@ -1,9 +1,9 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.server;
 
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
@@ -28,7 +28,7 @@ public class ServerAliveServlet extends KosmoSServlet {
             summary = "alive",
             description = "check if the server is alive",
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), description = "Server is reachable and running"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK), description = "Server is reachable and running"),
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response) {

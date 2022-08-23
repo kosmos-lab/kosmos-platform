@@ -1,23 +1,20 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.gesture;
 
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.Parameter;
-import de.kosmos_lab.kosmos.annotations.enums.ParameterIn;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.Parameter;
+import de.dfki.baall.helper.webserver.annotations.enums.ParameterIn;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.GestureNotFoundException;
-import de.kosmos_lab.kosmos.exceptions.NotFoundException;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -47,7 +44,7 @@ public class GestureDeleteServlet extends AuthedServlet {
             )
             },
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), description = "The gesture was added successfully", ref = "#/components/responses/gestureList"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK), description = "The gesture was added successfully", ref = "#/components/responses/gestureList"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), description = "This gestures was not found"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),

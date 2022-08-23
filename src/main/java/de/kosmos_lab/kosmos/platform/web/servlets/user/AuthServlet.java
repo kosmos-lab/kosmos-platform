@@ -2,17 +2,17 @@ package de.kosmos_lab.kosmos.platform.web.servlets.user;
 
 import de.dfki.baall.helper.webserver.data.IUser;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.Parameter;
-import de.kosmos_lab.kosmos.annotations.enums.ParameterIn;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.annotations.tags.Tag;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.Parameter;
+import de.dfki.baall.helper.webserver.annotations.enums.ParameterIn;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.annotations.tags.Tag;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
@@ -70,9 +70,9 @@ public class AuthServlet extends KosmoSServlet {
                     )
             },
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), description = "Login successful", content = @Content(mediaType = "application/jwt", schema = @Schema(type = SchemaType.STRING, example = "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJsZXZlbCI6MSwibmFtZSI6ImphbiIsImV4cCI6MTYwMzQ1NDE4NDY1NSwiaGFzaCI6Ii0ifQ.gAQh1snnG_VlzJ-lv4X7_-A0GV7iQA_l83b1285mPSo"))),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), description = "The credentials did not match"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK), description = "Login successful", content = @Content(mediaType = "application/jwt", schema = @Schema(type = SchemaType.STRING, example = "eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJsZXZlbCI6MSwibmFtZSI6ImphbiIsImV4cCI6MTYwMzQ1NDE4NDY1NSwiaGFzaCI6Ii0ifQ.gAQh1snnG_VlzJ-lv4X7_-A0GV7iQA_l83b1285mPSo"))),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN), description = "The credentials did not match"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
 
 
             }

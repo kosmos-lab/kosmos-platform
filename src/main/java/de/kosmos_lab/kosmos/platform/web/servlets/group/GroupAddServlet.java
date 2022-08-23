@@ -1,15 +1,15 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.group;
 
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.media.SchemaProperty;
+import de.dfki.baall.helper.webserver.annotations.parameters.RequestBody;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.GroupAlreadyExistsException;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
 import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
@@ -18,7 +18,6 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,7 +71,7 @@ public class GroupAddServlet extends AuthedServlet {
                     }),
             responses = {
                     
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/scopeGet", description = "The group was added successfully"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK), ref = "#/components/responses/scopeGet", description = "The group was added successfully"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_CONFLICT), description = "There is already a group with that name."),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
                 
@@ -82,13 +81,13 @@ public class GroupAddServlet extends AuthedServlet {
             throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException, GroupAlreadyExistsException {
         String group_name = request.getString(FIELD_NAME);
         if (group_name.length() < 3) {
-            response.sendError(STATUS_UNPROCESSABLE, "group name is not long enough (minLength is 3)");
+            response.sendError(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE, "group name is not long enough (minLength is 3)");
             return;
         }
         
         
         controller.addGroup(group_name, request.getKosmoSUser());
-        response.setStatus(STATUS_NO_RESPONSE);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE);
         return;
         
     }

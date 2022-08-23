@@ -1,20 +1,16 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.kree;
 
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -39,7 +35,7 @@ public class KreeLoadXMLServlet extends AuthedServlet {
                     @ApiResponse(
                             description = "XML Block definition",
 
-                            responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK),
+                            responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK),
                             content = {
                                     @Content(
                                             mediaType = jakarta.ws.rs.core.MediaType.APPLICATION_XML)
@@ -55,7 +51,7 @@ public class KreeLoadXMLServlet extends AuthedServlet {
             throws IOException {
         String xml = this.server.getRulesService().getXML(request.getKosmoSUser());
         if (xml != null) {
-            response.setStatus(STATUS_OK);
+            response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_OK);
             sendXML(request, response, xml);
         } else {
             sendXML(request, response, "<xml xmlns=\"https://developers.google.com/blockly/xml\">\n</xml>");

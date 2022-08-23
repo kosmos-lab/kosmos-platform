@@ -1,16 +1,15 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.kree;
 
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.parameters.RequestBody;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -39,8 +38,8 @@ public class KreeSaveXMLServlet extends AuthedServlet {
 
             ),
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),description = "XML saved successfully" ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE),description = "Could not save XML, the request body was empty." ),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE),description = "XML saved successfully" ),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE),description = "Could not save XML, the request body was empty." ),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
             }
     )
@@ -50,11 +49,11 @@ public class KreeSaveXMLServlet extends AuthedServlet {
         String xml = request.getBody();
         if (xml.length() > 0) {
             server.getRulesService().saveXML(request.getKosmoSUser(), xml);
-            response.setStatus(STATUS_NO_RESPONSE);
+            response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE);
 
             return;
         }
-        response.setStatus(STATUS_MISSING_VALUE);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
         return;
     }
 

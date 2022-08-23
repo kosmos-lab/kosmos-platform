@@ -3,9 +3,6 @@ package de.kosmos_lab.kosmos.platform.web.servlets;
 import de.dfki.baall.helper.persistence.exceptions.AlreadyExistsException;
 import de.dfki.baall.helper.persistence.exceptions.NotFoundInPersistenceException;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiResponseDescription;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.NoAccessException;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToGroup;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
@@ -38,37 +35,7 @@ public class KosmoSServlet extends HttpServlet {
     public enum ALLOW_AUTH {HEADER_ONLY, PARAMETER_AND_HEADER};
 
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger("KosmoSServlet");
-    public static final int STATUS_OK = 200;
-    public static final int STATUS_NO_RESPONSE = 204;
 
-    @ApiResponseDescription(name= "NoAccessError",description = "The request was aborted because your user does not have the correct privileges to execute the request.")
-    public static final int STATUS_FORBIDDEN = 403;
-
-    @ApiResponseDescription(name= "ValidationFailedErr" + "or",description = "The request was aborted because the payload could not be verified against the schema.  \nSee errormessage for details")
-
-    public static final int STATUS_VALIDATION_FAILED = 400;
-    @ApiResponseDescription(name= "DuplicateError",description = "The request was aborted because there was already a resource with that identifier.  \nSee errormessage for details")
-    public static final int STATUS_DUPLICATE = 409;
-    @ApiResponseDescription(name= "FailedError",description = "The request was aborted.  \nSee errormessage for details ")
-    public static final int STATUS_FAILED = 400;
-
-    @ApiResponseDescription(name= "NoAuthError",description = "This endpoint only works with authentication")
-    public static final int STATUS_NO_AUTH = 401;
-
-    @ApiResponseDescription(name= "NotFoundError",description = "The searched resource was not found  \nSee errormessage for details")
-    public static final int STATUS_NOT_FOUND = 404;
-
-    @ApiResponseDescription(name= "ConflictError",description = "The request was aborted because there was already a resource with that identifier.  \nSee errormessage for details")
-    public static final int STATUS_CONFLICT = 409;
-
-    @ApiResponseDescription(name= "UnproccessableError",description = "The request could not be processed, are all required properties/parameters filled?  \nSee errormessage for details")
-    public static final int STATUS_UNPROCESSABLE = 422;
-    @ApiResponseDescription(name= "MissingValuesError",description = "The request could not be processed, are all required properties/parameters filled?  \nSee errormessage for details")
-    public static final int STATUS_MISSING_VALUE = 422;
-    @ApiResponseDescription(name= "UnknownError",description = "The server ran into an error while processing the request")
-    public static final int STATUS_ERROR = 500;
-    @ApiResponseDescription(name= "MethodNotAllowedError",description = "The requested HTTP-method is not valid for this endpoint")
-    public static final int STATUS_METHOD_NOT_ALLOWED = 405;
     protected final IController controller;
     protected final WebServer server;
 
@@ -111,7 +78,7 @@ public class KosmoSServlet extends HttpServlet {
             missing.remove(e);
         }
         if (!missing.isEmpty()) {
-            response.setStatus(STATUS_FAILED);
+            response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
             PrintWriter w = response.getWriter();
             for (String k : missing.keySet()) {
                 w.println("missing parameter '" + k + "'");
@@ -125,7 +92,7 @@ public class KosmoSServlet extends HttpServlet {
 
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NoAccessException {
 
-        response.setStatus(STATUS_METHOD_NOT_ALLOWED);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
     public void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -139,25 +106,25 @@ public class KosmoSServlet extends HttpServlet {
 
                 delete(new KosmoSHttpServletRequest(request), response);
             } catch (NotObjectSchemaException e) {
-                response.setStatus(STATUS_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
                 response.getWriter().print("not object schema");
             } catch (ParameterNotFoundException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (NotFoundException e) {
-                response.setStatus(STATUS_NOT_FOUND);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NOT_FOUND);
                 response.getWriter().print(e.getMessage());
             } catch (NoAccessException e) {
-                response.setStatus(STATUS_FORBIDDEN);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN);
                 response.getWriter().print(e.getMessage());
             } catch (ValidationException e) {
-                response.setStatus(STATUS_VALIDATION_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_VALIDATION_FAILED);
                 response.getWriter().print(e.getMessage());
             } catch (JSONException e) {
-                response.setStatus(STATUS_UNPROCESSABLE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE);
                 response.getWriter().print(e.getMessage());
             } catch (Exception e) {
-                response.setStatus(STATUS_ERROR);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_ERROR);
                 e.printStackTrace();
 
             }
@@ -174,25 +141,25 @@ public class KosmoSServlet extends HttpServlet {
                 addCORSHeader(request, response);
                 get(new KosmoSHttpServletRequest(request), response);
             } catch (NotObjectSchemaException e) {
-                response.setStatus(STATUS_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
                 response.getWriter().print("not object schema");
             } catch (ParameterNotFoundException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (NotFoundException e) {
-                response.setStatus(STATUS_NOT_FOUND);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NOT_FOUND);
                 response.getWriter().print(e.getMessage());
             } catch (ValidationException e) {
-                response.setStatus(STATUS_VALIDATION_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_VALIDATION_FAILED);
                 response.getWriter().print(e.getMessage());
             } catch (NoAccessException e) {
-                response.setStatus(STATUS_FORBIDDEN);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN);
                 response.getWriter().print(e.getMessage());
             } catch (JSONException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (Exception e) {
-                response.setStatus(STATUS_ERROR);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_ERROR);
                 e.printStackTrace();
 
             }
@@ -219,29 +186,29 @@ public class KosmoSServlet extends HttpServlet {
 
                 post(new KosmoSHttpServletRequest(request), response);
             } catch (NotObjectSchemaException e) {
-                response.setStatus(STATUS_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
                 response.getWriter().print("not object schema");
             } catch (JSONException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (ParameterNotFoundException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (NotFoundException e) {
-                response.setStatus(STATUS_NOT_FOUND);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NOT_FOUND);
                 response.getWriter().print(e.getMessage());
             } catch (NoAccessException e) {
-                response.setStatus(STATUS_FORBIDDEN);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN);
                 response.getWriter().print(e.getMessage());
             } catch (ValidationException e) {
-                response.setStatus(STATUS_VALIDATION_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_VALIDATION_FAILED);
                 response.getWriter().print(e.getMessage());
             } catch (AlreadyExistsException e) {
-                response.setStatus(STATUS_CONFLICT);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_CONFLICT);
                 response.getWriter().print(e.getMessage());
 
             } catch (Exception e) {
-                response.setStatus(STATUS_ERROR);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_ERROR);
                 e.printStackTrace();
 
 
@@ -261,25 +228,25 @@ public class KosmoSServlet extends HttpServlet {
 
                 put(new KosmoSHttpServletRequest(request), response);
             } catch (NotObjectSchemaException e) {
-                response.setStatus(STATUS_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FAILED);
                 response.getWriter().print("not object schema");
             } catch (ParameterNotFoundException e) {
-                response.setStatus(STATUS_MISSING_VALUE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_MISSING_VALUE);
                 response.getWriter().print(e.getMessage());
             } catch (NotFoundException e) {
-                response.setStatus(STATUS_NOT_FOUND);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NOT_FOUND);
                 response.getWriter().print(e.getMessage());
             } catch (ValidationException e) {
-                response.setStatus(STATUS_VALIDATION_FAILED);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_VALIDATION_FAILED);
                 response.getWriter().print(e.getMessage());
             } catch (NoAccessException e) {
-                response.setStatus(STATUS_FORBIDDEN);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN);
                 response.getWriter().print(e.getMessage());
             } catch (JSONException e) {
-                response.setStatus(STATUS_UNPROCESSABLE);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_UNPROCESSABLE);
                 response.getWriter().print(e.getMessage());
             } catch (Exception e) {
-                response.setStatus(STATUS_ERROR);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_ERROR);
                 e.printStackTrace();
 
             }
@@ -290,7 +257,7 @@ public class KosmoSServlet extends HttpServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessException, NotFoundInPersistenceException {
         //logger.info("HITTING GET");
 
-        response.setStatus(STATUS_METHOD_NOT_ALLOWED);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
 
@@ -307,12 +274,12 @@ public class KosmoSServlet extends HttpServlet {
 
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NotFoundInPersistenceException, AlreadyExistsException, NoAccessException {
         //logger.info("HITTING POST");
-        response.setStatus(STATUS_METHOD_NOT_ALLOWED);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
     public void put(KosmoSHttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup {
         //logger.info("HITTING PUT");
-        response.setStatus(STATUS_METHOD_NOT_ALLOWED);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
     public static void sendJSON(KosmoSHttpServletRequest req, HttpServletResponse response, JSONObject obj) throws IOException {

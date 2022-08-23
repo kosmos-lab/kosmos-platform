@@ -1,14 +1,14 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.group;
 
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.ArraySchema;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.ArraySchema;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.media.SchemaProperty;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
 import de.kosmos_lab.kosmos.data.Group;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
 import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
@@ -16,7 +16,6 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -42,7 +41,7 @@ public class GroupMyServlet extends AuthedServlet {
             summary = "my",
             description = "Lists the scopes you have access to",
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK),
                             description = "A JSONObject stating the groups you have access to",
                             content = @Content(
 

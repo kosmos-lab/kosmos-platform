@@ -1,28 +1,28 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.device;
 
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.Parameter;
+import de.dfki.baall.helper.webserver.annotations.enums.ParameterIn;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.ObjectSchema;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.media.SchemaProperty;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
 import de.dfki.baall.helper.webserver.data.IUser;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.Parameter;
-import de.kosmos_lab.kosmos.annotations.enums.ParameterIn;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.ObjectSchema;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
+
 import de.kosmos_lab.kosmos.data.Device;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+
 import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.kosmos.exceptions.NoAccessToScope;
 import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
 import javax.ws.rs.core.MediaType;
@@ -35,7 +35,8 @@ import java.io.IOException;
 )
 @ApiResponse(
         componentName = "deviceGet",
-        responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE),
+
+        responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE),
         description = "Details about the scope",
 
         content = @Content(
@@ -120,6 +121,7 @@ public class DeviceGetServlet extends AuthedServlet {
 
     @Operation(
             tags = {"device"},
+
             summary = "Get information about the device",
             description = "Get information about the device",
             parameters = {@Parameter(name = "uuid",
@@ -133,13 +135,9 @@ public class DeviceGetServlet extends AuthedServlet {
             )
             },
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_OK), ref = "#/components/responses/deviceGet"),
-                    /*@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
-
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),*/
-            })
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_OK), ref = "#/components/responses/deviceGet"),
+            }
+    )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response) throws IOException, ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope {
 
 

@@ -1,11 +1,9 @@
 package CI.HTTP;
 
 import common.CommonBase;
+import de.dfki.baall.helper.webserver.WebServer;
 import de.kosmos_lab.kosmos.client.KosmoSClient;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.utils.StringFunctions;
-import org.apache.commons.lang3.CharSet;
-import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
 import org.json.JSONObject;
@@ -17,12 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
 
 import static common.CommonBase.*;
 
@@ -95,18 +89,18 @@ public class TestUser {
         //Assert.assertTrue(CommonBase.clientFakeUser.refreshToken(), "Login should have failed!");
         ContentResponse response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", clientAdmin.getUserName()).put("pass", clientAdmin.getPassword()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "raw Login failed");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "raw Login failed");
 
 
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", clientAdmin.getUserName()).put("pass", StringFunctions.generateRandomKey()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "raw Login should have failed");
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject().put("user", StringFunctions.generateRandomKey()).put("pass", StringFunctions.generateRandomKey()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "raw Login should have failed");
         response = clientAdmin.getResponse("/user/login", HttpMethod.POST, new JSONObject());
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_MISSING_VALUE, "raw Login should have failed");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_MISSING_VALUE, "raw Login should have failed");
     }
 
     @Test(dependsOnGroups = {"login"}, groups = {"createUser"})

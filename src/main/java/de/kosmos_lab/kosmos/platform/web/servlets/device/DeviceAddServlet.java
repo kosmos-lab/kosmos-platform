@@ -1,18 +1,17 @@
 package de.kosmos_lab.kosmos.platform.web.servlets.device;
 
 import de.dfki.baall.helper.webserver.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.kosmos.annotations.Operation;
-import de.kosmos_lab.kosmos.annotations.enums.SchemaType;
-import de.kosmos_lab.kosmos.annotations.media.ArraySchema;
-import de.kosmos_lab.kosmos.annotations.media.Content;
-import de.kosmos_lab.kosmos.annotations.media.ExampleObject;
-import de.kosmos_lab.kosmos.annotations.media.ObjectSchema;
-import de.kosmos_lab.kosmos.annotations.media.Schema;
-import de.kosmos_lab.kosmos.annotations.media.SchemaProperty;
-import de.kosmos_lab.kosmos.annotations.parameters.RequestBody;
-import de.kosmos_lab.kosmos.annotations.responses.ApiResponse;
-import de.kosmos_lab.kosmos.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.kosmos.doc.openapi.ResponseCode;
+import de.dfki.baall.helper.webserver.annotations.Operation;
+import de.dfki.baall.helper.webserver.annotations.enums.SchemaType;
+import de.dfki.baall.helper.webserver.annotations.media.Content;
+import de.dfki.baall.helper.webserver.annotations.media.ExampleObject;
+import de.dfki.baall.helper.webserver.annotations.media.ObjectSchema;
+import de.dfki.baall.helper.webserver.annotations.media.Schema;
+import de.dfki.baall.helper.webserver.annotations.media.SchemaProperty;
+import de.dfki.baall.helper.webserver.annotations.parameters.RequestBody;
+import de.dfki.baall.helper.webserver.annotations.responses.ApiResponse;
+import de.dfki.baall.helper.webserver.doc.openapi.ApiEndpoint;
+import de.dfki.baall.helper.webserver.doc.openapi.ResponseCode;
 import de.kosmos_lab.kosmos.exceptions.DeviceAlreadyExistsException;
 import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.kosmos.exceptions.SchemaNotFoundException;
@@ -20,7 +19,6 @@ import de.kosmos_lab.kosmos.platform.IController;
 import de.kosmos_lab.kosmos.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.kosmos.platform.web.WebServer;
 import de.kosmos_lab.kosmos.platform.web.servlets.AuthedServlet;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
@@ -75,6 +73,7 @@ public class DeviceAddServlet extends AuthedServlet {
     
     @Operation(
             tags = {"device"},
+            
             summary = "Add a device",
             description = "Add a device to the system.",
             requestBody = @RequestBody(
@@ -86,6 +85,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "schema",
                                                     schema = @Schema(
+
                                                             description = "The $id/url of the schema to use. If its a schema not already in the system the $id MUST be a reachable Url describing the schema.",
                                                             type = SchemaType.STRING,
                                                             required = true
@@ -94,6 +94,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "uuid",
                                                     schema = @Schema(
+
                                                             description = "The uuid to use for the new device, must be unique.",
                                                             type = SchemaType.STRING,
                                                             minLength = 3,
@@ -103,6 +104,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "name",
                                                     schema = @Schema(
+
                                                             description = "The name to use for the new device, if no name is set uuid will be used. Does not need to be unique.",
                                                             type = SchemaType.STRING,
                                                             minLength = 3,
@@ -112,6 +114,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "state",
                                                     schema = @Schema(
+
                                                             description = "The starting state of the device, needs to contain all required values if the schema has any and needs to be valid against the schema.",
                                                             type = SchemaType.OBJECT,
                                                             defaultValue = "{}",
@@ -121,6 +124,7 @@ public class DeviceAddServlet extends AuthedServlet {
                                             @SchemaProperty(
                                                     name = "scopes",
                                                     schema = @Schema(
+
                                                             description = "The name of the scope to use for the new device.",
                                                             ref = "#/components/schemas/deviceScopes"
                                                     )
@@ -144,17 +148,21 @@ public class DeviceAddServlet extends AuthedServlet {
                     }
             ),
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_RESPONSE), description = "The device was added successfully"),
+
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE), description = "The device was added successfully"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
             
+
             throws NotObjectSchemaException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException {
         
         
         JSONObject o = request.getBodyAsJSONObject();
         if (o != null) {
+
             controller.parseAddDevice(this.server, o, this.getSource(request), request.getKosmoSUser());
-            response.setStatus(STATUS_NO_RESPONSE);
+
+            response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NO_RESPONSE);
            
         }
         

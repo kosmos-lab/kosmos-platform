@@ -85,7 +85,7 @@ public abstract class AuthedServlet extends KosmoSServlet {
                     return true;
                 }
                 
-                response.setStatus(STATUS_FORBIDDEN);
+                response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_FORBIDDEN);
                 return false;
             } catch (InvalidKeyException e) {
                 e.printStackTrace();
@@ -118,7 +118,7 @@ public abstract class AuthedServlet extends KosmoSServlet {
         response.setHeader("WWW-Authenticate","Bearer realm=\"example\",\n" +
                 "                   error=\"invalid_token\",\n" +
                 "                   error_description=\"The access token expired\"");
-        response.setStatus(STATUS_NO_AUTH);
+        response.setStatus(de.dfki.baall.helper.webserver.WebServer.STATUS_NO_AUTH);
     
         return false;
         

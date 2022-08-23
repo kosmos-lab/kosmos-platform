@@ -2,17 +2,15 @@ package CI.HTTP;
 
 import common.CommonBase;
 import de.dfki.baall.helper.persistence.exceptions.NotFoundInPersistenceException;
+import de.dfki.baall.helper.webserver.WebServer;
 import de.kosmos_lab.kosmos.client.KosmoSClient;
 import de.kosmos_lab.kosmos.data.Group;
-import de.kosmos_lab.kosmos.platform.web.servlets.KosmoSServlet;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.ejb.PostActivate;
 
 public class TestGroup {
     
@@ -51,7 +49,7 @@ public class TestGroup {
         }
         Assert.assertNotNull(response);
 
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "list my groups failed!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "list my groups failed!");
         
         JSONObject obj = new JSONObject(response.getContentAsString());
         JSONArray arr;
@@ -82,59 +80,59 @@ public class TestGroup {
         
         ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", testGroupDevicesDeviceName).put("scopes", new JSONObject().put("read", testGroupDevicesScopeName + ":read").put("del", testGroupDevicesScopeName + ":del").put("write", testGroupDevicesScopeName + ":write")).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "Device add did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
         
         response = CommonBase.clientUser.getResponse("/device/get?id=" + testGroupDevicesDeviceName, HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Device was not readable");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device was not readable");
         response = CommonBase.clientUser2.getResponse("/device/get?id=" + testGroupDevicesDeviceName, HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "Device was readable");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device was readable");
         response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 17));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Device set did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
         response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "Device set did NOT fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device set did NOT fail!");
         response = CommonBase.clientUser2.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "Device set did NOT fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device set did NOT fail!");
         
         
         response = CommonBase.clientUser.getResponse("/group/add", HttpMethod.POST, new JSONObject().put("name", testGroupDevicesGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "addgroupuser did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "addgroupuser did fail!");
         response = CommonBase.clientUser.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupDevicesGroupName).put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "addgroupuser did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "addgroupuser did fail!");
         response = CommonBase.clientUser.getResponse("/scope/addgroup", HttpMethod.POST, new JSONObject().put("scope", testGroupDevicesScopeName + ":read").put("group", testGroupDevicesGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "addgroupuser did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "addgroupuser did fail!");
         response = CommonBase.clientUser2.getResponse("/device/get?id=" + testGroupDevicesDeviceName, HttpMethod.GET);
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Device was not readable");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device was not readable");
         response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "Device set did NOT fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device set did NOT fail!");
         response = CommonBase.clientUser.getResponse("/scope/addgroup", HttpMethod.POST, new JSONObject().put("scope", testGroupDevicesScopeName + ":write").put("group", testGroupDevicesGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "scope add user did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "scope add user did fail!");
         
         response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_OK, "Device set did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
         response = CommonBase.clientUser2.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "Device delete did NOT fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device delete did NOT fail!");
         response = CommonBase.clientUser.getResponse("/scope/addgroup", HttpMethod.POST, new JSONObject().put("scope", testGroupDevicesScopeName + ":del").put("group", testGroupDevicesGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "scope add user did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "scope add user did fail!");
         response = CommonBase.clientUser2.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", testGroupDevicesDeviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "Device delete did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device delete did fail!");
         response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", testGroupDevicesDeviceName).put("scopes", new JSONObject().put("read", testGroupDevicesScopeName + ":read").put("del", testGroupDevicesScopeName + ":del").put("write", testGroupDevicesScopeName + ":write")).put("schema", "https://kosmos-lab.de/schema/MultiSensor.json"));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "Device add did fail!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
     }
     
     @Test(groups = {"testGroups"}, dependsOnGroups = {"createUser"})
@@ -155,7 +153,7 @@ public class TestGroup {
         assertNotUserInGroup(CommonBase.clientUser3, testGroupsGroupName);
         ContentResponse response = CommonBase.clientUser.getResponse("/group/add", HttpMethod.POST, new JSONObject().put("name", testGroupsGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "group add returned wrong status!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "group add returned wrong status!");
         assertAdminInGroup(CommonBase.clientUser, testGroupsGroupName);
         assertNotUserInGroup(CommonBase.clientUser, testGroupsGroupName);
         assertNotAdminInGroup(CommonBase.clientUser2, testGroupsGroupName);
@@ -171,76 +169,76 @@ public class TestGroup {
         }
         response = CommonBase.clientUser2.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "was able to hijack user adding");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "was able to hijack user adding");
         assertNotUserInGroup(CommonBase.clientUser2, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser3.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "was able to hijack user adding");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "was able to hijack user adding");
         assertNotUserInGroup(CommonBase.clientUser3, testGroupsGroupName);
         
         response = CommonBase.clientUser.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", "afaksjnfkajsnfas").put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NOT_FOUND, "group that should not exist was found");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NOT_FOUND, "group that should not exist was found");
         
         response = CommonBase.clientUser.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", "23592835235asdf"));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NOT_FOUND, "user that should not exist was found");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NOT_FOUND, "user that should not exist was found");
         
         response = CommonBase.clientUser.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not add user to group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not add user to group?");
         assertNotAdminInGroup(CommonBase.clientUser2, testGroupsGroupName);
         assertUserInGroup(CommonBase.clientUser2, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser3.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "was able to hijack user adding");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "was able to hijack user adding");
         assertNotUserInGroup(CommonBase.clientUser3, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/addadmin", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "was able to hijack user adding");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "was able to hijack user adding");
         assertNotAdminInGroup(CommonBase.clientUser2, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/addadmin", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser3.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_FORBIDDEN, "was able to hijack user adding");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "was able to hijack user adding");
         assertNotAdminInGroup(CommonBase.clientUser3, testGroupsGroupName);
         
         
         response = CommonBase.clientUser.getResponse("/group/addadmin", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser2.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not add user to group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not add user to group?");
         assertAdminInGroup(CommonBase.clientUser2, testGroupsGroupName);
         assertUserInGroup(CommonBase.clientUser2, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/deladmin", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not del admin from group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not del admin from group?");
         assertNotAdminInGroup(CommonBase.clientUser, testGroupsGroupName);
         assertNotUserInGroup(CommonBase.clientUser, testGroupsGroupName);
         
         
         response = CommonBase.clientUser2.getResponse("/group/adduser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not add user to group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not add user to group?");
         assertNotAdminInGroup(CommonBase.clientUser, testGroupsGroupName);
         assertUserInGroup(CommonBase.clientUser, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/deluser", HttpMethod.POST, new JSONObject().put("group", testGroupsGroupName).put("user", CommonBase.clientUser.getUserName()));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not add user to group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not add user to group?");
         assertNotAdminInGroup(CommonBase.clientUser, testGroupsGroupName);
         assertNotUserInGroup(CommonBase.clientUser, testGroupsGroupName);
         
         response = CommonBase.clientUser2.getResponse("/group/delete", HttpMethod.POST,new JSONObject().put("group", testGroupsGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "could not delete group?");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "could not delete group?");
         response = CommonBase.clientUser3.getResponse("/group/get", HttpMethod.GET,new JSONObject().put("name", testGroupsGroupName));
         Assert.assertNotNull(response);
 
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NOT_FOUND, "could find deleted group again");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NOT_FOUND, "could find deleted group again");
     
         try {
             g = CommonBase.controller.getPersistence().getGroup(testGroupsGroupName);
@@ -252,7 +250,7 @@ public class TestGroup {
         assertNotUserInGroup(CommonBase.clientAdmin, testGroupsGroupName);
         response = CommonBase.clientUser.getResponse("/group/add", HttpMethod.POST, new JSONObject().put("name", testGroupsGroupName));
         Assert.assertNotNull(response);
-        Assert.assertEquals(response.getStatus(), KosmoSServlet.STATUS_NO_RESPONSE, "group add returned wrong status!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "group add returned wrong status!");
         try {
             g = CommonBase.controller.getPersistence().getGroup(testGroupsGroupName);
             
