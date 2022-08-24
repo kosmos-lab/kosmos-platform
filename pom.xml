@@ -370,6 +370,11 @@
         </dependency>
         <dependency>
             <groupId>de.kosmos-lab</groupId>
+            <artifactId>web</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.kosmos-lab</groupId>
             <artifactId>kosmos-utils</artifactId>
             <version>0.1.9</version>
         </dependency>
@@ -549,7 +554,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.kosmos_lab.kosmos.platform.StartController</mainClass>
+                            <mainClass>de.kosmos_lab.platform.StartController</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

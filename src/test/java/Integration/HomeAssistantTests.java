@@ -1,8 +1,8 @@
 package Integration;
 
 import common.CommonBase;
-import de.kosmos_lab.kosmos.data.Device;
-import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
+import de.kosmos_lab.platform.data.Device;
+import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.util.UrlEncoded;

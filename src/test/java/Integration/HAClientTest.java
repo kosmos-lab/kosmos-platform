@@ -2,12 +2,12 @@ package Integration;
 
 import common.CommonBase;
 import common.Utils;
-import de.kosmos_lab.kosmos.exceptions.DeviceNotFoundException;
+import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.utils.JSONChecker;
 import de.kosmos_lab.utils.exceptions.CompareException;
-import de.kosmos_lab.kosmos.platform.smarthome.ha.HomeAssistantClient;
-import de.kosmos_lab.kosmos.platform.smarthome.ha.HomeAssistantHTTPClient;
-import de.kosmos_lab.kosmos.data.Device;
+import de.kosmos_lab.platform.smarthome.ha.HomeAssistantClient;
+import de.kosmos_lab.platform.smarthome.ha.HomeAssistantHTTPClient;
+import de.kosmos_lab.platform.data.Device;
 import me.bazhenov.docker.*;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;

@@ -2,7 +2,7 @@ package me.bazhenov.docker;
 
 
 import common.Utils;
-import de.kosmos_lab.kosmos.platform.utils.KosmoSHelper;
+import de.kosmos_lab.platform.utils.KosmoSHelper;
 import de.kosmos_lab.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.LoggerFactory;

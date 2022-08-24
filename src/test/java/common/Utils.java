@@ -1,6 +1,6 @@
 package common;
 
-import de.kosmos_lab.kosmos.platform.utils.KosmoSHelper;
+import de.kosmos_lab.platform.utils.KosmoSHelper;
 import de.kosmos_lab.utils.JSONChecker;
 import org.json.JSONObject;
 import org.testng.Assert;

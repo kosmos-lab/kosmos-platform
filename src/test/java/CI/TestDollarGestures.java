@@ -1,9 +1,8 @@
 package CI;
 
-import de.kosmos_lab.kosmos.platform.KosmoSController;
-import de.kosmos_lab.kosmos.platform.gesture.GestureProvider;
-import de.kosmos_lab.kosmos.platform.persistence.Constants;
-import de.kosmos_lab.kosmos.platform.persistence.Constants.RunMode;
+import de.kosmos_lab.platform.KosmoSController;
+import de.kosmos_lab.platform.gesture.GestureProvider;
+import de.kosmos_lab.platform.persistence.Constants.RunMode;
 import org.json.JSONArray;
 import org.testng.Assert;
 import org.testng.annotations.Test;

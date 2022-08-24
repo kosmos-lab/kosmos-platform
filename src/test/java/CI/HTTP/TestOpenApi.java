@@ -1,6 +1,6 @@
 package CI.HTTP;
 
-import de.kosmos_lab.kosmos.platform.web.OpenApiParser;
+import de.kosmos_lab.web.server.OpenApiParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

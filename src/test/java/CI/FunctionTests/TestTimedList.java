@@ -1,6 +1,6 @@
 package CI.FunctionTests;
 
-import de.kosmos_lab.kosmos.data.TimedList;
+import de.kosmos_lab.platform.data.TimedList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.testng.Assert;
 import org.testng.annotations.Test;

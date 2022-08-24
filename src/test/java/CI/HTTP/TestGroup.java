@@ -1,10 +1,10 @@
 package CI.HTTP;
 
 import common.CommonBase;
-import de.dfki.baall.helper.persistence.exceptions.NotFoundInPersistenceException;
-import de.dfki.baall.helper.webserver.WebServer;
-import de.kosmos_lab.kosmos.client.KosmoSClient;
-import de.kosmos_lab.kosmos.data.Group;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.web.server.WebServer;
+import de.kosmos_lab.platform.client.KosmoSClient;
+import de.kosmos_lab.platform.data.Group;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
 import org.json.JSONArray;
@@ -49,7 +49,7 @@ public class TestGroup {
         }
         Assert.assertNotNull(response);
 
-        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "list my groups failed!");
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "list my "+type+" failed!");
         
         JSONObject obj = new JSONObject(response.getContentAsString());
         JSONArray arr;

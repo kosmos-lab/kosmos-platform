@@ -1,9 +1,9 @@
 package CI;
 
-import de.kosmos_lab.kosmos.data.DataEntry;
-import de.kosmos_lab.kosmos.platform.utils.DataFactory;
-import de.kosmos_lab.kosmos.data.DataSchema;
-import de.kosmos_lab.kosmos.exceptions.NotObjectSchemaException;
+import de.kosmos_lab.platform.data.DataEntry;
+import de.kosmos_lab.platform.utils.DataFactory;
+import de.kosmos_lab.platform.data.DataSchema;
+import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
 import org.everit.json.schema.ValidationException;
 import org.testng.Assert;
 import org.testng.annotations.Test;

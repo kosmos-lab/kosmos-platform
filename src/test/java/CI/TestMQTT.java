@@ -2,7 +2,7 @@ package CI;
 
 
 import common.CommonBase;
-import de.kosmos_lab.kosmos.data.Device;
+import de.kosmos_lab.platform.data.Device;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;

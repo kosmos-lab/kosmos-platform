@@ -1,8 +1,8 @@
 package CI.HTTP;
 
 import common.CommonBase;
-import de.dfki.baall.helper.webserver.WebServer;
-import de.kosmos_lab.kosmos.client.KosmoSClient;
+import de.kosmos_lab.web.server.WebServer;
+import de.kosmos_lab.platform.client.KosmoSClient;
 import de.kosmos_lab.utils.StringFunctions;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
