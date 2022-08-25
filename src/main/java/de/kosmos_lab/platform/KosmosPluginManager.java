@@ -15,6 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -147,54 +148,65 @@ public class KosmosPluginManager extends DefaultPluginManager {
         startPlugins();
         List<PluginWrapper> startedPlugins = getStartedPlugins();
         for (PluginWrapper plugin : startedPlugins) {
-            String pluginId = plugin.getDescriptor().getPluginId();
+            try {
+                String pluginId = plugin.getDescriptor().getPluginId();
 
-            List<Class<?>> extensionClasses = getExtensionClasses(pluginId);
-            if (!extensionClasses.isEmpty()) {
-                for (Class extension : extensionClasses) {
-                    logger.info("Extension {} added by {}", extension, plugin.getPluginId());
-                    this.classes.add(extension);
+                List<Class<?>> extensionClasses = getExtensionClasses(pluginId);
+                if (!extensionClasses.isEmpty()) {
+                    for (Class extension : extensionClasses) {
+                        logger.info("Extension {} added by {}", extension, plugin.getPluginId());
+                        this.classes.add(extension);
 
-                }
-                try {
-                    URL r = extensionClasses.get(0).getResource("/web");
-                    if (r != null) {
-                        URI uri = r.toURI();
-                        Path myPath;
-                        if (uri.getScheme().equals("jar")) {
-                            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-                            myPath = fileSystem.getPath("/web/");
-                        } else {
-                            myPath = Paths.get(uri);
-                        }
-                        Stream<Path> walk = Files.walk(myPath);
-
-                        for (Iterator<Path> it = walk.iterator(); it.hasNext(); ) {
-                            Path path = it.next();
-                            String filteredName = path.toString().substring(myPath.toString().length());
-                            if (filteredName.length() > 0) {
+                    }
+                    try {
+                        URL r = extensionClasses.get(0).getResource("/web");
+                        if (r != null) {
+                            URI uri = r.toURI();
+                            Path myPath = null;
+                            if (uri.getScheme().equals("jar")) {
                                 try {
-                                    if (path.toFile().isFile()) {
-                                        Path to = new File(String.format("./web/%s", filteredName)).toPath();
-                                        logger.info("Found resource to copy in {}: {} ", plugin.getPluginId(), filteredName);
-                                        Files.copy(path, to, StandardCopyOption.REPLACE_EXISTING);
-                                    } else if (path.toFile().isDirectory()) {
-                                        logger.info("Found resource to create in {}: {}", plugin.getPluginId(), filteredName);
-                                        new File(String.format("./web/%s", filteredName)).mkdirs();
+                                    FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
+                                    myPath = fileSystem.getPath("/web/");
+                                } catch (FileSystemAlreadyExistsException ex ) {
+                                    logger.error("could not create filesystem for {}",uri);
+
+                                }
+                            } else {
+                                myPath = Paths.get(uri);
+                            }
+                            if ( myPath != null ) {
+                                Stream<Path> walk = Files.walk(myPath);
+
+                                for (Iterator<Path> it = walk.iterator(); it.hasNext(); ) {
+                                    Path path = it.next();
+                                    String filteredName = path.toString().substring(myPath.toString().length());
+                                    if (filteredName.length() > 0) {
+                                        try {
+                                            if (path.toFile().isFile()) {
+                                                Path to = new File(String.format("./web/%s", filteredName)).toPath();
+                                                logger.info("Found resource to copy in {}: {} ", plugin.getPluginId(), filteredName);
+                                                Files.copy(path, to, StandardCopyOption.REPLACE_EXISTING);
+                                            } else if (path.toFile().isDirectory()) {
+                                                logger.info("Found resource to create in {}: {}", plugin.getPluginId(), filteredName);
+                                                new File(String.format("./web/%s", filteredName)).mkdirs();
+                                            }
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
                                     }
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
                                 }
                             }
                         }
+                    } catch (IOException | NullPointerException e) {
+                        e.printStackTrace();
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException | NullPointerException e) {
-                    e.printStackTrace();
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
                 }
-            }
 
+            } catch (Exception ex) {
+                logger.error("Exception:", ex);
+            }
         }
     }
 

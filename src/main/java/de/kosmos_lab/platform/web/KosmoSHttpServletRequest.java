@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web;
 
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.web.server.servlets.BaseServletRequest;
 import de.kosmos_lab.web.server.servlets.MyHttpServletRequest;
 import de.kosmos_lab.web.data.IUser;

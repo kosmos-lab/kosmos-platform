@@ -15,12 +15,15 @@ import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSServlet;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -79,13 +82,13 @@ public class AuthServlet extends KosmoSServlet {
     )
     @Override
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ParameterNotFoundException {
+ throws ParameterNotFoundException{
         IUser u = controller.tryLogin(request.getString(FIELD_USER), request.getString(FIELD_PASS));
         if (u != null) {
             try {
                 sendJWT(request, response, controller.getJwt().sign(u.toJWT()));
                 return;
-            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
                 //e.printStackTrace();
                 logger.warn("error while taking auth", e);
             }

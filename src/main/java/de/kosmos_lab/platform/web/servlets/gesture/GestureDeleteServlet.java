@@ -12,6 +12,7 @@ import de.kosmos_lab.web.doc.openapi.ResponseCode;
 import de.kosmos_lab.platform.exceptions.GestureNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
@@ -50,6 +51,7 @@ public class GestureDeleteServlet extends KosmoSAuthedServlet {
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
+
             
             throws IOException, ParameterNotFoundException, GestureNotFoundException {
         String id = request.getString("id");

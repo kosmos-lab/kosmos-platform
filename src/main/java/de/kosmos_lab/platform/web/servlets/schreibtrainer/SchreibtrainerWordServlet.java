@@ -16,6 +16,7 @@ import de.kosmos_lab.platform.exceptions.DeviceAlreadyExistsException;
 import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSServlet;
 import org.json.JSONObject;
@@ -78,7 +79,8 @@ public class SchreibtrainerWordServlet extends KosmoSServlet {
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
-    public void post(KosmoSHttpServletRequest request, HttpServletResponse response) throws ParameterNotFoundException {
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+ throws ParameterNotFoundException {
         
         String uuid = request.getParameter("uuid");
         //logger.info("length of content: {}",request.getContentLength());

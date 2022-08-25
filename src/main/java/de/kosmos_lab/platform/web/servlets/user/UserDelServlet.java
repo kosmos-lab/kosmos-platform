@@ -12,6 +12,7 @@ import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,6 +57,7 @@ public class UserDelServlet extends KosmoSAuthedServlet {
             }
     )
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
+
             throws ParameterNotFoundException {
         String user = request.getString(FIELD_USER);
         IUser u = controller.getUser(user);

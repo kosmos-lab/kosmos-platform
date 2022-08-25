@@ -16,6 +16,7 @@ import de.kosmos_lab.web.doc.openapi.ApiResponseDescription;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.platform.plugins.camera.ICamera;
@@ -116,6 +117,7 @@ public class CameraListServlet extends KosmoSAuthedServlet {
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
+
 
             throws IOException {
         boolean details = request.getBoolean(FIELD_DETAILS, false);

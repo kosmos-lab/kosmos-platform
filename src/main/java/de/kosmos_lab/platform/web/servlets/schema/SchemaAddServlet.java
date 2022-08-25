@@ -15,6 +15,7 @@ import de.kosmos_lab.platform.exceptions.SchemaAlreadyExistsException;
 import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.ServletException;
@@ -95,6 +96,7 @@ public class SchemaAddServlet extends KosmoSAuthedServlet {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+
 
             throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, AlreadyExistsException {
         JSONObject o = request.getBodyAsJSONObject();

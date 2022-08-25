@@ -26,6 +26,7 @@ import de.kosmos_lab.platform.exceptions.ScopeAlreadyExistsException;
 import de.kosmos_lab.platform.exceptions.UserNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.ServletException;
@@ -153,6 +154,7 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
 
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+
 
             throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException, AlreadyExistsException, GroupNotFoundException {
         String sname = request.getString(Scope.FIELD_NAME);

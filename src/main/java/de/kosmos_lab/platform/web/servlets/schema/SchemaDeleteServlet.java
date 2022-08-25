@@ -14,6 +14,7 @@ import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
@@ -47,6 +48,7 @@ public class SchemaDeleteServlet extends KosmoSAuthedServlet {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
+
             
             throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, ParameterNotFoundException {
         String id = request.getString("id");

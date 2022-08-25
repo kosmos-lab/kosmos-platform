@@ -1,9 +1,11 @@
 package de.kosmos_lab.platform.web.servlets;
 
 import de.kosmos_lab.platform.smarthome.CommandSourceName;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.web.server.JWT;
 import org.json.JSONObject;
@@ -30,12 +32,7 @@ public abstract class KosmoSAuthedServlet extends KosmoSServlet {
 
     }
     
-  
-    
-    
-    
-  
-    
+
     protected CommandSourceName getSource(KosmoSHttpServletRequest request) {
         if ( controller != null ) {
             try {

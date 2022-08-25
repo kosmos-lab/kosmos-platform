@@ -18,6 +18,7 @@ import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.ServletException;
@@ -73,6 +74,7 @@ public class ScopeDeleteServlet extends KosmoSAuthedServlet {
             }
     )
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
+
 
             throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException {
 

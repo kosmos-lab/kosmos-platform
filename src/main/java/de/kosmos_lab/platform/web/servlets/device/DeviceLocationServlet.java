@@ -19,6 +19,7 @@ import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.platform.exceptions.NoAccessToScope;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -174,6 +175,7 @@ public class DeviceLocationServlet extends KosmoSAuthedServlet {
             })
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
+
             throws IOException, NoAccessToScope, DeviceNotFoundException, ParameterNotFoundException {
         String uuid = request.getUUID();
 
@@ -254,7 +256,8 @@ public class DeviceLocationServlet extends KosmoSAuthedServlet {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
-    public void post(KosmoSHttpServletRequest request, HttpServletResponse response) throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope {
+    public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+ throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope {
 
 
         JSONObject o = request.getBodyAsJSONObject();

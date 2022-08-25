@@ -26,10 +26,11 @@ public class SchreibtrainerConstants {
             JSONObject dev = new JSONObject();
             dev.put("schema", SchreibtrainerConstants.Schema);
             dev.put("uuid", uuid);
-            dev.put("state", new JSONObject().put("wordList", new JSONArray()));
+            dev.put("state", new JSONObject().put("text","").put("wordList", new JSONArray()));
             controller.parseAddDevice(server, dev, controller.getSource(SOURCENAME), controller.getUserCreateIfUnavailable("stabilo"));
             Device device = controller.getDevice(uuid);
-            device.set("wordList", new TimedList(SchreibtrainerConstants.wordtimeout), false);
+            //device.set("wordList", new TimedList(SchreibtrainerConstants.wordtimeout), false);
+            //device.set("wordList", new JSONArray(), false);
             return device;
 
 

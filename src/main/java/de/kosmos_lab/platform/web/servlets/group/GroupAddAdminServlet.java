@@ -22,6 +22,7 @@ import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.platform.exceptions.UserNotFoundException;
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
@@ -89,6 +90,7 @@ public class GroupAddAdminServlet extends KosmoSAuthedServlet {
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
+
 
             throws ServletException, IOException, NotObjectSchemaException, NoAccessToScope, NoAccessToGroup, NotFoundInPersistenceException, NotFoundException, ParameterNotFoundException {
 
