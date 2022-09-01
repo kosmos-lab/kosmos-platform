@@ -17,10 +17,11 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -92,7 +93,7 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws IOException, GestureAlreadyExistsException {
+            throws IOException, GestureAlreadyExistsException, UnauthorizedException {
         JSONObject body = request.getBodyAsJSONObject();
         
         if (controller.getGestureProvider().addGesture(

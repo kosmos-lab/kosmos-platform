@@ -23,9 +23,10 @@ import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -81,7 +82,7 @@ public class DeviceSetnameServlet extends KosmoSAuthedServlet {
             responses = {
                                        @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The name was changed successfully"),            })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
- throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope {
+ throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
         
         
         Device d = controller.getDevice(request.getUUID());

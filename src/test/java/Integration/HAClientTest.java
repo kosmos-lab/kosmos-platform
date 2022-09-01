@@ -27,7 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
-@Container(name = "hatest", image = "homeassistant/home-assistant:stable", publish = @Port(value = 8123, atHost = 48123), volumes = {@Volume(value = "/config", atHost = "docker/ha/testconfig"), @Volume(value = "/config/custom_components", atHost = "docker/ha/config/custom_components")}, removeAfterCompletion = true)
+@Container(name = "hatest", image = "homeassistant/home-assistant:2022.6", publish = @Port(value = 8123, atHost = 48123), volumes = {@Volume(value = "/config", atHost = "docker/ha/testconfig"), @Volume(value = "/config/custom_components", atHost = "docker/ha/config/custom_components")}, removeAfterCompletion = true)
 
 @Listeners(KosmosDockerTestNgListener.class)
 public class HAClientTest {

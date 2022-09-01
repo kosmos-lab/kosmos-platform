@@ -1,6 +1,7 @@
 package de.kosmos_lab.platform.web;
 
 import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.KosmoSController;
 import de.kosmos_lab.platform.data.Device;
 import de.kosmos_lab.platform.rules.RulesService;
 import de.kosmos_lab.platform.smarthome.CommandInterface;
@@ -9,6 +10,7 @@ import de.kosmos_lab.platform.web.servlets.KosmoSServlet;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.enums.SecurityIn;
 import de.kosmos_lab.web.annotations.enums.SecurityType;
+import de.kosmos_lab.web.annotations.info.AsyncInfo;
 import de.kosmos_lab.web.annotations.info.Contact;
 import de.kosmos_lab.web.annotations.info.Info;
 import de.kosmos_lab.web.annotations.info.License;
@@ -17,13 +19,11 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.security.SecuritySchema;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
-import de.kosmos_lab.web.server.OpenApiParser;
+import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
 import de.kosmos_lab.web.server.WebServer;
 import de.kosmos_lab.web.server.WebSocketCreator;
 import de.kosmos_lab.web.server.WebSocketService;
-import de.kosmos_lab.web.server.servlets.BaseServlet;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.websocket.server.ServerEndpoint;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
@@ -34,37 +34,37 @@ import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 
-@Info(description = "# Kosmos Platform Synchron HTTP API \n" +
-        "### [Asyncron WS/MQTT Documentation](async.html) \n" +
-        "This is the OpenAPI 3.0 specifaction for KosmoS, it can be found on https://kosmos-lab.de/doc/openapi.yaml \n" +
+@Info(description = "# Kosmos Platform openApi HTTP API \n" +
+        "This is the OpenAPI 3.0 specifaction for KosmoS, please always use the latest documentation found in your installation on [/doc/openapi.html](/doc/openapi.html) in your installation.\n" +
         "Please make sure you are logged in if you want to try to execute any request to the server.\n" +
         "You can simply login with the form injected to the top of the page.\n" +
-        "(Almost) all POST requests with simple a datatype for parameters can be used either with parameters in query or a JSONObject in the request body. Exceptions are more complex datatypes like JSONObjects themselves (for example for /schema/add).",
-        title = "KosmoS OpenAPI",
+        "(Almost) all POST requests with simple a datatype for parameters can be used either with parameters in query or a JSONObject in the request body. Exceptions are more complex datatypes like JSONObjects themselves (for example for /schema/add).\n" +
+        "## YAML specification\n" +
+        "You can find the newest openapi specification on [/doc/openapi.yaml](/doc/openapi.yaml) or [/doc/openapi.json](/doc/openapi.json).\n" +
+        "The human readable description of the openapi can be found [/doc/openapi.html](/doc/openapi.html).\n" +
+        "You can find the newest asyncapi specification on [/doc/asyncapi.yaml](/doc/asyncapi.yaml) or [/doc/asyncapi.json](/doc/asyncapi.json).\n" +
+        "The human readable description of the asyncapi can be found [/doc/async.html](/doc/asyncapi.html).\n" +
+        "**NOTE**: These files are automatically generated and also contain your plugins etc.",
+
+        title = "KosmoS openApi",
         version = "filled-by-code",
         license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"),
-        contact = @Contact(name = "Jan Janssen", email = "Jan.Janssen@dfki.de"))
-@SecuritySchema(
-        componentName = "bearerAuth",
-
-        description = "contains a JSON Web Tokens (JWT) obtainable from #post-/user/login",
-        type = SecurityType.HTTP,
-        bearerFormat = "JWT",
-        scheme = "bearer"
+        contact = @Contact(name = "Jan Janssen", email = "Jan.Janssen@dfki.de")
 )
-@SecuritySchema(
-        componentName = "basicAuth",
-        description = "basic auth is also allowed for all requests",
-        type = SecurityType.HTTP,
-        bearerFormat = "JWT",
-        scheme = "basic"
-)
-@SecuritySchema(
-        componentName = "secret",
-        name = "token",
-        description = "Contains a secret known to both parties",
-        type = SecurityType.APIKEY,
-        in = SecurityIn.QUERY
+@AsyncInfo(
+        description = "# KosmoS ASynchron API\n" +
+                "## KosmoS async webservice\n" +
+                "All operations tagged with \"KosmoS\" are part of the default websocket and mqtt service.\n" +
+                "## YAML specification\n" +
+                "You can find the newest openapi specification on [/doc/openapi.yaml](/doc/openapi.yaml) or [/doc/openapi.json](/doc/openapi.json).\n" +
+                "The human readable description of the openapi can be found [/doc/openapi.html](/doc/openapi.html).\n" +
+                "You can find the newest asyncapi specification on [/doc/asyncapi.yaml](/doc/asyncapi.yaml) or [/doc/asyncapi.json](/doc/asyncapi.json).\n" +
+                "The human readable description of the asyncapi can be found [/doc/async.html](/doc/asyncapi.html).\n" +
+                "**NOTE**: These files are automatically generated and also contain your plugins etc.",
+        title = "KosmoS asyncApi",
+        version = "filled-by-code",
+        license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"),
+        contact = @Contact(name = "Jan Janssen", email = "Jan.Janssen@dfki.de")
 )
 @ObjectSchema(
         componentName = "groupNameID",
@@ -172,15 +172,39 @@ import java.time.Duration;
                 )
         }
 )
+@Schema(name = "username", type = SchemaType.STRING, description = "The name of a user")
+
 @Schema(name = "userID", type = SchemaType.INTEGER, description = "The ID of a user")
 @Schema(name = "userName", type = SchemaType.STRING, description = "The name of a user")
 @Schema(name = "scopeID", type = SchemaType.INTEGER, description = "The ID of a scope")
 @Schema(name = "scopeName", type = SchemaType.STRING, description = "The name of a scope")
 @Schema(name = "groupID", type = SchemaType.INTEGER, description = "The ID of a group")
 @Schema(name = "groupName", type = SchemaType.STRING, description = "The name of a group")
-@de.kosmos_lab.web.annotations.servers.Server(description = "Current Host", url = "http://none/ #ignore this")
+@de.kosmos_lab.web.annotations.servers.Server(description = "Current Host", url = "http://${host}")
 @de.kosmos_lab.web.annotations.servers.Server(description = "Local Test", url = "http://localhost:18080")
 @de.kosmos_lab.web.annotations.servers.Server(description = "Production", url = "https://example.cloud:18081")
+@SecuritySchema(
+        componentName = "bearerAuth",
+
+        description = "contains a JSON Web Tokens (JWT) obtainable from #post-/user/login",
+        type = SecurityType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+@SecuritySchema(
+        componentName = "basicAuth",
+        description = "basic auth is also allowed for all requests",
+        type = SecurityType.HTTP,
+        scheme = "basic"
+)
+@SecuritySchema(
+        componentName = "secret",
+        name = "token",
+        description = "Contains a secret known to both parties",
+        type = SecurityType.APIKEY,
+        in = SecurityIn.QUERY
+)
+
 public class KosmoSWebServer extends WebServer implements CommandInterface {
     private final IController controller;
 
@@ -198,32 +222,45 @@ public class KosmoSWebServer extends WebServer implements CommandInterface {
     @Override
     public void prepare() {
         super.prepare();
-        OpenApiParser.serverClass = KosmoSWebServer.class;
+
         this.findServlets(new String[]{"de.kosmos_lab.platform.web"}, KosmoSServlet.class, WebSocketService.class);
 
         try {
             JettyWebSocketServlet websocketServlet;
             this.webSocketService = new KosmoSWebSocketService(this, controller);
-
-            websocketServlet = new JettyWebSocketServlet() {
-                @Override
-                protected void configure(JettyWebSocketServletFactory factory) {
-                    factory.setIdleTimeout(Duration.ofSeconds(60));
-                    factory.setCreator(new WebSocketCreator(webSocketService, null));
-                }
-            };
-            wsservices.remove(KosmoSWebSocketService.class);
-            context.addServlet(new ServletHolder(websocketServlet), this.webSocketService.getClass().getAnnotation(ServerEndpoint.class).value());
-            if (getRulesService() != null) {
+            WebSocketEndpoint wse = webSocketService.getClass().getAnnotation(WebSocketEndpoint.class);
+            if (wse != null) {
                 websocketServlet = new JettyWebSocketServlet() {
                     @Override
                     protected void configure(JettyWebSocketServletFactory factory) {
                         factory.setIdleTimeout(Duration.ofSeconds(60));
-                        factory.setCreator(new WebSocketCreator(getRulesService(), null));
+                        factory.setCreator(new WebSocketCreator(webSocketService, null));
                     }
                 };
-                context.addServlet(new ServletHolder(websocketServlet), this.getRulesService().getClass().getAnnotation(ServerEndpoint.class).value());
-                wsservices.remove(getRulesService().getClass());
+
+                wsPaths.add(wse.path());
+                context.addServlet(new ServletHolder(websocketServlet), this.webSocketService.getClass().getAnnotation(WebSocketEndpoint.class).path());
+            }
+
+
+            if (getRulesService() != null) {
+                wse = getRulesService().getClass().getAnnotation(WebSocketEndpoint.class);
+                if (wse != null) {
+                    websocketServlet = new JettyWebSocketServlet() {
+                        @Override
+                        protected void configure(JettyWebSocketServletFactory factory) {
+                            factory.setIdleTimeout(Duration.ofSeconds(60));
+                            factory.setCreator(new WebSocketCreator(getRulesService(), null));
+                        }
+                    };
+
+
+                    context.addServlet(new ServletHolder(websocketServlet), wse.path());
+                    //wsservices.remove(getRulesService().getClass());
+
+
+                    wsPaths.add(wse.path());
+                }
             }
 
 
@@ -236,39 +273,38 @@ public class KosmoSWebServer extends WebServer implements CommandInterface {
     }
 
 
-    public void createWebSocketService(Class<? extends WebSocketService> c) {
-        //logger.info("found: WebSocketService: {}", c.getName());
-        ServerEndpoint endpoint = c.getAnnotation(ServerEndpoint.class);
+    @Override
+    public HttpServlet create(Class<? extends HttpServlet> servlet, ApiEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (api.userLevel() >= 0) {
 
-        if (endpoint != null) {
-            logger.info("found: WebSocketService: {} endpoint {}", c.getName(), endpoint.value());
+            return servlet.getConstructor(KosmoSWebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
+        } else {
             try {
-
-                WebSocketService service = c.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
-
-                JettyWebSocketServlet websocketServlet = new JettyWebSocketServlet() {
-                    @Override
-                    protected void configure(JettyWebSocketServletFactory factory) {
-                        factory.setIdleTimeout(Duration.ofSeconds(60));
-                        factory.setCreator(new WebSocketCreator(service, null));
-                    }
-                };
-
-                context.addServlet(new ServletHolder(websocketServlet), endpoint.value());
-
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
+            } catch (NoSuchMethodException ex) {
+                try {
+                    return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
+                } catch (NoSuchMethodException exx) {
+                    return servlet.getConstructor(WebServer.class).newInstance(this);
+                }
             }
         }
     }
 
-    public void createServlet(Class<? extends HttpServlet> servlet) {
+    @Override
+    public WebSocketService create(Class<? extends WebSocketService> servlet, WebSocketEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        try {
+            return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
+        } catch (NoSuchMethodException ex) {
+            try {
+                return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
+            } catch (NoSuchMethodException exx) {
+                return servlet.getConstructor(WebServer.class).newInstance(this);
+            }
+        }
+    }
+
+    /*public void createServlet(Class<? extends HttpServlet> servlet) {
         ApiEndpoint api = servlet.getAnnotation(ApiEndpoint.class);
         if (api != null) {
             try {
@@ -279,21 +315,8 @@ public class KosmoSWebServer extends WebServer implements CommandInterface {
                 if (api.load()) {
                     logger.info("creating web servlet {} ", servlet.getName());
 
-                    HttpServlet s;
-                    if (api.userLevel() >= 0) {
+                    HttpServlet s = create(servlet,api);
 
-                        s = servlet.getConstructor(KosmoSWebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
-                    } else {
-                        try {
-                            s = servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
-                        } catch (NoSuchMethodException ex) {
-                            try {
-                                s = servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
-                            } catch (NoSuchMethodException exx) {
-                                s = servlet.getConstructor(WebServer.class).newInstance(this);
-                            }
-                        }
-                    }
 
                     context.addServlet(new ServletHolder(s), api.path());
                     loadedServlets.add(servlet);
@@ -315,7 +338,7 @@ public class KosmoSWebServer extends WebServer implements CommandInterface {
             }
         }
 
-    }
+    }*/
 
     @Override
     public JSONObject getConfig() {
@@ -398,5 +421,20 @@ public class KosmoSWebServer extends WebServer implements CommandInterface {
         return webSocketService;
     }
 
+    @Override
+    public String replaceHostName(String text, String host) {
+        String[] h = host.split(":");
+        String hostname = host;
+        String port = "";
+        if (h.length == 2) {
+            hostname = h[0];
+            port = h[1];
+        }
+        text = text.replace("mqtt://${host}", String.format("mqtt://%s:%d", hostname, ((KosmoSController) controller).getMQTT().getPort()));
+
+        text = text.replace("${host}", String.format("%s:%s", hostname, port));
+
+        return text;
+    }
 
 }

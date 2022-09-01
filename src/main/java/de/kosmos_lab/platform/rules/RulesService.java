@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.rules;
 
+import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
 import de.kosmos_lab.web.server.JWT;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.platform.exceptions.UserNotFoundException;
@@ -24,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ServerEndpoint("/kreews")
+@WebSocketEndpoint(path = "/kreews")
 @WebSocket
 public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("RulesService");
@@ -42,6 +43,7 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
 
     @SuppressFBWarnings("DM_EXIT")
     public RulesService(@Nonnull IController controller,@Nonnull  String dir) {
+        super(controller.getWebServer());
         logger.info("started RulesService");
         this.controller = controller;
         this.ruleDirectory = dir + "/rules/";

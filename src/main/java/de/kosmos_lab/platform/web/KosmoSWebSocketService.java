@@ -1,12 +1,6 @@
 package de.kosmos_lab.platform.web;
 
-import de.kosmos_lab.platform.persistence.Constants;
-import de.kosmos_lab.platform.rules.RulesService;
-import de.kosmos_lab.platform.smarthome.CommandInterface;
-import de.kosmos_lab.platform.smarthome.CommandSourceName;
-import de.kosmos_lab.web.server.JWT;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.data.DataSchema;
 import de.kosmos_lab.platform.data.Device;
 import de.kosmos_lab.platform.exceptions.DeviceAlreadyExistsException;
@@ -14,11 +8,28 @@ import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.platform.exceptions.NoAccessToScope;
 import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
 import de.kosmos_lab.platform.exceptions.UserNotFoundException;
-import de.kosmos_lab.platform.IController;
-
+import de.kosmos_lab.platform.persistence.Constants;
+import de.kosmos_lab.platform.rules.RulesService;
+import de.kosmos_lab.platform.smarthome.CommandInterface;
+import de.kosmos_lab.platform.smarthome.CommandSourceName;
+import de.kosmos_lab.platform.web.servlets.user.AuthServlet;
+import de.kosmos_lab.web.annotations.Parameter;
+import de.kosmos_lab.web.annotations.enums.ParameterIn;
+import de.kosmos_lab.web.annotations.enums.SchemaType;
+import de.kosmos_lab.web.annotations.media.ExampleObject;
+import de.kosmos_lab.web.annotations.media.ObjectSchema;
+import de.kosmos_lab.web.annotations.media.Schema;
+import de.kosmos_lab.web.annotations.media.SchemaProperty;
+import de.kosmos_lab.web.annotations.servers.AsyncServer;
+import de.kosmos_lab.web.annotations.tags.Tag;
+import de.kosmos_lab.web.data.IUser;
+import de.kosmos_lab.web.doc.openapi.Channel;
+import de.kosmos_lab.web.doc.openapi.Message;
+import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.server.JWT;
+import de.kosmos_lab.web.server.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.JSONArray;
@@ -26,40 +37,273 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
-import jakarta.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
+
+@Schema(
+        name = "user_token",
+        type = SchemaType.STRING,
+        allowableValues = "user/token:{token}"
+
+)
+@AsyncServer(
+        protocol = "wss",
+        name = "wss",
+        url = "wss://${host}",
+        description = "Websocket base.\n\n<b><em>INFO</em></b>:All messages tagged with \"authRequired\" in the binding need to have the client authenticate, this can be done either via <a href=\"#operation-subscribe-user/login\">user/login</a> or <a href=\"#operation-subscribe-user/token\">user/token</a>"
+)
+@AsyncServer(
+        protocol = "mqtt",
+        name = "mqtt",
+        url = "mqtt://${host}"
+)
 
 
 /**
  * This is the Service used to control the KosmoS Websocket on /ws
  */
-@ServerEndpoint("/ws")
+@WebSocketEndpoint(
+        path = "/ws",
+        enableMQTT = true,
+        enableWS = true,
+        channels = {
+                @Channel(
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "user/token",
+                        subscribeMessages = {
+                                @Message(
+                                        name = "user/token",
+                                        payloadRefs = {
+                                                "#/components/schemas/user_token"
+                                        }
+                                )
+                        }
+                ),
+                @Channel(
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "user/login",
+                        subscribeMessages = {
+                                @Message(
+                                        name = "user/login",
+                                        payload = @ObjectSchema(
+                                                properties = {
+                                                        @SchemaProperty(
+                                                                name = AuthServlet.FIELD_USER,
+                                                                schema = @Schema(type = SchemaType.STRING, description = "the username to login in with")
+                                                        ),
+                                                        @SchemaProperty(
+                                                                name = AuthServlet.FIELD_PASS,
+                                                                schema = @Schema(type = SchemaType.STRING, description = "the password to login in with")
+                                                        )
+                                                },
+                                                examples = {
+                                                        @ExampleObject(name = "login for karl", value = "{\"" + AuthServlet.FIELD_USER + "\":\"karl\",\"" + AuthServlet.FIELD_PASS + "\",\"verysecret\"}")
+                                                }
+                                        )
+                                )
+                        }
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "locations",
+                        needsMessage = false,
+                        subscribeMessages = {
+                                @Message(
+                                        description = "This messages signals to the server, that we are interested in getting all device locations. The server will return all locations via <a href=\"#operation-publish-device/{uuid}/location\">device/{uuid}/location</a>.",
+                                        //xResponseRefs = "#/components/messages/deviceLocation",
+                                        payloadSchema = @Schema()
+                                )
+                        }
+
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "device/{uuid}/set",
+
+                        subscribeMessages = {
+                                @Message(
+                                        name = "device_set",
+                                        payloadSchema = @Schema(type = SchemaType.OBJECT, description = "the value(s) to set",
+                                                examples = {
+                                                        @ExampleObject(name = "change temperature for heating", value = "{\"heatingTemperatureSetting\":20.5}"),
+                                                        @ExampleObject(name = "set rgb color", value = "{\"color\":{\"r\":255,\"g\":0,\"b\":255}}"),
+                                                        @ExampleObject(name = "turn off ", value = "{\"on\":false}"),
+                                                        @ExampleObject(name = "turn off HomeAssistant device", value = "{\"state\":\"OFF\"}")
+                                                }
+                                        )
+                                )
+                        },
+                        parameters = {
+                                @Parameter(
+                                        description = "the uuid of the device you want to control",
+                                        name = "uuid",
+                                        schema = @Schema(type = SchemaType.STRING),
+                                        in = ParameterIn.PATH)
+                        }
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "device/{uuid}/location",
+
+                        subscribeMessages = {
+                                @Message(
+                                        name = "device/setLocation",
+                                        payloadRefs = {"/doc/openapi.yaml#/components/schemas/deviceLocation"}
+                                )
+                        },
+                        parameters = {
+                                @Parameter(
+                                        description = "the uuid of the device you want to control",
+                                        name = "uuid",
+                                        schema = @Schema(type = SchemaType.STRING),
+                                        in = ParameterIn.PATH)
+                        }
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "device/{uuid}/config",
+
+                        subscribeMessages = {
+                                @Message(
+                                        name = "device/add",
+                                        payload = @ObjectSchema(
+                                                properties = {
+                                                        @SchemaProperty(
+                                                                name = "schema",
+                                                                schema = @Schema(
+
+                                                                        description = "The $id/url of the schema to use. If its a schema not already in the system the $id MUST be a reachable Url describing the schema.",
+                                                                        type = SchemaType.STRING,
+                                                                        required = true
+                                                                )
+                                                        ),
+
+                                                        @SchemaProperty(
+                                                                name = "name",
+                                                                schema = @Schema(
+
+                                                                        description = "The name to use for the new device, if no name is set uuid will be used. Does not need to be unique.",
+                                                                        type = SchemaType.STRING,
+                                                                        minLength = 3,
+                                                                        required = false
+                                                                )
+                                                        ),
+                                                        @SchemaProperty(
+                                                                name = "state",
+                                                                schema = @Schema(
+
+                                                                        description = "The starting state of the device, needs to contain all required values if the schema has any and needs to be valid against the schema.",
+                                                                        type = SchemaType.OBJECT,
+                                                                        defaultValue = "{}",
+                                                                        required = false
+                                                                )
+                                                        ),
+                                                        @SchemaProperty(
+                                                                name = "scopes",
+                                                                schema = @Schema(
+                                                                        description = "The name of the scope to use for the new device.",
+                                                                        ref = "/doc/openapi.yaml#/components/schemas/deviceScopes"
+                                                                )
+                                                        ),
+                                                }, examples = {
+                                                @ExampleObject(
+                                                        name = "/device/multi2/config",
+                                                        value = "{\"name\":\"multi2\",\"schema\":\"https://kosmos-lab.de/schema/MultiSensor.json\",\"state\":{\"currentEnvironmentTemperature\":17,\"humidityLevel\":10}}"
+                                                ),
+                                                @ExampleObject(
+                                                        name = "/device/kosmos_multi17/config",
+                                                        value = "{\"name\":\"kosmos_multi17\",\"schema\":\"https://kosmos-lab.de/schema/MultiSensor.json\",\"state\":{\"currentEnvironmentTemperature\":17,\"humidityLevel\":10},\"scopes\":{\"read\":\"kosmos:read\",\"write\":\"kosmos:write\",\"del\":\"kosmos:del\"}}"
+                                                ),
+                                                @ExampleObject(
+                                                        name = "/device/lamp1/config",
+                                                        value = "{\"name\":\"lamp1\",\"schema\":\"https://kosmos-lab.de/schema/Lamp.json\",\"state\":{\"on\":true}}"
+                                                )}
+                                        )
+                                )
+                        },
+                        parameters = {
+                                @Parameter(
+                                        description = "the uuid of the device you want to control",
+                                        name = "uuid",
+                                        schema = @Schema(type = SchemaType.STRING),
+                                        in = ParameterIn.PATH)
+                        }
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "device/{uuid}/state",
+                        publishMessages = {
+                                @Message(
+                                        name = "device/state",
+                                        payloadSchema = @Schema(type = SchemaType.OBJECT, description = "the state of the given device",
+                                                examples = {
+                                                        @ExampleObject(name = "changed temperature for heating", value = "{\"heatingTemperatureSetting\":20.5}"),
+                                                        @ExampleObject(name = "updated rgb color", value = "{\"color\":{\"r\":255,\"g\":0,\"b\":255}}"),
+                                                        @ExampleObject(name = "turned off ", value = "{\"on\":false}"),
+                                                        @ExampleObject(name = "turned off HomeAssistant device", value = "{\"state\":\"OFF\"}")
+                                                }
+                                        )
+                                )
+                        },
+                        parameters = {
+                                @Parameter(
+                                        description = "the uuid of the device",
+                                        name = "uuid",
+                                        schema = @Schema(type = SchemaType.STRING),
+                                        in = ParameterIn.PATH)
+                        }
+                ),
+                @Channel(
+                        userLevel = 1,
+                        tags = {@Tag(name = "KosmoS")},
+                        path = "device/{uuid}/location",
+                        publishMessages = {
+                                @Message(
+                                        name = "device/location",
+                                        payloadRefs = {"/doc/openapi.yaml#/components/schemas/deviceLocation"}
+                                )
+                        },
+                        parameters = {
+                                @Parameter(
+                                        description = "the uuid of the device the location refers to",
+                                        name = "uuid",
+                                        schema = @Schema(type = SchemaType.STRING),
+                                        in = ParameterIn.PATH)
+                        }
+                )
+        }
+)
 @WebSocket
-public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketService implements CommandInterface {
+public class KosmoSWebSocketService extends WebSocketService implements CommandInterface {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("KosmoSWebSocketService");
     private final IController controller;
-    private final KosmoSWebServer server;
-    public HashMap<String, MessageTimer> messageTimers = new HashMap<>();
+    private final ConcurrentHashMap<Session, IUser> logins = new ConcurrentHashMap<Session, IUser>();
+    private final ConcurrentHashMap<Session, String> types = new ConcurrentHashMap<Session, String>();
+    private final Pinger pinger;
+    public ConcurrentHashMap<String, MessageTimer> messageTimers = new ConcurrentHashMap<>();
+    ConcurrentHashMap<IUser, HashSet<Device>> ignoredDevices = new ConcurrentHashMap<>();
 
-    private final HashMap<Session, IUser> webSocketClients = new HashMap<Session, IUser>();
-    private final HashMap<Session, IUser> logins = new HashMap<Session, IUser>();
-    private final HashMap<Session, String> types = new HashMap<Session, String>();
 
     public KosmoSWebSocketService(KosmoSWebServer server, IController c) {
+        super(server);
         this.controller = c;
-        this.server = server;
+        this.pinger = new Pinger(this);
+        this.pinger.start();
         controller.addCommandInterface(this);
     }
-
 
     private CommandSourceName getSourceName(Session session) {
 
@@ -80,9 +324,9 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
     }
 
     public void broadCast(String text, Session sess) {
-        synchronized (webSocketClients) {
+        synchronized (logins) {
 
-            for (Map.Entry<Session, IUser> e : this.webSocketClients.entrySet()) {
+            for (Map.Entry<Session, IUser> e : this.logins.entrySet()) {
                 if (e.getValue() != null) {
                     if (sess != e.getKey()) {
                         try {
@@ -97,9 +341,9 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
     }
 
     public void broadcastToReadUsers(Device device, String text, CommandSourceName source) {
-        synchronized (webSocketClients) {
+        synchronized (logins) {
 
-            for (Map.Entry<Session, IUser> e : this.webSocketClients.entrySet()) {
+            for (Map.Entry<Session, IUser> e : this.logins.entrySet()) {
                 try {
                     IUser user = e.getValue();
                 /*if ( source != null && source == getSourceName(e.getKey())) {
@@ -127,7 +371,6 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
         }
     }
 
-
     @Override
     public void deviceAdded(CommandInterface from, Device device, CommandSourceName source) {
         broadcastToReadUsers(device, "device/" + device.getUniqueID() + "/config:" + device.toJSON(), source);
@@ -149,38 +392,23 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
 
     @Override
     public void stop() {
-        synchronized (webSocketClients) {
 
-            for (Map.Entry<Session, IUser> e : this.webSocketClients.entrySet()) {
-                try {
-                    e.getKey().close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
 
+        for (Session s : this.sessions) {
+            try {
+                s.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+
         }
-    }
-
-
-
-
-    @OnWebSocketConnect
-    public void addWebSocketClient(Session sess) {
-
-        synchronized (webSocketClients) {
-            this.webSocketClients.put(sess, null);
-        }
-        //logger.trace("new Websocket connection from {}", sess.getUserProperties().get("jakarta.websocket.endpoint.remoteAddress"));
 
     }
 
-
-    @OnWebSocketClose
+    @Override
     public void delWebSocketClient(Session sess) {
-        synchronized (webSocketClients) {
-            this.webSocketClients.remove(sess);
-        }
+        super.delWebSocketClient(sess);
+        this.logins.remove(sess);
     }
 
     @OnWebSocketMessage
@@ -221,14 +449,13 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
             }
             String payload = m.group(2);
             //logger.info("topic {}", topic);
-            if (topic.equals("user/auth")) {
+            if (topic.equals("user/auth") || topic.equals("user/login")) {
                 JSONObject json = new JSONObject(payload);
                 String usern = json.optString("user");
                 String pass = json.optString("pass");
                 if (usern != null && pass != null) {
                     IUser u = controller.tryLogin(usern, pass);
                     if (u != null) {
-                        webSocketClients.put(sess, u);
                         logins.put(sess, u);
                         logger.info("auth successful");
                         afterAuth(sess, u);
@@ -252,7 +479,7 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
                     try {
                         JSONObject o = this.controller.getJwt().verify(payload);
                         IUser u = this.controller.getUser(o.getInt("id"));
-                        webSocketClients.put(sess, u);
+
                         logins.put(sess, u);
                         logger.info("auth successful");
 
@@ -301,7 +528,7 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
                             obj.put("value", payload);
                             RulesService s = controller.getRulesService();
                             if (s != null) {
-                                s.broadcastToUser(webSocketClients.get(sess), obj.toString());
+                                s.broadcastToUser(logins.get(sess), obj.toString());
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -319,7 +546,7 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
 
                             RulesService s = controller.getRulesService();
                             if (s != null) {
-                                s.broadcastToUser(webSocketClients.get(sess), obj.toString());
+                                s.broadcastToUser(logins.get(sess), obj.toString());
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -472,15 +699,16 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
         }
         //broadCast(message, sess);
     }
-    HashMap<IUser,HashSet<Device>> ignoredDevices = new HashMap<>();
-    public void addIgnoredDevice(IUser user,Device device) {
+
+    public void addIgnoredDevice(IUser user, Device device) {
         HashSet<Device> set = this.ignoredDevices.get(user);
         if (set == null) {
             set = new HashSet<>();
-            this.ignoredDevices.put(user,set);
+            this.ignoredDevices.put(user, set);
         }
         set.add(device);
     }
+
     private void afterAuth(Session sess, IUser u) {
         try {
             sess.getRemote().sendString("auth successful");
@@ -524,7 +752,16 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
         }
     }
 
+    @Override
+    public String getSourceName() {
+        return "HTTPApi";
+    }
 
+    @Override
+    public void ping() {
+        broadCast("ping");
+
+    }
 
     private static class MessageTimer {
         public ConcurrentLinkedQueue<MessageTimerEntry> entries = new ConcurrentLinkedQueue<>();
@@ -569,8 +806,4 @@ public class KosmoSWebSocketService extends de.kosmos_lab.web.server.WebSocketSe
         }
     }
 
-    @Override
-    public String getSourceName() {
-        return "HTTPApi";
-    }
 }

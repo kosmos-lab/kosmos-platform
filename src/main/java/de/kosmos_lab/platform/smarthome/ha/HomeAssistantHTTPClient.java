@@ -6,6 +6,7 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.MultiPartContentProvider;
 import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.client.util.StringRequestContent;
 import org.eclipse.jetty.http.HttpMethod;
 import org.glassfish.tyrus.client.ClientManager;
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class HomeAssistantHTTPClient extends HttpClient {
@@ -170,13 +172,24 @@ public class HomeAssistantHTTPClient extends HttpClient {
     
     public JSONObject postJSON(String url, JSONObject json) {
         Request request = createRequest(url, HttpMethod.POST);
+        request.timeout(120, TimeUnit.SECONDS);
+        request.idleTimeout(120, TimeUnit.SECONDS);
         if (json != null) {
-            request.content(new StringContentProvider(json.toString()), "application/json");
+            request.body(new StringRequestContent(json.toString()));
+            //request.content(new StringContentProvider(json.toString()), "application/json");
+
         }
         if (token != null) {
-            request.header("authorization", "Bearer " + token);
+
+            request.headers(httpFields -> httpFields.add("Authorization","Bearer "+token).add("Content-Type","application/json"));
+
         }
-        
+        else {
+            request.headers(httpFields -> httpFields.add("Content-Type","application/json"));
+        }
+        logger.info("posting json to {} (token):{}",request.getURI(),token,json);
+
+
         ContentResponse r = getResponse(request);
         if (r != null) {
             try {

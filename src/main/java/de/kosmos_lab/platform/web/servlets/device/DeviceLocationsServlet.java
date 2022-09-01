@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web.servlets.device;
 
+import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.annotations.Operation;
@@ -18,10 +19,11 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -50,11 +52,10 @@ public class DeviceLocationsServlet extends KosmoSAuthedServlet {
                             content = @Content(
 
                                     mediaType = MediaType.APPLICATION_JSON,
-                                    schema = @Schema(
-                                            type = SchemaType.OBJECT,additionalProperties = "{\"$ref\": \"#/components/schemas/deviceLocation\"}"
+                                    schemaProperties = {@SchemaProperty(schema=@Schema(ref="#/components/schemas/deviceLocation"))}
 
 
-                                    ),
+                                    ,
                                     examples = {
                                             @ExampleObject(
                                                     name = "example",
@@ -73,7 +74,7 @@ public class DeviceLocationsServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, NoAccessToScope, DeviceNotFoundException, ParameterNotFoundException {
+            throws IOException, NoAccessToScope, DeviceNotFoundException, ParameterNotFoundException, UnauthorizedException {
         JSONObject json = new JSONObject();
         for (Device device : this.controller.getAllDevices()) {
             try {

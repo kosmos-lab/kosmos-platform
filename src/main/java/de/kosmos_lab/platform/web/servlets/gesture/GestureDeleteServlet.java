@@ -16,6 +16,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -53,7 +54,7 @@ public class GestureDeleteServlet extends KosmoSAuthedServlet {
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws IOException, ParameterNotFoundException, GestureNotFoundException {
+            throws IOException, ParameterNotFoundException, GestureNotFoundException , UnauthorizedException {
         String id = request.getString("id");
         if (controller.getGestureProvider().deleteGesture(id)) {
             sendJSON(request, response, GestureListServlet.getGestureList(this.controller));

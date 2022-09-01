@@ -9,6 +9,7 @@ import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.web.server.servlets.BaseServlet;
@@ -16,7 +17,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.everit.json.schema.ValidationException;
-import org.json.JSONException;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -43,9 +43,8 @@ public class KosmoSServlet extends BaseServlet {
     }
 
 
-
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NoAccessException {
+            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NoAccessException {
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
@@ -55,15 +54,17 @@ public class KosmoSServlet extends BaseServlet {
             throws IOException {
 
         //super.doDelete(request, response);
-        if (this.isAllowed(request, response)) {
-            try {
+        try {
+            if (this.isAllowed(request, response)) {
+
                 addCORSHeader(request, response);
 
                 delete(new KosmoSHttpServletRequest(request), response);
-            } catch (Exception e) {
-                handleException(request,response,e);
 
             }
+        } catch (Exception e) {
+            handleException(request, response, e);
+
         }
 
     }
@@ -71,17 +72,17 @@ public class KosmoSServlet extends BaseServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
 
             throws IOException {
+        try {
+            if (this.isAllowed(request, response)) {
 
-        if (this.isAllowed(request, response)) {
-            try {
                 addCORSHeader(request, response);
                 get(new KosmoSHttpServletRequest(request), response);
-            } catch (Exception e) {
-                handleException(request,response,e);
 
             }
-        }
+        } catch (Exception e) {
+            handleException(request, response, e);
 
+        }
     }
 
     public void doOptions(HttpServletRequest request, HttpServletResponse response)
@@ -96,16 +97,17 @@ public class KosmoSServlet extends BaseServlet {
             throws IOException {
 
         //logger.info("HITTING doPOST");
+        try {
+            if (this.isAllowed(request, response)) {
 
-        if (this.isAllowed(request, response)) {
-            try {
                 addCORSHeader(request, response);
 
                 post(new KosmoSHttpServletRequest(request), response);
-            } catch (Exception e) {
-                handleException(request,response,e);
+
 
             }
+        } catch (Exception e) {
+            handleException(request, response, e);
 
         }
 
@@ -115,43 +117,42 @@ public class KosmoSServlet extends BaseServlet {
 
             throws IOException {
         super.doPut(request, response);
-        if (this.isAllowed(request, response)) {
-            try {
+        try {
+            if (this.isAllowed(request, response)) {
+
                 addCORSHeader(request, response);
 
                 put(new KosmoSHttpServletRequest(request), response);
-            } catch (Exception e) {
-                handleException(request,response,e);
 
             }
+        } catch (Exception e) {
+            handleException(request, response, e);
+
         }
 
     }
 
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessException, NotFoundInPersistenceException {
+            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessException, NotFoundInPersistenceException {
         //logger.info("HITTING GET");
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
 
-
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NotFoundInPersistenceException, AlreadyExistsException, NoAccessException {
+            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NotFoundInPersistenceException, AlreadyExistsException, NoAccessException {
         //logger.info("HITTING POST");
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
     public void put(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup {
+            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup {
         //logger.info("HITTING PUT");
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
 
-    protected boolean isAllowed(HttpServletRequest request, HttpServletResponse response) {
-        return true;
-    }
+
 
     public enum ALLOW_AUTH {HEADER_ONLY, PARAMETER_AND_HEADER}
 

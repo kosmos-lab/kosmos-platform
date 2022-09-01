@@ -1,6 +1,7 @@
 package de.kosmos_lab.platform.web.servlets.group;
 
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
@@ -62,7 +63,7 @@ public class GroupDeleteServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws ServletException, IOException, NotObjectSchemaException, NotFoundInPersistenceException, NoAccessToGroup, NotFoundException, ParameterNotFoundException {
+            throws   NoAccessToGroup, NotFoundException, ParameterNotFoundException, UnauthorizedException {
         //logger.info("starting into group/delete");
         //
         String groupname = request.getString(FIELD_GROUP);

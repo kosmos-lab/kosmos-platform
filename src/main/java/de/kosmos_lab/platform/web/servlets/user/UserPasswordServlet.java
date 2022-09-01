@@ -1,7 +1,12 @@
 package de.kosmos_lab.platform.web.servlets.user;
 
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.NoAccessException;
+import de.kosmos_lab.platform.exceptions.UserNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.utils.StringFunctions;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -10,17 +15,14 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import de.kosmos_lab.utils.StringFunctions;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -85,21 +87,24 @@ public class UserPasswordServlet extends KosmoSAuthedServlet {
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "OK - password was changed"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), description = "The user was not found"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), description = "The user was not found"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, ParameterNotFoundException {
+            throws IOException, ParameterNotFoundException, UnauthorizedException, NoAccessException, UserNotFoundException {
 
         IUser u = null;
         try {
             String user = request.getString(FIELD_USER);
             u = this.controller.getUser(user);
+            if ( u == null ) {
+                throw new UserNotFoundException(user);
+            }
         } catch (ParameterNotFoundException ex) {
             //ignore exception and set user to ourselves
             u = request.getKosmoSUser();
@@ -108,14 +113,22 @@ public class UserPasswordServlet extends KosmoSAuthedServlet {
         String pass = request.getString(FIELD_PASS);
         if (u != null) {
             if (this.isMeOrAmAdmin(request, u)) {
+                if (!u.equals(request.getKosmoSUser())) {
+                    if (u.getLevel() > request.getKosmoSUser().getLevel()) {
+                        throw new NoAccessException("Your level is not high enough to change that users password");
+
+                    }
+                }
                 String salt = StringFunctions.generateRandomKey();
                 String hash = controller.getPasswordHash(pass, salt);
                 controller.setUserPassword(u, salt, hash);
                 response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);
                 return;
+
+
             }
-            response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN);
-            return;
+            throw new NoAccessException("Your level is not high enough to change a users password");
+
         }
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND);
         return;

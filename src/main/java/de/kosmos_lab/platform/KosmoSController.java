@@ -1,30 +1,6 @@
 package de.kosmos_lab.platform;
 
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
-import de.kosmos_lab.platform.exceptions.*;
-import de.kosmos_lab.platform.utils.TimeFunctions;
 import de.kosmos_lab.platform.camera.subtitles.data.SubtitleEntry;
-import de.kosmos_lab.platform.gesture.GestureProvider;
-import de.kosmos_lab.platform.mqtt.MQTTBroker;
-import de.kosmos_lab.platform.persistence.Constants;
-import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.platform.persistence.Constants.RunMode;
-import de.kosmos_lab.platform.persistence.IPersistence;
-import de.kosmos_lab.platform.persistence.KosmoSPersistence;
-import de.kosmos_lab.platform.rules.RulesService;
-import de.kosmos_lab.platform.smarthome.CommandInterface;
-import de.kosmos_lab.platform.smarthome.CommandSourceName;
-import de.kosmos_lab.platform.smarthome.PropertyTranslator;
-import de.kosmos_lab.platform.smarthome.SmartHomeInterface;
-import de.kosmos_lab.platform.smarthome.ha.HomeAssistantHTTPClient;
-import de.kosmos_lab.platform.utils.DataFactory;
-import de.kosmos_lab.platform.utils.KosmoSHelper;
-import de.kosmos_lab.platform.utils.SchemaComparator;
-import de.kosmos_lab.platform.web.KosmoSWebSocketService;
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.platform.client.HTTPClient;
 import de.kosmos_lab.platform.data.Config;
 import de.kosmos_lab.platform.data.DataSchema;
@@ -35,13 +11,35 @@ import de.kosmos_lab.platform.data.LogEntry;
 import de.kosmos_lab.platform.data.LoggingRequest;
 import de.kosmos_lab.platform.data.Scope;
 import de.kosmos_lab.platform.data.StateUpdates;
+import de.kosmos_lab.platform.exceptions.*;
+import de.kosmos_lab.platform.gesture.GestureProvider;
+import de.kosmos_lab.platform.mqtt.MQTTBroker;
+import de.kosmos_lab.platform.persistence.Constants;
+import de.kosmos_lab.platform.persistence.Constants.CacheMode;
+import de.kosmos_lab.platform.persistence.Constants.RunMode;
+import de.kosmos_lab.platform.persistence.IPersistence;
+import de.kosmos_lab.platform.persistence.KosmoSPersistence;
 import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.platform.rules.RulesService;
+import de.kosmos_lab.platform.smarthome.CommandInterface;
+import de.kosmos_lab.platform.smarthome.CommandSourceName;
+import de.kosmos_lab.platform.smarthome.PropertyTranslator;
+import de.kosmos_lab.platform.smarthome.SmartHomeInterface;
+import de.kosmos_lab.platform.smarthome.ha.HomeAssistantHTTPClient;
+import de.kosmos_lab.platform.utils.DataFactory;
+import de.kosmos_lab.platform.utils.KosmoSHelper;
+import de.kosmos_lab.platform.utils.SchemaComparator;
+import de.kosmos_lab.platform.utils.TimeFunctions;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.KosmoSWebSocketService;
 import de.kosmos_lab.utils.HashFunctions;
 import de.kosmos_lab.utils.JSONFunctions;
 import de.kosmos_lab.utils.KosmosFileUtils;
 import de.kosmos_lab.utils.StringFunctions;
 import de.kosmos_lab.utils.Wildcard;
-
+import de.kosmos_lab.web.data.IUser;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.web.server.JWT;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FileUtils;
@@ -53,9 +51,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.CheckForNull;
-
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,12 +84,17 @@ public class KosmoSController implements IController {
      */
     protected static final Logger logger = LoggerFactory.getLogger("KosmoSController");
     private static final Pattern extraneousKeyPattern = Pattern.compile("extraneous key \\[(?<keys>.*)\\] is not permitted");
+    private final static long subDefaultTime = 10000;
     /**
      * custom JWT class to use
      */
     private final JWT jwt;
     private final KosmosPluginManager pluginManager;
     private final RunMode runMode;
+    private final KosmoSPersistence persistence;
+    private final HashMap<Device, Boolean> logByDevice = new HashMap<>();
+    private final HashSet<String> logWhiteListFilter = new HashSet<>();
+    private final HashSet<String> logBlackListFilter = new HashSet<>();
     /**
      * cache of the CommandSourceNames
      */
@@ -105,14 +107,11 @@ public class KosmoSController implements IController {
      * the camera map
      */
     public ConcurrentHashMap<String, ICamera> cameras = new ConcurrentHashMap<>();
-
     public ConcurrentHashMap<ICamera, IUser> recordings = new ConcurrentHashMap<>();
-
     /**
      * the config object to use
      */
     protected Config config;
-
     /**
      * the jetty based webserver
      */
@@ -153,7 +152,6 @@ public class KosmoSController implements IController {
      * user Cache <ID:Integer,User>
      */
     ConcurrentHashMap<UUID, IUser> usersI = new ConcurrentHashMap<>();
-
     /**
      * user Cache <ID:Integer,User>
      */
@@ -172,12 +170,7 @@ public class KosmoSController implements IController {
     GestureProvider gestureProvider;
     ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(5);
-    private final KosmoSPersistence persistence;
     private MQTTBroker mqttBroker;
-    private final static long subDefaultTime = 10000;
-    private final HashMap<Device, Boolean> logByDevice = new HashMap<>();
-    private final HashSet<String> logWhiteListFilter = new HashSet<>();
-    private final HashSet<String> logBlackListFilter = new HashSet<>();
 
     /**
      * Instantiates a new Kosmo s controller.
@@ -611,7 +604,7 @@ public class KosmoSController implements IController {
         try {
             this.webServer = new KosmoSWebServer(this);
         } catch (Exception e) {
-            logger.error("Fatal exception while starting WebServer",e);
+            logger.error("Fatal exception while starting WebServer", e);
             System.exit(0);
             //throw new RuntimeException(e);
 
@@ -728,6 +721,26 @@ public class KosmoSController implements IController {
         }
         return input;
 
+    }
+
+    public static String getFileString(String name, RunMode mode) {
+
+        switch (mode) {
+            case TEST:
+            case PLUGIN_TEST:
+                return String.format("./_test/%s", name);
+            case NORMAL:
+                return String.format("./%s", name);
+
+        }
+        return null;
+    }
+
+    public static File getFile(String name, RunMode mode) {
+        String dir = getFileString(name, mode);
+        File f = new File(dir);
+        f.getParentFile().mkdirs();
+        return f;
     }
 
     /**
@@ -857,6 +870,7 @@ public class KosmoSController implements IController {
         this.getPersistence().addScopeGroup(scope, group);
 
     }
+
     public void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group) {
         this.getPersistence().addScopeAdminGroup(scope, group);
 
@@ -1640,7 +1654,7 @@ public class KosmoSController implements IController {
                     }
 
 
-                    Device d = new Device(this, source, schema, json, name, uuid, user,false);
+                    Device d = new Device(this, source, schema, json, name, uuid, user, false);
 
 
                     addDevice(from, d, permanent, source);
@@ -2097,26 +2111,6 @@ public class KosmoSController implements IController {
         return getFile(name, this.runMode);
     }
 
-    public static String getFileString(String name, RunMode mode) {
-
-        switch (mode) {
-            case TEST:
-            case PLUGIN_TEST:
-                return String.format("./_test/%s", name);
-            case NORMAL:
-                return String.format("./%s", name);
-
-        }
-        return null;
-    }
-
-    public static File getFile(String name, RunMode mode) {
-        String dir = getFileString(name, mode);
-        File f = new File(dir);
-        f.getParentFile().mkdirs();
-        return f;
-    }
-
     @SuppressFBWarnings("REC_CATCH_EXCEPTION")
     private boolean setupHA(@Nonnull String habase, @Nonnull String myhost) {
         try {
@@ -2459,11 +2453,11 @@ public class KosmoSController implements IController {
         File dir = getRecordingDir(user);
         if (dir.exists()) {
             File[] files = dir.listFiles();
-            Arrays.sort(files, new Comparator<File>(){
-                public int compare(File f1, File f2)
-                {
+            Arrays.sort(files, new Comparator<File>() {
+                public int compare(File f1, File f2) {
                     return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
-                } });
+                }
+            });
             if (files != null) {
                 for (File f : files) {
                     if (f.getName().startsWith(cam.getName() + "_")) {
@@ -2510,5 +2504,7 @@ public class KosmoSController implements IController {
         throw new DeviceNotFoundException(uuid);
     }
 
-
+    public MQTTBroker getMQTT() {
+        return this.mqttBroker;
+    }
 }

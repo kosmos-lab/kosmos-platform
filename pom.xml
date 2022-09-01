@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.kosmos-lab.platform</groupId>
-    <version>0.8.4</version>
+    <version>0.8.5</version>
     <artifactId>kosmos-platform</artifactId>
     <name>kosmos-platform</name>
     <description>The KosmoS Platform</description>
@@ -17,7 +17,6 @@
             <organizationUrl>https://www.dfki.de</organizationUrl>
         </developer>
     </developers>
-
     <issueManagement>
         <url>https://github.com/kosmos-lab/kosmos-platform/issues</url>
         <system>GitHub Issues</system>
@@ -46,6 +45,8 @@
         <jettyVersion>11.0.11</jettyVersion>
         <spotbugsVersion>4.5.3</spotbugsVersion>
         <pf4jVersion>3.6.0</pf4jVersion>
+        <logbackVersion>1.4.0</logbackVersion>
+        <pahoVersion>1.2.5</pahoVersion>
 
     </properties>
     <reporting>
@@ -62,17 +63,14 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${spotbugsVersion}</version>
                 <configuration>
                     <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
-
                 </configuration>
             </plugin>
-
         </plugins>
     </reporting>
     <pluginRepositories>
@@ -88,9 +86,7 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
         </pluginRepository>
-
         <pluginRepository>
-
             <id>sonatype-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
             <releases>
@@ -121,7 +117,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
     <repositories>
         <repository>
             <id>central</id>
@@ -150,204 +145,91 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.jfairy</groupId>
-            <artifactId>jfairy</artifactId>
-            <version>0.2.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>2.13.3</version>
         </dependency>
-
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.bazhenov</groupId>
-            <artifactId>docker-testng-integration</artifactId>
-            <version>1.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.bramp.ffmpeg</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>0.6.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.moquette</groupId>
-            <artifactId>moquette-broker</artifactId>
-            <version>0.12.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>3.3.9</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-        <!--nullity annotations -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish.tyrus.bundles</groupId>
-            <artifactId>tyrus-standalone-client</artifactId>
-            <version>2.0.0-M3</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-            <version>${spotbugsVersion}</version>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-client</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-annotations</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-jetty-client</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-jetty-server</artifactId>
-            <version>${jettyVersion}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3 -->
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.21</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.github.everit-org.json-schema</groupId>
-            <artifactId>org.everit.json.schema</artifactId>
-            <version>1.12.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.11</version>
+            <version>${logbackVersion}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
+            <version>${logbackVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>me.bazhenov</groupId>
+            <artifactId>docker-testng-integration</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bramp.ffmpeg</groupId>
+            <artifactId>ffmpeg</artifactId>
+            <version>0.7.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-
+        <dependency>
+            <groupId>io.moquette</groupId>
+            <artifactId>moquette-broker</artifactId>
+            <version>0.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.5.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3 -->
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.2.5</version>
+            <version>${pahoVersion}</version>
         </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.checkerframework/checker-qual -->
+        <!-- https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3 -->
         <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
-            <version>3.7.0</version>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>${pahoVersion}</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.32.3.2</version>
         </dependency>
-
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -371,12 +253,7 @@
         <dependency>
             <groupId>de.kosmos-lab</groupId>
             <artifactId>web</artifactId>
-            <version>0.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>de.kosmos-lab</groupId>
-            <artifactId>kosmos-utils</artifactId>
-            <version>0.1.9</version>
+            <version>0.1.3.3</version>
         </dependency>
         <dependency>
             <groupId>de.kosmos-lab.platform</groupId>
@@ -388,25 +265,15 @@
             <artifactId>pf4j</artifactId>
             <version>${pf4jVersion}</version>
             <exclusions>
-
                 <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
-
         <finalName>${finalName}</finalName>
-
-
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
@@ -456,7 +323,6 @@
                 <version>4.5.2.0</version>
                 <configuration>
                     <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
-
                 </configuration>
                 <dependencies>
                     <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
@@ -487,7 +353,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
@@ -501,13 +366,10 @@
                         <configuration>
                             <outputDirectory>target/${project.artifactId}-${project.version}</outputDirectory>
                             <resources>
-
-
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
                                 </resource>
-
                             </resources>
                         </configuration>
                     </execution>
@@ -519,8 +381,6 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
-
-
                 </configuration>
             </plugin>
             <plugin>
@@ -543,13 +403,11 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -609,14 +467,12 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>zip</id>
             <properties>
             </properties>
             <build>
-
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -642,12 +498,9 @@
         <profile>
             <id>github</id>
             <properties>
-
                 <profileId>CI</profileId>
-
             </properties>
             <distributionManagement>
-
                 <repository>
                     <id>github</id>
                     <name>GitHub Packages</name>
@@ -664,11 +517,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.19.1</version>
                         <configuration>
-
-
                             <includes>
                                 <include>**/common/*.java</include>
-
                                 <include>**/CI/*.java</include>
                                 <include>**/CI/**/*.java</include>
                             </includes>
@@ -682,13 +532,10 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>deploy</id>
             <properties>
-
                 <profileId>CI</profileId>
-
             </properties>
             <distributionManagement>
                 <snapshotRepository>
@@ -707,11 +554,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.19.1</version>
                         <configuration>
-
-
                             <includes>
                                 <include>**/common/*.java</include>
-
                                 <include>**/CI/*.java</include>
                                 <include>**/CI/**/*.java</include>
                             </includes>
@@ -765,17 +609,11 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>3.0.0-M5</version>
                         <configuration>
-
-
                             <includes>
                                 <include>**/common/*.java</include>
-
                                 <include>**/CI/*.java</include>
                                 <include>**/CI/**/*.java</include>
-
-
                             </includes>
-
                             <parallel>methods</parallel>
                             <threadCount>4</threadCount>
                             <systemPropertyVariables>
@@ -784,35 +622,25 @@
                                 <logFileDir>_test/logs</logFileDir>
                             </systemPropertyVariables>
                         </configuration>
-
                     </plugin>
                 </plugins>
             </build>
-
         </profile>
         <profile>
-
             <id>integrationTests</id>
             <properties>
                 <integrationTests>1</integrationTests>
                 <profileId>integrationTests</profileId>
-
             </properties>
             <build>
                 <plugins>
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.19.1</version>
                         <configuration>
-                            <!--parallel>classes</parallel>
-                            <useUnlimitedThreads>true</useUnlimitedThreads>
-                            <forkCount>1</forkCount-->
-
                             <includes>
                                 <include>**/common/*.java</include>
-
                                 <include>**/CI/*.java</include>
                                 <include>**/CI/**/*.java</include>
                                 <include>**/Integration/*.java</include>

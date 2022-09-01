@@ -1,6 +1,11 @@
 package de.kosmos_lab.platform.web.servlets.schema;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.DataSchema;
+import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
@@ -9,17 +14,10 @@ import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.media.ExampleObject;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.DataSchema;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -68,24 +66,20 @@ public class SchemaGetServlet extends KosmoSAuthedServlet {
                             }
 
                     ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    // @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, ParameterNotFoundException {
+            throws IOException, SchemaNotFoundException, ParameterNotFoundException, UnauthorizedException {
         String id = request.getString("id");
         logger.info("looking for schema {}", id);
-        try {
-            DataSchema s = controller.getSchema(id);
-            if (s != null) {
-                sendJSON(request, response, s.getRawSchema());
-                return;
-            }
-        } catch (SchemaNotFoundException ex) {
-            response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND);
+        DataSchema s = controller.getSchema(id);
+        if (s != null) {
+            sendJSON(request, response, s.getRawSchema());
             return;
         }
+
 
         //throw new SchemaNotFoundException(id);
 
