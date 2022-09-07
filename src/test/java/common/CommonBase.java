@@ -1,5 +1,6 @@
 package common;
 
+import CI.HTTP.TestDevice;
 import CI.HTTP.TestGroup;
 
 import Integration.HAClientTest;
@@ -232,7 +233,7 @@ public class CommonBase {
                 laste = e;
             } catch (Exception e) {
                 //e.printStackTrace();
-                logger.warn("Exception while comparing {} to {}: {}", key, expected, e.getMessage());
+                logger.warn("Exception while comparing {} to {}: {}", key, expected, e.getMessage(),e);
             }
             logger.info(device.toString());
             try {
@@ -298,6 +299,7 @@ public class CommonBase {
             if (context.getFailedTests().size() == 0) {
 
                 CommonBase.restart();
+
                 String name = CommonBase.clientAdmin.getUserName();
                 Assert.assertNotNull(name);
 
@@ -354,10 +356,14 @@ public class CommonBase {
                 if ("1".equals(integrationTests)) {
                     logger.info("retesting HA");
                     HAClientTest.reTestDevices();
-
                 }
-
-
+                try {
+                    d = controller.getDevice(TestDevice.texts_device_name);
+                    Assert.assertEquals(d.getText("description").getValue(),"test2");
+                } catch (DeviceNotFoundException exception) {
+                    Assert.fail(String.format("could not find %s again after restart",TestDevice.texts_device_name));
+                }
+                //TestDevice.retest();
                 //System.out.println("Profile ID:  " + System.getProperty("profileId"));
             }
             controller.stop();

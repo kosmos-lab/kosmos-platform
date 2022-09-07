@@ -18,9 +18,10 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -83,7 +84,7 @@ public class GestureRenameServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws IOException, ParameterNotFoundException, GestureNotFoundException {
+            throws IOException, ParameterNotFoundException, GestureNotFoundException, UnauthorizedException {
         String from = request.getString("from");
         String to = request.getString("to");
         if (controller.getGestureProvider().renameGesture(from,to)) {

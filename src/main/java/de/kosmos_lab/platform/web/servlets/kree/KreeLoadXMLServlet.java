@@ -10,6 +10,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class KreeLoadXMLServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException {
+            throws IOException , UnauthorizedException {
         String xml = this.server.getRulesService().getXML(request.getKosmoSUser());
         if (xml != null) {
             response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_OK);

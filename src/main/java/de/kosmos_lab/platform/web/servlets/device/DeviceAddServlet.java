@@ -20,10 +20,11 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -55,7 +56,7 @@ import java.io.IOException;
                 
                 ),
                 @SchemaProperty(
-                        name = "delete",
+                        name = "del",
                         schema = @Schema(
                                 description = "The scope that has delete access to this device",
                                 type = SchemaType.STRING,
@@ -156,18 +157,18 @@ public class DeviceAddServlet extends KosmoSAuthedServlet {
 
             
 
-            throws NotObjectSchemaException, IOException, DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException {
-        
-        
+            throws  DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException, UnauthorizedException {
+
+
         JSONObject o = request.getBodyAsJSONObject();
         if (o != null) {
 
             controller.parseAddDevice(this.server, o, this.getSource(request), request.getKosmoSUser());
 
             response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);
-           
+
         }
-        
+
     }
     
     

@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.persistence;
 
+import de.kosmos_lab.platform.data.DeviceText;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.platform.data.DataSchema;
@@ -379,4 +380,10 @@ public interface IPersistence {
      * @param device
      */
     void updateLocation(@Nonnull Device device);
+
+    void fillTexts(Device device);
+
+    void addDeviceText(DeviceText deviceText);
+
+    void updateDeviceText(DeviceText deviceText);
 }

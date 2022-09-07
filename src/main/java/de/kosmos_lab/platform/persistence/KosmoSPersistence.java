@@ -2,6 +2,8 @@ package de.kosmos_lab.platform.persistence;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import de.kosmos_lab.platform.data.DeviceText;
+import de.kosmos_lab.platform.persistence.Models.SQL_Device_Text;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.smarthome.CommandInterface;
 import de.kosmos_lab.platform.smarthome.CommandSourceName;
@@ -21,6 +23,7 @@ import org.json.JSONObject;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.util.Collection;
@@ -228,7 +231,26 @@ public class KosmoSPersistence extends SQLPersistence implements CommandInterfac
     
     @Override
     protected void createTable(@Nonnull String table) {
-    
+        String fTable = String.format("`%s`",table);
+        for ( Class c : Models.class.getDeclaredClasses()) {
+
+            try {
+                Field t = c.getDeclaredField("table");
+                if (table.equals(t) || fTable.equals(t)) {
+                    Field f = c.getDeclaredField("create");
+
+                    this.doUpdate(String.valueOf(f.get(null)));
+                    return;
+                }
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+
+            //if ()
+        }
+        
     }
     
     @Override
@@ -320,9 +342,12 @@ public class KosmoSPersistence extends SQLPersistence implements CommandInterfac
     
     @Override
     public void fillDeviceScopes(@Nonnull Device device) {
-        this.doSelect(Models.SQL_Scope_Devices.selectByuuid, new Object[]{}, Models.SQL_Scope_Devices::parse);
+        this.doSelect(Models.SQL_Scope_Devices.selectByuuid, new Object[]{device.getUniqueID()}, Models.SQL_Scope_Devices::parse);
     }
-    
+    @Override
+    public void fillTexts(@Nonnull Device device) {
+        this.doSelect(Models.SQL_Device_Text.selectByUUID, new Object[]{device.getUniqueID()}, Models.SQL_Device_Text::parse);
+    }
     @Override
     public void fillGroup(@Nonnull Group group) {
         this.doSelect(Models.SQL_Group_Users.selectBygroup, new Object[]{group.getID()}, Models.SQL_Group_Users::parse);
@@ -587,6 +612,8 @@ public class KosmoSPersistence extends SQLPersistence implements CommandInterfac
         this.initDevices();
         this.initScopes();
         this.initLocations();
+        this.initTexts();
+
     }
     
     @Nonnull
@@ -606,7 +633,15 @@ public class KosmoSPersistence extends SQLPersistence implements CommandInterfac
     public Collection<Device.Location> initLocations() {
         return this.doSelect(Models.SQL_Device_Location.selectAll, new Object[]{}, Models.SQL_Device_Location::parse);
     }
-    
+    public Collection<DeviceText> initTexts() {
+        return this.doSelect(Models.SQL_Device_Text.selectAll, new Object[]{}, Models.SQL_Device_Text::parse);
+    }
+    public void addDeviceText(DeviceText dt ) {
+        this.doAdd(SQL_Device_Text.add,new Object[]{dt.getDevice().getUniqueID(),dt.getKey(),dt.getValue()});
+    }
+    public void updateDeviceText(DeviceText dt ) {
+        this.doAdd(SQL_Device_Text.updateValue,new Object[]{dt.getValue(),dt.getDevice().getUniqueID(),dt.getKey()});
+    }
     @Nonnull
     @Override
     public Collection<DataSchema> initSchema() {

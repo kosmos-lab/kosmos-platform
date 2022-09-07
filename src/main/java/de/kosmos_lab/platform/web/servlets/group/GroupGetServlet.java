@@ -1,6 +1,7 @@
 package de.kosmos_lab.platform.web.servlets.group;
 
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
@@ -30,7 +31,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiResponse(
@@ -120,7 +121,7 @@ public class GroupGetServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, NotFoundInPersistenceException, ParameterNotFoundException, GroupNotFoundException {
+            throws      IOException, UnauthorizedException, ParameterNotFoundException, GroupNotFoundException {
 
 
         try {

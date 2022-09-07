@@ -20,6 +20,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MediaType;
 import org.json.JSONArray;
@@ -119,7 +120,7 @@ public class CameraListServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException {
+            throws IOException , UnauthorizedException {
         boolean details = request.getBoolean(FIELD_DETAILS, false);
 
 

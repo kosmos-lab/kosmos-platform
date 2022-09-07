@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
@@ -28,7 +29,7 @@ import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -132,15 +133,15 @@ public class ScopeGetServlet extends KosmoSAuthedServlet {
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK),ref = "#/components/responses/scopeGet"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, NotFoundInPersistenceException, ScopeNotFoundException, ParameterNotFoundException {
+            throws NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException, IOException {
 
 
 

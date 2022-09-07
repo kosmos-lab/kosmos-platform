@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web.servlets.user;
 
+import de.kosmos_lab.platform.exceptions.NoAccessException;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.annotations.Operation;
@@ -19,9 +20,10 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.utils.StringFunctions;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -102,17 +104,17 @@ public class UserAddServlet extends KosmoSAuthedServlet {
                     }),
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "OK - user was added"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "Conflict - The user already exists"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_ERROR), description = "#/components/responses/FailedError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_ERROR), description = "#/components/responses/FailedError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, ParameterNotFoundException {
+            throws IOException, ParameterNotFoundException, UnauthorizedException, NoAccessException {
         String user = request.getString(FIELD_USER);
         if (user.length() < 3) {
             response.sendError(de.kosmos_lab.web.server.WebServer.STATUS_UNPROCESSABLE, "username is not long enough (minLength is 3)");

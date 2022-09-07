@@ -18,11 +18,13 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import de.kosmos_lab.web.server.WebServer;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ArraySchema(
@@ -87,7 +89,7 @@ import java.io.IOException;
 )
 @ApiResponse(
         componentName = "gestureList",
-        responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE),
+        responseCode = @ResponseCode(statusCode = WebServer.STATUS_OK),
         description = "The current list of gestures",
         content = @Content(
                 mediaType = MediaType.APPLICATION_JSON,
@@ -143,7 +145,7 @@ public class GestureListServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException {
+            throws IOException, UnauthorizedException {
 
 
         sendJSON(request, response, getGestureList(this.controller));

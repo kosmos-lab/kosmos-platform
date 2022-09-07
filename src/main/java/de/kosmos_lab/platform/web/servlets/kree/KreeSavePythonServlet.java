@@ -12,6 +12,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -56,7 +57,7 @@ public class KreeSavePythonServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws IOException {
+            throws IOException, UnauthorizedException {
         String python = request.getBody();
         if (python.length()>0) {
             for (String l : python.split("\n")) {

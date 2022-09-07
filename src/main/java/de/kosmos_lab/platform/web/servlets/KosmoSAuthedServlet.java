@@ -7,11 +7,15 @@ import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.server.JWT;
 import org.json.JSONObject;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +52,7 @@ public abstract class KosmoSAuthedServlet extends KosmoSServlet {
         return null;
     }
     
-    protected boolean isAllowed(HttpServletRequest request, HttpServletResponse response) {
+    protected boolean isAllowed(@Nonnull HttpServletRequest request, HttpServletResponse response) throws LoginFailedException {
         String auth = request.getHeader("Authorization");
         if (auth != null) {
             auth = auth.trim();
@@ -63,6 +67,9 @@ public abstract class KosmoSAuthedServlet extends KosmoSServlet {
                             if (u.canAccess(this.level)) {
                                 return true;
                             }
+                            //response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN);
+                            //return false;
+                            throw new UnauthorizedException();
                         }
                     }
 
@@ -109,6 +116,10 @@ public abstract class KosmoSAuthedServlet extends KosmoSServlet {
                     if (u.canAccess(this.level)) {
                         return true;
                     }
+                    //response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN);
+                    //return false;
+                    throw new LoginFailedException();
+
                 }
             }
         }

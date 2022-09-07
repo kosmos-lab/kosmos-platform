@@ -1,11 +1,11 @@
 package de.kosmos_lab.platform.data;
 
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
 import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
 import de.kosmos_lab.platform.smarthome.CommandInterface;
 import de.kosmos_lab.platform.smarthome.CommandSourceName;
 import de.kosmos_lab.utils.DoubleFunctions;
+import de.kosmos_lab.web.data.IUser;
 import org.everit.json.schema.ArraySchema;
 import org.everit.json.schema.BooleanSchema;
 import org.everit.json.schema.CombinedSchema;
@@ -51,6 +51,7 @@ public class Device extends DataEntry {
     private Scope readScope;
     private Scope writeScope;
     private Location location = null;
+    private ConcurrentHashMap<String, DeviceText> text = new ConcurrentHashMap<>();
 
     public Device(@Nonnull IController controller, @Nonnull CommandSourceName source, @Nonnull DataSchema schema, @Nonnull JSONObject json, @Nonnull String name, @Nonnull String uuid, @Nonnull IUser owner, boolean force) throws ValidationException {
         super(schema, json, force);
@@ -485,25 +486,72 @@ public class Device extends DataEntry {
             Object old = this.get(key);
 
 
-            if (old instanceof JSONObject && value instanceof JSONObject) {
-                //check if the old and new instance are both jsonobjects
-                if (((JSONObject) old).toMap().equals(((JSONObject) value).toMap())) {
+            if (old instanceof JSONObject) {
+                if (!(value instanceof JSONObject)) {
+                    try {
+                        value = new JSONObject(value);
+                    } catch (Exception ex) {
 
-                    return false;
+                    }
                 }
-                if (old.toString().equals(value.toString())) {
-                    //compare them
-                    return false;
+                if (value instanceof JSONObject) {
+                    //check if the old and new instance are both jsonobjects
+                    if (((JSONObject) old).toMap().equals(((JSONObject) value).toMap())) {
+
+                        return false;
+                    }
+                    if (old.toString().equals(value.toString())) {
+                        //compare them
+                        return false;
+                    }
                 }
+
                 //{"name":"test","value":1243} == {"name":"test","value":1243}
                 //{"name":"test","value":1243} != {"value":1243,"name":"test"}
-            }
-            if (old instanceof JSONArray && value instanceof JSONArray) {
-                if (old.toString().equals(value.toString())) {
-                    return false;
+            } else if (old instanceof JSONArray) {
+                if (!(value instanceof JSONArray)) {
+                    try {
+                        value = new JSONArray(value);
+                    } catch (Exception ex) {
+
+                    }
+                }
+                if (value instanceof JSONArray) {
+                    if (old.toString().equals(value.toString())) {
+                        return false;
+                    }
                 }
                 //[124,122,1] == [124,122,1]
             } else {
+                if ( old instanceof Integer && !(value instanceof Integer) ) {
+                    try {
+                        value = Integer.parseInt(String.valueOf(value));
+                    } catch (Exception ex) {
+
+                    }
+                }
+                else if ( old instanceof Double && !(value instanceof Double) ) {
+                    try {
+                        value = Double.parseDouble(String.valueOf(value));
+                    } catch (Exception ex) {
+
+                    }
+                }
+                else if ( old instanceof Float && !(value instanceof Float) ) {
+                    try {
+                        value = Float.parseFloat(String.valueOf(value));
+                    } catch (Exception ex) {
+
+                    }
+                }
+                else if ( old instanceof Boolean && !(value instanceof Boolean) ) {
+                    try {
+                        value = Boolean.parseBoolean(String.valueOf(value));
+                    } catch (Exception ex) {
+
+                    }
+                }
+
                 //check if old and new is same, if yes - do nothing
                 if (old.equals(value)) {
                     return false;
@@ -572,6 +620,15 @@ public class Device extends DataEntry {
         o.put("schema", this.getSchema().getId());
         o.put("lastUpdate", lastUpdate.getTime());
         o.put("lastChange", lastChange.getTime());
+        if (this.text.size() > 0) {
+            JSONObject texts = new JSONObject();
+            for (DeviceText t : text.values()) {
+                texts.put(t.getKey(), t.getValue());
+            }
+            o.put("texts", texts);
+
+
+        }
         return o;
     }
 
@@ -595,6 +652,14 @@ public class Device extends DataEntry {
 
     public void unlock() {
         lock.unlock();
+    }
+
+    public DeviceText getText(String key) {
+        return this.text.get(key);
+    }
+
+    public void addText(DeviceText deviceText) {
+        this.text.put(deviceText.getKey(), deviceText);
     }
 
     public static class Location {

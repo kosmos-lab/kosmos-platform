@@ -1,5 +1,7 @@
 package de.kosmos_lab.platform.web.servlets.user;
 
+import de.kosmos_lab.platform.exceptions.NoAccessException;
+import de.kosmos_lab.platform.exceptions.UserNotFoundException;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.annotations.Operation;
@@ -15,6 +17,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
 
@@ -49,27 +52,25 @@ public class UserDelServlet extends KosmoSAuthedServlet {
             },
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "OK - user was deleted"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), description = "The user could not be found"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_ERROR), description = "#/components/responses/FailedError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), description = "The user could not be found"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), ref = "#/components/responses/MissingValuesError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_ERROR), description = "#/components/responses/FailedError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             }
     )
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
-            throws ParameterNotFoundException {
+            throws ParameterNotFoundException, UnauthorizedException, UserNotFoundException, NoAccessException {
         String user = request.getString(FIELD_USER);
         IUser u = controller.getUser(user);
         if (u == null) {
-            response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND);
-            return;
+            throw new UserNotFoundException(user);
         }
 
         IUser me = request.getKosmoSUser();
         if (u.getLevel() >= me.getLevel()) {
-            response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN);
-            return;
+            throw new NoAccessException("Your level is not high enough to add a user with that level");
         }
         controller.deleteUser(u);
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);

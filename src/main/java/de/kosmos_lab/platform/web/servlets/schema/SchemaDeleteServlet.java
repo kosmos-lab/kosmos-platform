@@ -18,6 +18,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,12 +46,12 @@ public class SchemaDeleteServlet extends KosmoSAuthedServlet {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The schema was deleted"),
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "The schema cannot be deleted - it is still in use!"),
 
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                   // @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, ParameterNotFoundException {
+            throws    SchemaNotFoundException, ParameterNotFoundException, UnauthorizedException {
         String id = request.getString("id");
         DataSchema s = controller.getSchema(id);
         
