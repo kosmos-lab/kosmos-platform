@@ -20,7 +20,7 @@ import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 
 @Tag(
@@ -74,7 +74,7 @@ public class SchreibtrainerAddServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws NotObjectSchemaException, ParameterNotFoundException {
+            throws ParameterNotFoundException {
 
 
         JSONObject o = request.getBodyAsJSONObject();

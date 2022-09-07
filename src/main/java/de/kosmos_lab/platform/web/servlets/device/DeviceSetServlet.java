@@ -22,12 +22,13 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONObject;
 
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -53,6 +54,7 @@ public class DeviceSetServlet extends KosmoSAuthedServlet {
 
                                     mediaType = MediaType.APPLICATION_JSON,
                                     additionalPropertiesSchema = @Schema(additionalProperties = "true"),
+
                                     schemaProperties = {
 
                                             @SchemaProperty(
@@ -101,7 +103,7 @@ public class DeviceSetServlet extends KosmoSAuthedServlet {
                                        @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK), ref = "#/components/responses/deviceGet"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
- throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope {
+ throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
         
         
         String id = request.getParameter("uuid");

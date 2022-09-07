@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
@@ -35,7 +36,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -149,14 +150,14 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
             responses = {
 
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK),ref = "#/components/responses/scopeGet",description = "The scope was added successfully"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "There is already a scope with that name."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "There is already a scope with that name."),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
 
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException, AlreadyExistsException, GroupNotFoundException {
+            throws NoAccessToScope, ParameterNotFoundException, AlreadyExistsException, GroupNotFoundException, UnauthorizedException, IOException {
         String sname = request.getString(Scope.FIELD_NAME);
 
         try {
@@ -299,7 +300,7 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
             }
             sendJSON(request, response, scope.toJSON());
 
-            response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_OK);
+            //response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_OK);
 
 
             return;

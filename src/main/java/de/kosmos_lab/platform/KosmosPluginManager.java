@@ -167,21 +167,25 @@ public class KosmosPluginManager extends DefaultPluginManager {
                                 try {
                                     FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
                                     myPath = fileSystem.getPath("/web/");
-                                } catch (FileSystemAlreadyExistsException ex ) {
-                                    logger.error("could not create filesystem for {}",uri);
+                                } catch (FileSystemAlreadyExistsException ex) {
+                                    logger.error("could not create filesystem for {}", uri);
 
                                 }
                             } else {
                                 myPath = Paths.get(uri);
                             }
-                            if ( myPath != null ) {
+                            if (myPath != null) {
                                 Stream<Path> walk = Files.walk(myPath);
 
                                 for (Iterator<Path> it = walk.iterator(); it.hasNext(); ) {
                                     Path path = it.next();
                                     String filteredName = path.toString().substring(myPath.toString().length());
+
                                     if (filteredName.length() > 0) {
+
+
                                         try {
+                                            logger.info("Resource Scanner: {}- {}", path, filteredName);
                                             if (path.toFile().isFile()) {
                                                 Path to = new File(String.format("./web/%s", filteredName)).toPath();
                                                 logger.info("Found resource to copy in {}: {} ", plugin.getPluginId(), filteredName);
@@ -191,8 +195,12 @@ public class KosmosPluginManager extends DefaultPluginManager {
                                                 new File(String.format("./web/%s", filteredName)).mkdirs();
                                             }
                                         } catch (Exception ex) {
-                                            ex.printStackTrace();
+                                            logger.error("Could not parse Path {} - {}", path, filteredName, ex);
+                                            //ex.printStackTrace();
                                         }
+                                        //logger.warn("Path File is null?! {}", path);
+
+
                                     }
                                 }
                             }

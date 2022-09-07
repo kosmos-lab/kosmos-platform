@@ -16,6 +16,7 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class CameraDownloadRecordingServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, NoAccessToRecording {
+            throws IOException, NoAccessToRecording, UnauthorizedException {
         String filename = StringFunctions.filterFilename(request.getParameter(FIELD_FILENAME));
         byte[] content = controller.getRecording(request.getKosmoSUser(), filename);
 

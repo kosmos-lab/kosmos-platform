@@ -11,17 +11,31 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestDevice {
-    
+
+    public static final String texts_device_name = "FakeMultiSensor128";
+
+    public static void retest() {
+        ContentResponse response = CommonBase.clientAdmin.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
+        JSONObject dev = new JSONObject(response.getContentAsString());
+        Assert.assertTrue(dev.has("texts"));
+        JSONObject texts = dev.optJSONObject("texts");
+        Assert.assertNotNull(texts);
+        Assert.assertEquals(texts.getString("description"), "test2");
+
+    }
+
     @Test(groups = {"deviceTest"}, dependsOnGroups = {"addSchema"})
     public void deviceTest() {
-        
-        
+
+
         ContentResponse response = CommonBase.clientAdmin.getResponse("/device/list", HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         //Assert.assertEquals(response.getContentAsString(), "[]", "Device list was not empty");
         String uuid = "deviceTestmulti1";
-        
+
         response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 50)));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
@@ -39,10 +53,10 @@ public class TestDevice {
         boolean found = true;
         JSONObject obj, state;
         for (int i = 0; i < arr.length(); i++) {
-            
+
             obj = arr.getJSONObject(i);
             if (obj.getString("uuid").equals(uuid)) {
-                
+
                 Assert.assertEquals(obj.getString("name"), uuid);
                 Assert.assertEquals(obj.getString("uuid"), uuid);
                 Assert.assertEquals(obj.getString("schema"), "https://kosmos-lab.de/schema/FakeMultiSensor.json");
@@ -57,11 +71,11 @@ public class TestDevice {
         if (!found) {
             Assert.fail("could not see " + uuid + " in Device list");
         }
-        
+
         response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 17));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid,HttpMethod.GET);
+        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -76,19 +90,19 @@ public class TestDevice {
         response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentenvironmenttemperature", 20));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Device set did NOT fail!");
-        
-        
+
+
         response = CommonBase.clientUser2.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", uuid));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device delete NOT failed");
         response = CommonBase.clientUser.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", uuid));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device delete failed");
-        
+
         response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("scopes", new JSONObject().put("write", scopeName + ":write").put("del", scopeName + ":del").put("read", scopeName + ":read")).put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        response = CommonBase.clientUser2.getResponse("/device/get?id="+uuid, HttpMethod.GET);
+        response = CommonBase.clientUser2.getResponse("/device/get?id=" + uuid, HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device was readable!");
         response = CommonBase.clientUser2.getResponse("/device/list", HttpMethod.GET);
@@ -169,16 +183,17 @@ public class TestDevice {
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set was NOT possible with the right access!");
     }
+
     @Test(groups = {"readOnlyTest"}, dependsOnGroups = {"deviceTest"})
     public void readOnlyTest() {
-        
-        
+
+
         ContentResponse response = CommonBase.clientAdmin.getResponse("/device/list", HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         //Assert.assertEquals(response.getContentAsString(), "[]", "Device list was not empty");
         String uuid = "occupancy1";
-        
+
         response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/OccupancySensor.json").put("state", new JSONObject().put("occupancy", true).put("battery", 70)));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
@@ -197,10 +212,10 @@ public class TestDevice {
         boolean found = true;
         JSONObject obj, state;
         for (int i = 0; i < arr.length(); i++) {
-            
+
             obj = arr.getJSONObject(i);
             if (obj.getString("uuid").equals(uuid)) {
-                
+
                 Assert.assertEquals(obj.getString("name"), uuid);
                 Assert.assertEquals(obj.getString("uuid"), uuid);
                 Assert.assertEquals(obj.getString("schema"), "https://kosmos-lab.de/schema/OccupancySensor.json");
@@ -215,12 +230,12 @@ public class TestDevice {
         if (!found) {
             Assert.fail("could not see " + uuid + " in Device list");
         }
-        
+
         response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("occupancy", false));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Device set did NOT fail!");
-        
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid,HttpMethod.GET);
+
+        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -236,8 +251,8 @@ public class TestDevice {
         Assert.assertNotNull(response);
 
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did NOT fail!");
-    
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid,HttpMethod.GET);
+
+        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -249,8 +264,9 @@ public class TestDevice {
         Assert.assertEquals(state.getBoolean("occupancy"), false);
         Assert.assertTrue(state.has("battery"), "humidityLevel not found!");
         Assert.assertEquals(state.getInt("battery"), 70);
-        
+
     }
+
     @Test(groups = "testChangeSets", dependsOnGroups = {"testGroups", "deviceTest"})
     public void testChangeSets() {
         String deviceName = "FakeMultiSensor124";
@@ -283,7 +299,7 @@ public class TestDevice {
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         String res = response.getContentAsString();
         Assert.assertEquals(res, deviceName + ":{\"currentEnvironmentTemperature\":19}", "did not match " + res);
-        
+
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -293,13 +309,13 @@ public class TestDevice {
         response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 19));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
-        
+
         try {
             Thread.sleep(6000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+
         response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&json&uuid=" + deviceName, HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
@@ -337,17 +353,17 @@ public class TestDevice {
         Assert.assertEquals(res, deviceName + ":{\"humidityLevel\":80}", "did not match " + res);
         json.remove("uuid");
         CommonBase.jsonCache.put("state_" + deviceName, json);
-        
+
     }
-    
+
     @Test(groups = "testLocation", dependsOnGroups = {"testGroups", "deviceTest"})
     public void testLocation() {
         String deviceName = "FakeMultiSensor127";
         ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        
-        
+
+
         response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
@@ -361,7 +377,7 @@ public class TestDevice {
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         JSONObject json = new JSONObject(response.getContentAsString());
-    
+
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         jsonCheck.put("uuid", deviceName).put("x", 11).put("y", 12).put("z", 13).put("w", 14).put("d", 15).put("h", 16).put("area", "test2");
         response = CommonBase.clientUser.getResponse("/device/location", HttpMethod.POST, jsonCheck);
@@ -371,7 +387,7 @@ public class TestDevice {
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
-    
+
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         jsonCheck.put("x", 112);
         //create empty json again to check against
@@ -398,9 +414,51 @@ public class TestDevice {
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
         Utils.compare(jsonCheck, json.getJSONObject(deviceName), new String[]{"uuid"});
-        
-        
+
+
     }
-    
-    
+
+    @Test(groups = "testLabel", dependsOnGroups = {"testGroups", "deviceTest"})
+    public void testLabel() {
+
+        ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", texts_device_name).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
+
+        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        Assert.assertNotNull(response);
+        JSONObject dev = new JSONObject(response.getContentAsString());
+        Assert.assertEquals(dev.getString("uuid"), texts_device_name);
+        Assert.assertFalse(dev.has("texts"));
+
+        JSONObject jsonCheck = new JSONObject().put("uuid", texts_device_name).put("key", "description").put("value", "test");
+        response = CommonBase.clientUser.getResponse("/device/settext", HttpMethod.POST, jsonCheck);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "device set text failed!");
+        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
+        dev = new JSONObject(response.getContentAsString());
+        Assert.assertTrue(dev.has("texts"));
+        JSONObject texts = dev.optJSONObject("texts");
+        Assert.assertNotNull(texts);
+        Assert.assertEquals(texts.getString("description"), "test");
+
+
+        jsonCheck = new JSONObject().put("uuid", texts_device_name).put("key", "description").put("value", "test2");
+        response = CommonBase.clientUser.getResponse("/device/settext", HttpMethod.POST, jsonCheck);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "device set text failed!");
+        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
+        dev = new JSONObject(response.getContentAsString());
+        Assert.assertTrue(dev.has("texts"));
+        texts = dev.optJSONObject("texts");
+        Assert.assertNotNull(texts);
+        Assert.assertEquals(texts.getString("description"), "test2");
+
+
+    }
+
 }

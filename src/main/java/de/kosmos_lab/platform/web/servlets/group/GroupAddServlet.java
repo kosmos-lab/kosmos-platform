@@ -20,11 +20,12 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(path = "/group/add", userLevel = 1)
@@ -81,7 +82,7 @@ public class GroupAddServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
             
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ParameterNotFoundException, GroupAlreadyExistsException {
+            throws  IOException, ParameterNotFoundException, GroupAlreadyExistsException , UnauthorizedException {
         String group_name = request.getString(FIELD_NAME);
         if (group_name.length() < 3) {
             response.sendError(de.kosmos_lab.web.server.WebServer.STATUS_UNPROCESSABLE, "group name is not long enough (minLength is 3)");

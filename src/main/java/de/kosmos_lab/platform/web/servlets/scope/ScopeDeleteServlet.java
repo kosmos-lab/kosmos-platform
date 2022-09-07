@@ -1,5 +1,6 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
@@ -67,16 +68,16 @@ public class ScopeDeleteServlet extends KosmoSAuthedServlet {
             },
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The scope was deleted successfully."),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
+                    //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
 
             }
     )
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws ServletException, IOException, NotObjectSchemaException, SchemaNotFoundException, NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException {
+            throws  NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException {
 
         try {
             String sname = request.getString(FIELD_NAME);

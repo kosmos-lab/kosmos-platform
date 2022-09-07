@@ -1,5 +1,8 @@
 package de.kosmos_lab.platform;
 
+import de.kosmos_lab.platform.data.Event;
+import de.kosmos_lab.platform.smarthome.EventInterface;
+import de.kosmos_lab.platform.web.KosmoSWebSocketService;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.exceptions.*;
 import de.kosmos_lab.platform.gesture.GestureProvider;
@@ -600,4 +603,10 @@ public interface IController {
     Collection<File> listRecordings(@Nonnull ICamera cam, @Nonnull IUser user);
 
     byte[] getRecording(@Nonnull IUser user, @Nonnull String filename) throws NoAccessToRecording;
+
+    void addDeviceText(Device d, String key, String value);
+
+    void addEventInterface(EventInterface eventInterface);
+
+    void fireEvent(Event event, EventInterface source);
 }

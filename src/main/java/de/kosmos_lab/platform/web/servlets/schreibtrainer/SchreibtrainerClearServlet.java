@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 
 @ApiEndpoint(

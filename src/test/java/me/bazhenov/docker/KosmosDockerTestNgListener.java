@@ -106,6 +106,15 @@ public class KosmosDockerTestNgListener extends TestListenerAdapter {
                             definition.addEnvironment("PGID", String.valueOf(new com.sun.security.auth.module.UnixSystem().getGid()));
                         }
 
+                        try {
+                            Process p = Runtime.getRuntime().exec("docker rm -f ha_integration_test");
+                            p.waitFor();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+
+                        definition.addCustomOption("--name=ha_integration_test");
                         futures.add(starter.submit(() -> {
                             try {
                                 String containerId = docker.start(definition);

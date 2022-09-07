@@ -53,6 +53,7 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
 
     private static IController controller;
     private static Server mqttBroker;
+    private int port;
     public HashMap<Device, String> stateTopic = new HashMap<>();
     public HashMap<Device, String> setTopic = new HashMap<>();
 
@@ -70,7 +71,8 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
         config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, "false");
         config.setProperty(BrokerConstants.AUTHENTICATOR_CLASS_NAME, "de.kosmos_lab.kosmos.controller.mqtt.MQTTBroker");
         config.setProperty(BrokerConstants.AUTHORIZATOR_CLASS_NAME, "de.kosmos_lab.kosmos.controller.mqtt.MQTTBroker");
-        config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, controller.getConfig().getJSONObject("mqtt").getInt("port") + "");
+        this.port = controller.getConfig().getJSONObject("mqtt").getInt("port");
+        config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, String.valueOf(port));
         mqttBroker = new Server();
         List<? extends InterceptHandler> userHandlers = Collections.singletonList(new PublisherListener(this));
         mqttBroker.startServer(config, userHandlers);
@@ -428,5 +430,8 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
             }
         }
 
+    }
+    public int getPort() {
+        return this.port;
     }
 }

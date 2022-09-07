@@ -22,6 +22,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
 
@@ -55,7 +56,7 @@ public class DeviceDeleteServlet extends KosmoSAuthedServlet {
                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The device was removed successfully"),            })
     
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
- throws ParameterNotFoundException, DeviceNotFoundException, NoAccessToScope, NoAccessException {
+ throws ParameterNotFoundException, DeviceNotFoundException,  NoAccessException, UnauthorizedException {
         
         
         String id = request.getUUID();

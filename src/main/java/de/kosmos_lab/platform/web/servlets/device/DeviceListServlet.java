@@ -16,6 +16,7 @@ import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 
@@ -66,7 +67,7 @@ public class DeviceListServlet extends KosmoSAuthedServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException {
+            throws IOException, UnauthorizedException {
 
         JSONArray arr = new JSONArray();
         for (Device device : this.controller.getAllDevices()) {

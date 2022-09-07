@@ -169,11 +169,18 @@ public class HomeAssistantClient extends Endpoint {
         long started = System.currentTimeMillis();
         while (true) {
             try {
-                
-                if (JSONChecker.equals(vars.get(key), expected)) {
-                    logger.info("FOUND MATCH FOR {} - it seems to be",key,expected);
-                    return true;
+                Object v = vars.get(key);
+                if ( v != null ) {
+                    if (JSONChecker.equals(v, expected)) {
+                        logger.info("FOUND MATCH FOR {} - it seems to be", key, expected);
+                        return true;
+                    }
+                    logger.info("key {} is but should be {} ",key,v,expected);
                 }
+                else {
+                    logger.info("key {} does not exist!",key);
+                }
+
             } catch (Exception e) {
                 //e.printStackTrace();
             }
@@ -186,6 +193,7 @@ public class HomeAssistantClient extends Endpoint {
             long delta = System.currentTimeMillis() - started;
             if (delta > waittime) {
                 logger.info("GAVE UP FOR {}",key);
+                logger.info("all vars: {}",vars);
 
                 return false;
             }
