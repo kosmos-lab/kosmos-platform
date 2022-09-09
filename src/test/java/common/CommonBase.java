@@ -33,6 +33,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressFBWarnings("MS_CANNOT_BE_FINAL")
@@ -104,6 +105,13 @@ public class CommonBase {
 
 
             pass = StringFunctions.generateRandomKey();
+            File testConf = KosmoSController.getFile("config.json", RunMode.TEST);
+            if (testConf.exists()) {
+                if(!testConf.delete()) {
+                    Assert.fail(String.format("could not delete old test config %s", testConf));
+
+                }
+            }
             setup();
 
             try {
@@ -185,9 +193,16 @@ public class CommonBase {
         setup();
     }
 
-    public static void setup() {
+    public static void setup() {        JSONObject config = new JSONObject();
+
         File testConf = KosmoSController.getFile("config.json", RunMode.TEST);
-        JSONObject config = new JSONObject();
+        if (testConf.exists()) {
+            try {
+                config = new JSONObject(KosmosFileUtils.readFile(testConf));
+            } catch (Exception ex ) {
+                ex.printStackTrace();
+            }
+        }
         int port = 18083;
         config.put("webserver", new JSONObject().put("port", port));
 
@@ -297,9 +312,29 @@ public class CommonBase {
         if (TEST_HOST == null) {
 
             if (context.getFailedTests().size() == 0) {
+                if (KosmoSHelper.getEnvBool("DONT_STOP_TEST")) {
+                    System.out.println(String.format("Test FINISHED! you can now login via %s %s and stop the server once you are done to exit the test",clientAdmin.getUserName(),clientAdmin.getPassword()));
+                    while (true) {
+                        try {
+                            Thread.sleep(10000);
+                            if (controller.isStopped()) {
+                                break;
+                            }
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    setup();
 
-                CommonBase.restart();
-
+                }
+                else {
+                    CommonBase.restart();
+                }
                 String name = CommonBase.clientAdmin.getUserName();
                 Assert.assertNotNull(name);
 
@@ -363,9 +398,13 @@ public class CommonBase {
                 } catch (DeviceNotFoundException exception) {
                     Assert.fail(String.format("could not find %s again after restart",TestDevice.texts_device_name));
                 }
-                //TestDevice.retest();
+                TestDevice.retest();
+
                 //System.out.println("Profile ID:  " + System.getProperty("profileId"));
             }
+
+
+
             controller.stop();
         }
 

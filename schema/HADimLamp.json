@@ -10,7 +10,11 @@
     "state","entity_id"
   ],
   "properties": {
+    "icon": {
+      "type": "string",
+      "readOnly": true
 
+    },
     "brightness": {
       "type": "integer",
       "default": 128,

@@ -10,6 +10,11 @@
     "state","entity_id"
   ],
   "properties": {
+    "icon": {
+      "type": "string",
+      "readOnly": true
+
+    },
     "hs_color": {
       "type": "array",
       "prefixItems": [

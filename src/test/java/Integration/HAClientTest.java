@@ -823,7 +823,7 @@ public class HAClientTest {
 
     }
     @Test(dependsOnMethods = {"setupHA"})
-    public void testKNXRGBWLamp() {
+    public void testKNXRGBWLamp() throws InterruptedException {
 
 
         String uuid = "light.RGBW_light";
@@ -893,17 +893,219 @@ public class HAClientTest {
         jsonObject.put("state","on");
         jsonObject.remove("rgb_color");
         jsonObject.put("rgbw_color",new JSONArray().put(0).put(255).put(0).put(0));
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
-        Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(0).put(255).put(0).put(0), 10000), "device did not have correct rgb_color");
-        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgbw_color", new JSONArray().put(0).put(255).put(0).put(0), 10000), "device did not have correct state");
 
-        jsonObject.put("rgbw_color","[255,255,0,0]");
+        Thread.sleep(1000);
         response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response, "not set?");
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+        Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(0).put(255).put(0).put(0), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(0).put(255).put(0), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgbw_color", new JSONArray().put(0).put(255).put(0).put(0), 10000), "device did not have correct state");
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgb_color", new JSONArray().put(0).put(255).put(0), 10000), "device did not have correct state");
+        jsonObject.put("rgbw_color","[255,255,0,0]");
+        Thread.sleep(1000);
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response, "not set?");
+        Assert.assertEquals(response.getStatus(), 200, response.getContentAsString());
         Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(255).put(255).put(0).put(0), 10000), "device did not have correct rgb_color");
         Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgbw_color", new JSONArray().put(255).put(255).put(0).put(0), 10000), "device did not have correct state");
+        Thread.sleep(1000);
+        Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(255).put(255).put(0), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgb_color", new JSONArray().put(255).put(255).put(0), 10000), "device did not have correct state");
+        jsonObject.remove("rgbw_color");
+
+        jsonObject.put("rgb_color","[0,0,255]");
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response, "not set?");
+        Assert.assertEquals(response.getStatus(), 200, response.getContentAsString());
+        Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(0).put(0).put(255), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgb_color", new JSONArray().put(0).put(0).put(255), 10000), "device did not have correct state");
+        Thread.sleep(1000);
+
+        Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(0).put(0).put(255).put(0), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgbw_color", new JSONArray().put(0).put(0).put(255).put(0), 10000), "device did not have correct state");
+        //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "on", 10000), "device did not have correct state");
+
+    }
+
+
+    @Test(dependsOnMethods = {"setupHA"})
+    public void testKNXCCT_Light() {
+
+
+        String uuid = "light.cct_light";
+        uuid = uuid.toLowerCase();
+        Device d = null;
+        try {
+            d = CommonBase.controller.getDevice(uuid);
+        }catch (DeviceNotFoundException ex ) {
+            Assert.fail("device " + uuid + " could not be found!");
+        }
+
+        set(d, "state", "OFF");
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "off", 10000), "device was not propagated via HA" + haclient.getVars());
+        set(d, "state", "ON");
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "on", 10000), "device was not propagated via HA" + haclient.getVars());
+
+
+        //lets start constructing our json to update the state
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", uuid);
+        //we want the lamp to turn off
+        jsonObject.put("state", "off");
+        //set the state via the rest API
+        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response);
+
+        //check if the result was accepted
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+        //check if our local state changed
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "off", 10000), "device did not have correct state");
+        //check if the HA state has changed
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "off", 10000), "device did not have correct state");
+
+        //turn it on again
+        jsonObject.put("state","on");
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+        //is it changed locally?
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
+        //wait for HA to propagate
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_state", "on", 10000), "device did not have correct state");
+        //turn off via HA
+        haclient.sendCommand(new JSONObject().put("type", "call_service").put("domain", "light").put("service", "turn_off").put("service_data", new JSONObject().put("entity_id",  uuid)), (client, json) -> {
+            if (json.has("success")) {
+                Assert.assertTrue(json.getBoolean("success"), "could not subscribe to events");
+            }
+        });
+        //check if it was changed locally
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "off", 10000), "device did not have correct state");
+        //check if HA did change its value (the turn_on actually does NOT change the value, it waits for a response from KosmoS to verify it is actually accepted)
+        //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "off", 10000), "device did not have correct state");
+
+        //turn ON via HA
+        haclient.sendCommand(new JSONObject().put("type", "call_service").put("domain", "light").put("service", "turn_on").put("service_data", new JSONObject().put("entity_id",  uuid)), (client, json) -> {
+            if (json.has("success")) {
+                Assert.assertTrue(json.getBoolean("success"), "could not subscribe to events");
+            }
+        });
+
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
+        jsonObject.put("state","on");
+        jsonObject.put("color_temp",162);
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        //Assert.assertTrue(CommonBase.waitForValue(d, "hs_color", new JSONArray().put(300).put(100), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(CommonBase.waitForValue(d, "color_temp", 162, 10000), "device did not have correct color_temp");
+        jsonObject.put("state","on");
+
+        jsonObject.put("color_temp",300);
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response, "not set?");
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+
+        Assert.assertTrue(CommonBase.waitForValue(d, "color_temp", 300, 10000), "device did not have correct rgb_color");
+
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_color_temp", 300, 10000), "device did not have correct state");
 
         //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "on", 10000), "device did not have correct state");
 
+    }
+    @Test(dependsOnMethods = {"setupHA"})
+    public void testKNXCover() {
+
+
+        String uuid = "cover.kitchen_shutter";
+        uuid = uuid.toLowerCase();
+        Device d = null;
+        try {
+            d = CommonBase.controller.getDevice(uuid);
+        }catch (DeviceNotFoundException ex ) {
+            Assert.fail("device " + uuid + " could not be found!");
+        }
+        set(d, "state", "open");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        set(d, "state", "close");
+        //Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "closing", 5000), "closing was not propagated via HA" + haclient.getVars());
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "closed", 30000), "closed was not propagated via HA" + haclient.getVars());
+        //set(d, "state", "open");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", uuid);
+        //we want the lamp to turn off
+        jsonObject.put("state", "open");
+        //set the state via the rest API
+        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response);
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "opening", 5000), "opening was not propagated via HA" + haclient.getVars());
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "open", 30000), "opened was not propagated via HA" + haclient.getVars());
+
+/*
+        //lets start constructing our json to update the state
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", uuid);
+        //we want the lamp to turn off
+        jsonObject.put("state", "off");
+        //set the state via the rest API
+        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response);
+
+        //check if the result was accepted
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+        //check if our local state changed
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "off", 10000), "device did not have correct state");
+        //check if the HA state has changed
+        Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "off", 10000), "device did not have correct state");
+
+        //turn it on again
+        jsonObject.put("state","on");
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+        //is it changed locally?
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
+        //wait for HA to propagate
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_state", "on", 10000), "device did not have correct state");
+        //turn off via HA
+        haclient.sendCommand(new JSONObject().put("type", "call_service").put("domain", "light").put("service", "turn_off").put("service_data", new JSONObject().put("entity_id",  uuid)), (client, json) -> {
+            if (json.has("success")) {
+                Assert.assertTrue(json.getBoolean("success"), "could not subscribe to events");
+            }
+        });
+        //check if it was changed locally
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "off", 10000), "device did not have correct state");
+        //check if HA did change its value (the turn_on actually does NOT change the value, it waits for a response from KosmoS to verify it is actually accepted)
+        //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "off", 10000), "device did not have correct state");
+
+        //turn ON via HA
+        haclient.sendCommand(new JSONObject().put("type", "call_service").put("domain", "light").put("service", "turn_on").put("service_data", new JSONObject().put("entity_id",  uuid)), (client, json) -> {
+            if (json.has("success")) {
+                Assert.assertTrue(json.getBoolean("success"), "could not subscribe to events");
+            }
+        });
+
+        Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
+        jsonObject.put("state","on");
+        jsonObject.put("color_temp",162);
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        //Assert.assertTrue(CommonBase.waitForValue(d, "hs_color", new JSONArray().put(300).put(100), 10000), "device did not have correct rgb_color");
+        Assert.assertTrue(CommonBase.waitForValue(d, "color_temp", 162, 10000), "device did not have correct color_temp");
+        jsonObject.put("state","on");
+
+        jsonObject.put("color_temp",300);
+        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        Assert.assertNotNull(response, "not set?");
+        Assert.assertEquals(response.getStatus(), 200, "not set?");
+
+        Assert.assertTrue(CommonBase.waitForValue(d, "color_temp", 300, 10000), "device did not have correct rgb_color");
+
+        Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_color_temp", 300, 10000), "device did not have correct state");
+
+        //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "on", 10000), "device did not have correct state");
+*/
     }
     private void setAndCheckInHA(Device d, String key, String domain, Object value) {
 

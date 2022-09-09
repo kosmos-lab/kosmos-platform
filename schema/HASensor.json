@@ -1,0 +1,44 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HASensor.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HASensor",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "state","entity_id"
+  ],
+  "properties": {
+    "icon": {
+      "type": "string",
+      "readOnly": true
+
+    },
+    "device_class": {
+      "type": "string",
+      "readOnly": true
+    },
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state": {
+      "type": "string",
+      "readOnly": true
+    },
+    "unit_of_measurement": {
+      "type": "string",
+      "readOnly": true
+    },
+    "attribution": {
+      "type": "string",
+      "readOnly": true
+    },
+    "state_class": {
+      "type": "string",
+      "readOnly": true
+    }
+
+  }
+}

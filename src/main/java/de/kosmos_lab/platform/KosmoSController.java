@@ -165,6 +165,7 @@ public class KosmoSController implements IController {
     ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(5);
     private MQTTBroker mqttBroker;
+    private boolean stopped = false;
 
     /**
      * Instantiates a new Kosmo s controller.
@@ -672,6 +673,7 @@ public class KosmoSController implements IController {
      * @return
      */
     private static JSONObject fixValidation(@Nonnull JSONObject json, @Nonnull ValidationException exception) {
+        logger.error("trying to fix ValidationException {} {}",json,exception.getMessage());
         JSONObject exceptionjson = exception.toJSON();
         if (exceptionjson.has("keyword")) {
             String keyword = exceptionjson.getString("keyword");
@@ -1349,10 +1351,10 @@ public class KosmoSController implements IController {
 
     @Nonnull
     public Group getGroup(@Nonnull String name, CacheMode cacheMode) throws GroupNotFoundException {
-        logger.info("looking for group {}", name);
+        //logger.info("looking for group {}", name);
         Group group = this.groups.get(name);
         if (cacheMode == CacheMode.CACHE_AND_PERSISTENCE && group == null) {
-            logger.info("looking for group {} - NOT IN CACHE", name);
+            //logger.info("looking for group {} - NOT IN CACHE", name);
             try {
                 return this.getPersistence().getGroup(name);
             } catch (NotFoundInPersistenceException ex) {
@@ -1361,10 +1363,10 @@ public class KosmoSController implements IController {
         }
 
         if (group == null) {
-            logger.info("looking for group {} - NOT FOUND", name);
+            //logger.info("looking for group {} - NOT FOUND", name);
             throw new GroupNotFoundException(name);
         }
-        logger.info("looking for group {} - FOUND", name);
+        //logger.info("looking for group {} - FOUND", name);
         return group;
 
     }
@@ -1540,12 +1542,12 @@ public class KosmoSController implements IController {
 
     @Nonnull
     public Scope getScope(@Nonnull String name, CacheMode cacheMode) throws NotFoundInPersistenceException {
-        logger.info("looking for scope {}", name);
+        //logger.info("looking for scope {}", name);
         Scope scope = this.scopes.get(name);
         if (cacheMode == CacheMode.CACHE_AND_PERSISTENCE && scope == null) {
-            logger.info("looking for scope {} - NOT IN CACHE", name);
+            //logger.info("looking for scope {} - NOT IN CACHE", name);
             scope = this.getPersistence().getScope(name);
-            logger.info("looking for scope {} - FOUND", name);
+            //logger.info("looking for scope {} - FOUND", name);
         }
         return scope;
 
@@ -1801,6 +1803,11 @@ public class KosmoSController implements IController {
                 if (state instanceof JSONObject) {
                     logger.info("state is object {}", state);
                     JSONObject sjson = (JSONObject) state;
+                    String device_class = sjson.optString("device_class");
+                    if (device_class != null && device_class.equalsIgnoreCase("update")) {
+                        return null;
+                    }
+
                     if (sjson.has("supported_color_modes")) {
                         logger.info("has SCM {} {}", uuid, sjson.get("supported_color_modes"));
                         try {
@@ -1811,8 +1818,19 @@ public class KosmoSController implements IController {
                                 json.put("schema", "https://kosmos-lab.de/schema/HAHSCCTLamp.json");
                             } else if (JSONFunctions.hasEntries(scm, new String[]{"color_temp"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HACCTLamp.json");
-                            } else if (JSONFunctions.hasEntries(scm, new String[]{"brightness"})) {
+                            }
+
+                            else if (JSONFunctions.hasEntries(scm, new String[]{"rgbw"})) {
+                                json.put("schema", "https://kosmos-lab.de/schema/HARGBWLamp.json");
+                            }
+                            else if (JSONFunctions.hasEntries(scm, new String[]{"rgb"})) {
+                                json.put("schema", "https://kosmos-lab.de/schema/HARGBLamp.json");
+                            }
+                            else if (JSONFunctions.hasEntries(scm, new String[]{"brightness"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HADimLamp.json");
+                            }
+                            else if (JSONFunctions.hasEntries(scm, new String[]{"onoff"})) {
+                                json.put("schema", "https://kosmos-lab.de/schema/HAToggleLamp.json");
                             }
                         } catch (Exception ex) {
 
@@ -1832,6 +1850,31 @@ public class KosmoSController implements IController {
                                 JSONFunctions.hasEntries(sjson, new String[]{"forecast"})) {
                             json.put("schema", "https://kosmos-lab.de/schema/HAWeather.json");
                         }
+                        else if ( uuid.startsWith("switch.") ) {
+
+                            json.put("schema", "https://kosmos-lab.de/schema/HASwitch.json");
+
+                        }
+                        else if ( uuid.startsWith("cover.") ) {
+
+                            json.put("schema", "https://kosmos-lab.de/schema/HACover.json");
+
+                        }
+                        else if ( uuid.startsWith("sensor.") ) {
+                            String state_class = sjson.optString("state_class");
+                            if (state_class != null ) {
+                                if ( state_class.equalsIgnoreCase("humidity")) {
+
+                                }
+                            }
+                            json.put("schema", "https://kosmos-lab.de/schema/HASensor.json");
+
+                        }
+                        else if ( uuid.startsWith("scene.") ) {
+                            return null;
+
+                        }
+
                     }
                 }
             }
@@ -1874,7 +1917,7 @@ public class KosmoSController implements IController {
                             try {
                                 parseSet(from, d, j, source, user);
                             } catch (ValidationException ex) {
-
+                                //logger.error("trying to fix ValidationException {}",ex.getMessage());
                                 JSONObject newJSON = fixValidation(j, ex);
                                 while (true) {
                                     if (newJSON != null) {
@@ -1882,7 +1925,9 @@ public class KosmoSController implements IController {
                                             parseSet(from, d, newJSON, source, user);
                                             return d;
                                         } catch (ValidationException exx) {
+                                            //logger.error("trying to fix ValidationException again {}",exx.getMessage());
                                             newJSON = fixValidation(newJSON, exx);
+
                                         }
                                     } else {
                                         throw ex;
@@ -2326,9 +2371,11 @@ public class KosmoSController implements IController {
      * shut down the server
      */
     public void stop() {
+
         for (CommandInterface t : commandInterfaces) {
             t.stop();
         }
+        this.stopped = true;
     }
 
     /**
@@ -2538,5 +2585,9 @@ public class KosmoSController implements IController {
 
     public MQTTBroker getMQTT() {
         return this.mqttBroker;
+    }
+
+    public boolean isStopped() {
+        return this.stopped;
     }
 }

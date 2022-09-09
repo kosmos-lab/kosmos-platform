@@ -1,0 +1,35 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HASelect.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HASelect",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "entity_id","options"
+  ],
+  "properties": {
+    "state": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string",
+      "readOnly": true
+    },
+    "device_class": {
+      "type": "string",
+      "readOnly": true
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "readOnly": true
+    }
+
+
+  }
+}

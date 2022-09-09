@@ -1,0 +1,34 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HACover.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HACover",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "entity_id"
+  ],
+  "properties": {
+    "state": {
+      "type": "string",
+      "default": "off"
+    },
+    "icon": {
+      "type": "string",
+      "readOnly": true
+
+    },
+    "device_class": {
+      "type": "string",
+      "readOnly": true
+    },
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "current_position": {
+      "type": "number"
+    }
+  }
+}

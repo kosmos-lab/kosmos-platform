@@ -465,7 +465,7 @@ public class Device extends DataEntry {
                 //logger.info("should be CombinedSchema");
 
                 //logger.info("should be string");
-                value = new JSONArray(value);
+                value = new JSONArray(String.valueOf(value));
 
 
                 //}
@@ -474,7 +474,7 @@ public class Device extends DataEntry {
                 //logger.info("should be CombinedSchema");
 
                 //logger.info("should be string");
-                value = new JSONObject(value);
+                value = new JSONObject(String.valueOf(value));
 
 
                 //}
@@ -489,7 +489,7 @@ public class Device extends DataEntry {
             if (old instanceof JSONObject) {
                 if (!(value instanceof JSONObject)) {
                     try {
-                        value = new JSONObject(value);
+                        value = new JSONObject(String.valueOf(value));
                     } catch (Exception ex) {
 
                     }
@@ -511,7 +511,7 @@ public class Device extends DataEntry {
             } else if (old instanceof JSONArray) {
                 if (!(value instanceof JSONArray)) {
                     try {
-                        value = new JSONArray(value);
+                        value = new JSONArray(String.valueOf(value));
                     } catch (Exception ex) {
 
                     }

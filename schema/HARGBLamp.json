@@ -1,0 +1,57 @@
+{
+  "$id": "https://kosmos-lab.de/schema/HARGBLamp.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HARGBLamp",
+  "type": "object",
+  "additionalProperties": false,
+  "examples": [
+  ],
+  "required": [
+    "state","entity_id"
+  ],
+  "properties": {
+    "icon": {
+      "type": "string",
+      "readOnly": true
+
+    },
+    "brightness": {
+      "type": "integer",
+      "default": 128,
+      "examples": [
+        128
+      ],
+      "minimum": 0,
+      "maximum": 255
+    },
+    "state": {
+      "type": "string",
+      "default": "on"
+    },
+    "rgb_color": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "entity_id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "supported_color_modes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "readOnly": true
+    },
+    "effect_list": {
+    },
+    "color_mode": {
+      "type": "string"
+    }
+  }
+}

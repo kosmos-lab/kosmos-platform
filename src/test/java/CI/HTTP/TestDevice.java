@@ -14,6 +14,7 @@ public class TestDevice {
 
     public static final String texts_device_name = "FakeMultiSensor128";
 
+
     public static void retest() {
         ContentResponse response = CommonBase.clientAdmin.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
         Assert.assertNotNull(response);

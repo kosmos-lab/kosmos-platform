@@ -74,8 +74,8 @@ public class TestEvents {
             Assert.assertFalse(CommonBase.waitForValue(adminWebSocket.getObjects(), "event", event, 1000), "did get event back before login!");
             adminWebSocket.sendMessage(String.format("user/login:%s",new JSONObject().put("user", CommonBase.clientAdmin.getUserName()).put("pass", CommonBase.clientAdmin.getPassword())));
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "authed", "1", 1000), "did not get auth success back");
-             event = new JSONObject().put("type","test").put("value","10");
-             response = CommonBase.clientAdmin.getResponse("/event", HttpMethod.POST, event);
+            event = new JSONObject().put("type","test").put("value","10");
+            response = CommonBase.clientAdmin.getResponse("/event", HttpMethod.POST, event);
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE);
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "event", event, 1000), "did not get event back");
@@ -170,4 +170,5 @@ public class TestEvents {
             System.err.println("URISyntaxException exception: " + ex.getMessage());
         }
     }
+
 }
