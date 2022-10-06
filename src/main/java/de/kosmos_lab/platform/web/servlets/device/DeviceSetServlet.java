@@ -24,6 +24,7 @@ import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.ws.rs.core.MediaType;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -115,9 +116,17 @@ public class DeviceSetServlet extends KosmoSAuthedServlet {
         if (id != null) {
             
             JSONObject o = request.getBodyAsJSONObject();
-            
-            Device d = controller.parseSet(this.server, id, o, this.getSource(request), request.getKosmoSUser());
-            sendJSON(request, response, d.toJSON());
+            logger.info("device/set: {}",o);
+                //try {
+                    Device d = controller.parseSet(this.server, id, o, this.getSource(request), request.getKosmoSUser());
+                    sendJSON(request, response, d.toJSON());
+                /*} catch (Exception ex) {
+                //we just need to know where it crashes...
+                    ex.printStackTrace();
+                    throw ex;
+                }*/
+
+
             return;
             
             

@@ -1,7 +1,7 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
 import de.kosmos_lab.web.data.IUser;

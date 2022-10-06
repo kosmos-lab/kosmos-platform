@@ -2056,7 +2056,7 @@ public class KosmoSController implements IController {
 
 
         logger.info("pub update {} {} {} {}:{}", device.getUniqueID(), from, source.getSourceName(), key, ((key !=
-                null) ? (device.get(key)) : ("")));
+                null) ? (device.opt(key)) : ("")));
         for (CommandInterface t : commandInterfaces) {
             //logger.info("send update to {}", t.getSourceName());
             //logger.info(t.getSourceName());

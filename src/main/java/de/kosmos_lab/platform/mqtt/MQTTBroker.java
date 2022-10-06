@@ -274,7 +274,13 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
         String topic = pre + device.getUniqueID() + "/state";
         this.publish(topic, device.toJSON().toString());
         if (key != null) {
-            this.publish(pre + device.getUniqueID() + "/" + key + "/state", device.get(key).toString());
+            Object value = device.opt(key);
+            if ( value != null ) {
+                this.publish(pre + device.getUniqueID() + "/" + key + "/state",value.toString());
+            }
+            else {
+                this.publish(pre + device.getUniqueID() + "/" + key + "/state","");
+            }
         }
     }
 

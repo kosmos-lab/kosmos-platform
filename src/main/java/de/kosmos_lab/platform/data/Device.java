@@ -256,44 +256,156 @@ public class Device extends DataEntry {
 
     public boolean set(String key, Object value, boolean round) throws ValidationException {
         Date now = new Date();
-
+        //logger.info("SET {} {} ({}) [{}] #{}#",key,value,round,value.getClass());
         this.lastUpdate = now;
         if (controller != null) {
             controller.updateLastUpdate(this);
         }
-        //logger.info("key {} type {} value {}", key, value.getClass(), value);
-        //if its a string, check if it should not be..
-        if (value instanceof Integer || value instanceof Double || value instanceof Float) {
-            //logger.info("is a number");
-            Schema schema = getSchema().getPropertySchemas().get(key);
-            if (schema != null) {
-                //logger.info("schematype {}", schema.getClass());
-                if (schema instanceof NumberSchema) {
+        if (value != null && value !=  JSONObject.NULL) {
+
+            //logger.info("key {} type {} value {}", key, value.getClass(), value);
+            //if its a string, check if it should not be..
+            if (value instanceof Integer || value instanceof Double || value instanceof Float) {
+                //logger.info("is a number");
+                Schema schema = getSchema().getPropertySchemas().get(key);
+                if (schema != null) {
+                    //logger.info("schematype {}", schema.getClass());
+                    if (schema instanceof NumberSchema) {
+                        try {
+                            //check if it should be a number
+                            NumberSchema ns = ((NumberSchema) schema);
+                            if (ns.requiresInteger()) {
+                                //logger.info("value should be an int2");
+                                //is it also an integer?
+
+                                Number multiplier = ns.getMultipleOf();
+                                if (multiplier != null) {
+                                    value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.intValue()).intValue();
+
+                                } else {
+                                    value = ((Number) value).intValue();
+                                }
+
+
+                            } else {
+                                //logger.info("value should be a double");
+                                //its "just" a number, so its a double
+                                if ((value instanceof Integer)) {
+                                    value = ((Number) value).doubleValue();
+                                }
+                                Number multiplier = ns.getMultipleOf();
+                                if (multiplier != null) {
+                                    value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.doubleValue());
+
+                                }
+                            }
+                        } catch (NumberFormatException ex) {
+                            //this means the number could not be read -but we can just ignore this here
+                            //this essentially just means that we could not round the value
+                            //let the validation throw the error, so its consistent
+                        }
+                    } else if (schema instanceof EnumSchema) {
+                        //logger.info("should be enum");
+                        EnumSchema es = ((EnumSchema) schema);
+                        boolean found = false;
+                        List<Object> list = es.getPossibleValuesAsList();
+                        if (!list.isEmpty()) {
+                            for (Object f : list) {
+                                if ((value.toString()).equalsIgnoreCase(f.toString())) {
+                                    found = true;
+                                    //logger.info("found matching enum {}", f);
+                                    value = f.toString();
+
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                value = list.get(0).toString();
+                            }
+                        }
+                    } else if (schema instanceof StringSchema) {
+                        //logger.info("should be string");
+
+                        try {
+                            value = value.toString();
+
+                        } catch (NumberFormatException ex) {
+                            //this means the number could not be read -but we can just ignore this here
+                            //this essentially just means that we could not round the value
+                            //let the validation throw the error, so its consistent
+                        }
+                    } else if (schema instanceof CombinedSchema) {
+                        //logger.info("should be CombinedSchema");
+                        CombinedSchema cs = (CombinedSchema) schema;
+
+                        schemaloop:
+                        for (Schema sub : cs.getSubschemas()) {
+                            if (sub instanceof EnumSchema) {
+                                //logger.info("should be enum");
+                                EnumSchema es = ((EnumSchema) sub);
+                                boolean found = false;
+                                List<Object> list = es.getPossibleValuesAsList();
+                                if (!list.isEmpty()) {
+                                    for (Object f : list) {
+                                        if ((value.toString()).equalsIgnoreCase(f.toString())) {
+                                            found = true;
+                                            //logger.info("found matching enum {}", f);
+                                            value = f.toString();
+
+                                            break schemaloop;
+                                        }
+                                    }
+                                    if (!found) {
+                                        value = list.get(0).toString();
+                                    }
+                                }
+                            } else if (schema instanceof StringSchema) {
+                                //logger.info("should be string");
+                                value = value.toString();
+
+
+                            }
+                        }
+                    }
+                }
+            }
+            if (value instanceof String) {
+                //logger.info("value is a string");
+
+
+                Schema schema = getSchema().getPropertySchemas().get(key);
+
+                if (schema instanceof BooleanSchema) {
+                    //check if the schema of the property should be boolean
+                    if ("true".equalsIgnoreCase((String) value) || "on".equalsIgnoreCase((String) value) || value.equals("1") || value.equals("heat")) {
+                        value = true;
+                    } else if ("false".equalsIgnoreCase((String) value) || "off".equalsIgnoreCase((String) value) || value.equals("0")) {
+                        value = false;
+                    }
+                } else if (schema instanceof NumberSchema) {
+
+
                     try {
                         //check if it should be a number
                         NumberSchema ns = ((NumberSchema) schema);
                         if (ns.requiresInteger()) {
-                            //logger.info("value should be an int2");
+                            //logger.info("value should be an int");
                             //is it also an integer?
-
+                            value = (Double.valueOf((String) value));
                             Number multiplier = ns.getMultipleOf();
                             if (multiplier != null) {
-                                value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.intValue()).intValue();
+                                value = DoubleFunctions.roundToNearest((Double) value, multiplier.intValue()).intValue();
 
                             } else {
                                 value = ((Number) value).intValue();
                             }
-
-
                         } else {
                             //logger.info("value should be a double");
                             //its "just" a number, so its a double
-                            if ((value instanceof Integer)) {
-                                value = ((Number) value).doubleValue();
-                            }
+                            value = Double.valueOf((String) value);
                             Number multiplier = ns.getMultipleOf();
                             if (multiplier != null) {
-                                value = DoubleFunctions.roundToNearest(((Number) value).doubleValue(), multiplier.doubleValue());
+                                value = DoubleFunctions.roundToNearest((Double) value, multiplier.doubleValue());
 
                             }
                         }
@@ -303,15 +415,13 @@ public class Device extends DataEntry {
                         //let the validation throw the error, so its consistent
                     }
                 } else if (schema instanceof EnumSchema) {
-                    //logger.info("should be enum");
                     EnumSchema es = ((EnumSchema) schema);
                     boolean found = false;
                     List<Object> list = es.getPossibleValuesAsList();
                     if (!list.isEmpty()) {
                         for (Object f : list) {
-                            if ((value.toString()).equalsIgnoreCase(f.toString())) {
+                            if (((String) value).equalsIgnoreCase(f.toString())) {
                                 found = true;
-                                //logger.info("found matching enum {}", f);
                                 value = f.toString();
 
                                 break;
@@ -320,17 +430,6 @@ public class Device extends DataEntry {
                         if (!found) {
                             value = list.get(0).toString();
                         }
-                    }
-                } else if (schema instanceof StringSchema) {
-                    //logger.info("should be string");
-
-                    try {
-                        value = value.toString();
-
-                    } catch (NumberFormatException ex) {
-                        //this means the number could not be read -but we can just ignore this here
-                        //this essentially just means that we could not round the value
-                        //let the validation throw the error, so its consistent
                     }
                 } else if (schema instanceof CombinedSchema) {
                     //logger.info("should be CombinedSchema");
@@ -341,22 +440,22 @@ public class Device extends DataEntry {
                         if (sub instanceof EnumSchema) {
                             //logger.info("should be enum");
                             EnumSchema es = ((EnumSchema) sub);
-                            boolean found = false;
+
                             List<Object> list = es.getPossibleValuesAsList();
                             if (!list.isEmpty()) {
                                 for (Object f : list) {
                                     if ((value.toString()).equalsIgnoreCase(f.toString())) {
-                                        found = true;
                                         //logger.info("found matching enum {}", f);
                                         value = f.toString();
 
                                         break schemaloop;
                                     }
                                 }
-                                if (!found) {
-                                    value = list.get(0).toString();
-                                }
+
                             }
+
+                            value = list.get(0).toString();
+
                         } else if (schema instanceof StringSchema) {
                             //logger.info("should be string");
                             value = value.toString();
@@ -364,215 +463,131 @@ public class Device extends DataEntry {
 
                         }
                     }
+                } else if (schema instanceof ArraySchema) {
+                    //logger.info("should be CombinedSchema");
+
+                    //logger.info("should be string");
+                    value = new JSONArray(String.valueOf(value));
+
+
+                    //}
+
+                } else if (schema instanceof ObjectSchema) {
+                    //logger.info("should be CombinedSchema");
+
+                    //logger.info("should be string");
+                    value = new JSONObject(String.valueOf(value));
+
+
+                    //}
+
                 }
             }
-        }
-        if (value instanceof String) {
-            //logger.info("value is a string");
+            try {
+                Object old = this.get(key);
 
 
-            Schema schema = getSchema().getPropertySchemas().get(key);
-
-            if (schema instanceof BooleanSchema) {
-                //check if the schema of the property should be boolean
-                if ("true".equalsIgnoreCase((String) value) || "on".equalsIgnoreCase((String) value) || value.equals("1") || value.equals("heat")) {
-                    value = true;
-                } else if ("false".equalsIgnoreCase((String) value) || "off".equalsIgnoreCase((String) value) || value.equals("0")) {
-                    value = false;
-                }
-            } else if (schema instanceof NumberSchema) {
-
-
-                try {
-                    //check if it should be a number
-                    NumberSchema ns = ((NumberSchema) schema);
-                    if (ns.requiresInteger()) {
-                        //logger.info("value should be an int");
-                        //is it also an integer?
-                        value = (Double.valueOf((String) value));
-                        Number multiplier = ns.getMultipleOf();
-                        if (multiplier != null) {
-                            value = DoubleFunctions.roundToNearest((Double) value, multiplier.intValue()).intValue();
-
-                        } else {
-                            value = ((Number) value).intValue();
-                        }
-                    } else {
-                        //logger.info("value should be a double");
-                        //its "just" a number, so its a double
-                        value = Double.valueOf((String) value);
-                        Number multiplier = ns.getMultipleOf();
-                        if (multiplier != null) {
-                            value = DoubleFunctions.roundToNearest((Double) value, multiplier.doubleValue());
+                if (old instanceof JSONObject) {
+                    if (!(value instanceof JSONObject)) {
+                        try {
+                            value = new JSONObject(String.valueOf(value));
+                        } catch (Exception ex) {
 
                         }
                     }
-                } catch (NumberFormatException ex) {
-                    //this means the number could not be read -but we can just ignore this here
-                    //this essentially just means that we could not round the value
-                    //let the validation throw the error, so its consistent
-                }
-            } else if (schema instanceof EnumSchema) {
-                EnumSchema es = ((EnumSchema) schema);
-                boolean found = false;
-                List<Object> list = es.getPossibleValuesAsList();
-                if (!list.isEmpty()) {
-                    for (Object f : list) {
-                        if (((String) value).equalsIgnoreCase(f.toString())) {
-                            found = true;
-                            value = f.toString();
+                    if (value instanceof JSONObject) {
+                        //check if the old and new instance are both jsonobjects
+                        if (((JSONObject) old).toMap().equals(((JSONObject) value).toMap())) {
 
-                            break;
+                            return false;
+                        }
+                        if (old.toString().equals(value.toString())) {
+                            //compare them
+                            return false;
                         }
                     }
-                    if (!found) {
-                        value = list.get(0).toString();
-                    }
-                }
-            } else if (schema instanceof CombinedSchema) {
-                //logger.info("should be CombinedSchema");
-                CombinedSchema cs = (CombinedSchema) schema;
 
-                schemaloop:
-                for (Schema sub : cs.getSubschemas()) {
-                    if (sub instanceof EnumSchema) {
-                        //logger.info("should be enum");
-                        EnumSchema es = ((EnumSchema) sub);
-
-                        List<Object> list = es.getPossibleValuesAsList();
-                        if (!list.isEmpty()) {
-                            for (Object f : list) {
-                                if ((value.toString()).equalsIgnoreCase(f.toString())) {
-                                    //logger.info("found matching enum {}", f);
-                                    value = f.toString();
-
-                                    break schemaloop;
-                                }
-                            }
+                    //{"name":"test","value":1243} == {"name":"test","value":1243}
+                    //{"name":"test","value":1243} != {"value":1243,"name":"test"}
+                } else if (old instanceof JSONArray) {
+                    if (!(value instanceof JSONArray)) {
+                        try {
+                            value = new JSONArray(String.valueOf(value));
+                        } catch (Exception ex) {
 
                         }
-
-                        value = list.get(0).toString();
-
-                    } else if (schema instanceof StringSchema) {
-                        //logger.info("should be string");
-                        value = value.toString();
-
-
                     }
-                }
-            } else if (schema instanceof ArraySchema) {
-                //logger.info("should be CombinedSchema");
-
-                //logger.info("should be string");
-                value = new JSONArray(String.valueOf(value));
-
-
-                //}
-
-            } else if (schema instanceof ObjectSchema) {
-                //logger.info("should be CombinedSchema");
-
-                //logger.info("should be string");
-                value = new JSONObject(String.valueOf(value));
-
-
-                //}
-
-            }
-        }
-
-        try {
-            Object old = this.get(key);
-
-
-            if (old instanceof JSONObject) {
-                if (!(value instanceof JSONObject)) {
-                    try {
-                        value = new JSONObject(String.valueOf(value));
-                    } catch (Exception ex) {
-
+                    if (value instanceof JSONArray) {
+                        if (old.toString().equals(value.toString())) {
+                            return false;
+                        }
                     }
-                }
-                if (value instanceof JSONObject) {
-                    //check if the old and new instance are both jsonobjects
-                    if (((JSONObject) old).toMap().equals(((JSONObject) value).toMap())) {
+                    //[124,122,1] == [124,122,1]
+                } else {
+                    if ( old instanceof Integer && !(value instanceof Integer) ) {
+                        try {
+                            value = Integer.parseInt(String.valueOf(value));
+                        } catch (Exception ex) {
 
-                        return false;
+                        }
                     }
-                    if (old.toString().equals(value.toString())) {
-                        //compare them
+                    else if ( old instanceof Double && !(value instanceof Double) ) {
+                        try {
+                            value = Double.parseDouble(String.valueOf(value));
+                        } catch (Exception ex) {
+
+                        }
+                    }
+                    else if ( old instanceof Float && !(value instanceof Float) ) {
+                        try {
+                            value = Float.parseFloat(String.valueOf(value));
+                        } catch (Exception ex) {
+
+                        }
+                    }
+                    else if ( old instanceof Boolean && !(value instanceof Boolean) ) {
+                        try {
+                            value = Boolean.parseBoolean(String.valueOf(value));
+                        } catch (Exception ex) {
+
+                        }
+                    }
+
+                    //check if old and new is same, if yes - do nothing
+                    if (old.equals(value)) {
                         return false;
                     }
                 }
-
-                //{"name":"test","value":1243} == {"name":"test","value":1243}
-                //{"name":"test","value":1243} != {"value":1243,"name":"test"}
-            } else if (old instanceof JSONArray) {
-                if (!(value instanceof JSONArray)) {
-                    try {
-                        value = new JSONArray(String.valueOf(value));
-                    } catch (Exception ex) {
-
-                    }
-                }
-                if (value instanceof JSONArray) {
-                    if (old.toString().equals(value.toString())) {
-                        return false;
-                    }
-                }
-                //[124,122,1] == [124,122,1]
-            } else {
-                if ( old instanceof Integer && !(value instanceof Integer) ) {
-                    try {
-                        value = Integer.parseInt(String.valueOf(value));
-                    } catch (Exception ex) {
-
-                    }
-                }
-                else if ( old instanceof Double && !(value instanceof Double) ) {
-                    try {
-                        value = Double.parseDouble(String.valueOf(value));
-                    } catch (Exception ex) {
-
-                    }
-                }
-                else if ( old instanceof Float && !(value instanceof Float) ) {
-                    try {
-                        value = Float.parseFloat(String.valueOf(value));
-                    } catch (Exception ex) {
-
-                    }
-                }
-                else if ( old instanceof Boolean && !(value instanceof Boolean) ) {
-                    try {
-                        value = Boolean.parseBoolean(String.valueOf(value));
-                    } catch (Exception ex) {
-
-                    }
-                }
-
-                //check if old and new is same, if yes - do nothing
-                if (old.equals(value)) {
-                    return false;
-                }
+            } catch (JSONException e) {
+                //e.printStackTrace();
             }
-        } catch (JSONException e) {
-            //e.printStackTrace();
         }
+
         //copy the current data
         JSONObject newState = new JSONObject(this.toMap());
+        if (value != null && value != JSONObject.NULL) {
+            //set the new state
+            newState.put(key, value);
+            logger.info("state to validate {}", newState);
+            this.getSchema().validate(newState);
 
-        //set the new state
-        newState.put(key, value);
+            //can only be reached if value is valid for schema, so we can also modifiy the real version now
+            put(key, value);
+        } else {
+            if (newState.has(key)) {
+                newState.remove(key);
+            }
+            logger.info("state to validate (removal) {}", newState);
+            this.getSchema().validate(newState);
+            logger.info("state validated");
+            if (has(key)) {
+                remove(key);
+            }
+        }
         //logger.info(newState.toString(4));
 
         //validate the new state
-        logger.info("state to validate {}", newState);
-        this.getSchema().validate(newState);
 
-        //can only be reached if value is valid for schema, so we can also modifiy the real version now
-        put(key, value);
         this.lastChangeMap.put(key, System.currentTimeMillis());
         this.lastChange = now;
         //notify that we actually did have a change
@@ -633,9 +648,13 @@ public class Device extends DataEntry {
     }
 
     public boolean updateFromJSON(CommandInterface from, JSONObject o, CommandSourceName source) {
+        //logger.info("parse from json {}",o);
         HashSet<String> dirtyKeys = new HashSet<>();
         for (String key : o.keySet()) {
+            //logger.info("key {}",key);
             if (set(key, o.get(key), true)) {
+                //logger.info("SET key {}",key);
+
                 dirtyKeys.add(key);
             }
         }

@@ -2,6 +2,7 @@ package de.kosmos_lab.platform;
 
 
 import de.kosmos_lab.platform.persistence.Constants.RunMode;
+import de.kosmos_lab.utils.KosmosFileUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -16,6 +17,9 @@ class StartController {
 
 
     public static void main(String[] args) {
+
+        KosmosFileUtils.writeToFile(new File("kosmos.pid"),String.valueOf(ProcessHandle.current().pid()));
+
         Options options = new Options();
         options.addOption("help","print this message");
 

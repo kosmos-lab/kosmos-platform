@@ -1,6 +1,6 @@
 package de.kosmos_lab.platform.exceptions;
 
-import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.server.WebServer;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;

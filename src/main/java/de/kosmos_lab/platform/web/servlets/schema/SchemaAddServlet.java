@@ -1,7 +1,7 @@
 package de.kosmos_lab.platform.web.servlets.schema;
 
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.media.ExampleObject;

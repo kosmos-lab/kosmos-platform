@@ -45,7 +45,7 @@ import java.time.Duration;
         "You can find the newest openapi specification on [/doc/openapi.yaml](/doc/openapi.yaml) or [/doc/openapi.json](/doc/openapi.json).\n" +
         "The human readable description of the openapi can be found [/doc/openapi.html](/doc/openapi.html).\n" +
         "You can find the newest asyncapi specification on [/doc/asyncapi.yaml](/doc/asyncapi.yaml) or [/doc/asyncapi.json](/doc/asyncapi.json).\n" +
-        "The human readable description of the asyncapi can be found [/doc/async.html](/doc/asyncapi.html).\n" +
+        "The human readable description of the asyncapi can be found [/doc/asyncapi.html](/doc/asyncapi.html).\n" +
         "**NOTE**: These files are automatically generated and also contain your plugins etc.",
 
         title = "KosmoS openApi",
@@ -61,7 +61,7 @@ import java.time.Duration;
                 "You can find the newest openapi specification on [/doc/openapi.yaml](/doc/openapi.yaml) or [/doc/openapi.json](/doc/openapi.json).\n" +
                 "The human readable description of the openapi can be found [/doc/openapi.html](/doc/openapi.html).\n" +
                 "You can find the newest asyncapi specification on [/doc/asyncapi.yaml](/doc/asyncapi.yaml) or [/doc/asyncapi.json](/doc/asyncapi.json).\n" +
-                "The human readable description of the asyncapi can be found [/doc/async.html](/doc/asyncapi.html).\n" +
+                "The human readable description of the asyncapi can be found [/doc/asyncapi.html](/doc/asyncapi.html).\n" +
                 "**NOTE**: These files are automatically generated and also contain your plugins etc.",
         title = "KosmoS asyncApi",
         version = "filled-by-code",
