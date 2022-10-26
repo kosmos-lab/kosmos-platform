@@ -1,8 +1,10 @@
 package de.kosmos_lab.platform;
 
+import de.kosmos_lab.platform.web.IAuthProvider;
 import org.apache.commons.lang3.ClassUtils;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginWrapper;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +89,26 @@ public class KosmosPluginManager extends DefaultPluginManager {
         }
         return matched;
     }
+    public @Nonnull
+    Collection<Class> getAllClassesFor(@Nonnull Class className) {
+        Collection<Class> matched = new HashSet<>();
+        for (Class extension : classes) {
 
+            for (Class i : ClassUtils.getAllSuperclasses(extension)) {
+                if (className.isAssignableFrom(i)) {
+                    matched.add(extension);
+                }
+            }
+        }
+        Reflections r = new Reflections("de.kosmos_lab");
+        for (Class<? extends IAuthProvider> c : r.getSubTypesOf(IAuthProvider.class)) {
+            matched.add(c);
+        }
+
+
+
+            return matched;
+    }
     /**
      * get a new instance of the given class
      *
@@ -195,7 +216,7 @@ public class KosmosPluginManager extends DefaultPluginManager {
                                                 new File(String.format("./web/%s", filteredName)).mkdirs();
                                             }
                                         } catch (Exception ex) {
-                                            logger.error("Could not parse Path {} - {}", path, filteredName, ex);
+                                           // logger.error("Could not parse Path {} - {}", path, filteredName, ex);
                                             //ex.printStackTrace();
                                         }
                                         //logger.warn("Path File is null?! {}", path);

@@ -16,7 +16,7 @@ import java.io.FileNotFoundException;
 public class TestSchema {
     @Test(dependsOnGroups = {"createUser"},groups = {"addSchema"})
     public void addSSchema() throws FileNotFoundException {
-        ContentResponse response = CommonBase.clientAdmin.getResponse("/schema/get?id=https%3A%2F%2Fkosmos-lab.de%2Fschema%2FMultiSensor.json", HttpMethod.GET);
+        ContentResponse response = CommonBase.httpClientAdmin.getResponse("/schema/get?id=https%3A%2F%2Fkosmos-lab.de%2Fschema%2FMultiSensor.json", HttpMethod.GET);
         Assert.assertNotNull(response);
 
         JSONObject schema = new JSONObject(KosmosFileUtils.readFile(new File("schema/MultiSensor.json")));
@@ -24,7 +24,7 @@ public class TestSchema {
         if (response.getStatus() == WebServer.STATUS_NOT_FOUND) {
             //Assert.assertEquals(response.getStatus(), 404, "Could not get MultiSensor!");
             
-            response = CommonBase.clientAdmin.getResponse("/schema/add", HttpMethod.POST, schema);
+            response = CommonBase.httpClientAdmin.getResponse("/schema/add", HttpMethod.POST, schema);
             Assert.assertNotNull(response);
         }
 
@@ -32,7 +32,7 @@ public class TestSchema {
         String buffer = response.getContentAsString();
         //System.out.println("buffer" + buffer);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Schema add did fail!");
-        response = CommonBase.clientAdmin.getResponse("/schema/get?id=https%3A%2F%2Fkosmos-lab.de%2Fschema%2FMultiSensor.json", HttpMethod.GET);
+        response = CommonBase.httpClientAdmin.getResponse("/schema/get?id=https%3A%2F%2Fkosmos-lab.de%2Fschema%2FMultiSensor.json", HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Could not get MultiSensor!");
         

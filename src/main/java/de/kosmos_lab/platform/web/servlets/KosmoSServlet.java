@@ -39,7 +39,7 @@ public class KosmoSServlet extends BaseServlet {
         this.server = server;
         this.controller = controller;
         this.allow_auth = allow_auth;
-        logger.info("created servlet {}", this.getClass());
+        //logger.info("created servlet {}", this.getClass());
     }
 
 

@@ -2,6 +2,7 @@ package de.kosmos_lab.platform.web;
 
 import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.KosmoSController;
+import de.kosmos_lab.platform.client.HTTPClient;
 import de.kosmos_lab.platform.data.Device;
 import de.kosmos_lab.platform.data.Event;
 import de.kosmos_lab.platform.rules.RulesService;
@@ -20,21 +21,47 @@ import de.kosmos_lab.web.annotations.media.ObjectSchema;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.security.SecuritySchema;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.server.WebServer;
 import de.kosmos_lab.web.server.WebSocketCreator;
 import de.kosmos_lab.web.server.WebSocketService;
 import jakarta.servlet.http.HttpServlet;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.jetty.client.WWWAuthenticationProtocolHandler;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
 import org.json.JSONObject;
+import org.keycloak.adapters.ServerRequest.HttpFailure;
+import org.keycloak.common.VerificationException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Info(description = "# Kosmos Platform openApi HTTP API \n" +
         "This is the OpenAPI 3.0 specifaction for KosmoS, please always use the latest documentation found in your installation on [/doc/openapi.html](/doc/openapi.html) in your installation.\n" +
@@ -266,6 +293,8 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
     private final IController controller;
 
     protected KosmoSWebSocketService webSocketService = null;
+    ConcurrentHashMap<UUID, KeyCloakAdapter> kcs = new ConcurrentHashMap<>();
+    ConcurrentHashMap<UUID, String> redirectTo = new ConcurrentHashMap<>();
 
     public KosmoSWebServer(IController controller) throws Exception {
         super();
@@ -279,6 +308,7 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
     @Override
     public void prepare() {
         super.prepare();
+
 
         this.findServlets(new String[]{"de.kosmos_lab.platform.web"}, KosmoSServlet.class, WebSocketService.class);
 
@@ -329,38 +359,6 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
         }
     }
 
-
-    @Override
-    public HttpServlet create(Class<? extends HttpServlet> servlet, ApiEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        if (api.userLevel() >= 0) {
-
-            return servlet.getConstructor(KosmoSWebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
-        } else {
-            try {
-                return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
-            } catch (NoSuchMethodException ex) {
-                try {
-                    return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
-                } catch (NoSuchMethodException exx) {
-                    return servlet.getConstructor(WebServer.class).newInstance(this);
-                }
-            }
-        }
-    }
-
-    @Override
-    public WebSocketService create(Class<? extends WebSocketService> servlet, WebSocketEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        try {
-            return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
-        } catch (NoSuchMethodException ex) {
-            try {
-                return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
-            } catch (NoSuchMethodException exx) {
-                return servlet.getConstructor(WebServer.class).newInstance(this);
-            }
-        }
-    }
-
     /*public void createServlet(Class<? extends HttpServlet> servlet) {
         ApiEndpoint api = servlet.getAnnotation(ApiEndpoint.class);
         if (api != null) {
@@ -396,6 +394,39 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
         }
 
     }*/
+
+    @Override
+    public HttpServlet create(Class<? extends HttpServlet> servlet, ApiEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (api.userLevel() >= 0) {
+
+            return servlet.getConstructor(KosmoSWebServer.class, IController.class, int.class).newInstance(this, controller, api.userLevel());
+        } else {
+            try {
+                return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
+            } catch (NoSuchMethodException ex) {
+                try {
+                    return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
+                } catch (NoSuchMethodException exx) {
+                    return servlet.getConstructor(WebServer.class).newInstance(this);
+                }
+            }
+        }
+    }
+
+    @Override
+    public WebSocketService create(Class<? extends WebSocketService> servlet, WebSocketEndpoint api) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        try {
+            return servlet.getConstructor(KosmoSWebServer.class, IController.class).newInstance(this, controller);
+        } catch (NoSuchMethodException ex) {
+            try {
+                return servlet.getConstructor(KosmoSWebServer.class).newInstance(this);
+            } catch (NoSuchMethodException exx) {
+                return servlet.getConstructor(WebServer.class).newInstance(this);
+            }
+        }
+    }
+
+    // Convenience method to create and configure a ContextHandler.
 
     @Override
     public JSONObject getConfig() {
@@ -434,23 +465,18 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
         }
     }
 
-    // Convenience method to create and configure a ContextHandler.
-
     public IController getIController() {
         return this.controller;
     }
-
 
     public RulesService getRulesService() {
         return this.controller.getRulesService();
     }
 
-
     @Override
     public String getSourceName() {
         return "HTTPApi";
     }
-
 
     @Override
     public void deviceAdded(@Nullable CommandInterface from, @Nonnull Device device, @Nonnull CommandSourceName source) {
@@ -467,12 +493,10 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
 
     }
 
-
     @Override
     public String toString() {
         return "WebServer";
     }
-
 
     public KosmoSWebSocketService getWebSocketService() {
         return webSocketService;
@@ -498,4 +522,83 @@ public class KosmoSWebServer extends WebServer implements CommandInterface, Even
     public void eventFired(@Nullable EventInterface from, @Nonnull Event event) {
         //can be ignored here
     }
+
+
+    public IUser processKC(String code, UUID uuid) {
+        KeyCloakAdapter kc = kcs.get(uuid);
+        if (kc != null) {
+            try {
+                kc.process(code);
+                /*logger.info("KC Token String {}", kc.getIdTokenString());
+                logger.info("KC Token {}", kc.getIdToken());
+                logger.info("KC Token name {}", kc.getIdToken().getName());
+                logger.info("KC Token preferred {}", kc.getIdToken().getPreferredUsername());
+                logger.info("KC Token ACR {}", kc.getIdToken().getAcr());
+                logger.info("KC ID Token profile {}", kc.getIdToken().getProfile());
+                logger.info("KC Token profile {}", kc.getToken().getProfile());
+                logger.info("KC Token subject {}", kc.getToken().getSubject());*/
+
+                IUser user = controller.getUserCreateIfUnavailable(String.format("kc:%s", kc.getToken().getPreferredUsername()));
+                return user;
+
+
+            } catch (HttpFailure e) {
+                throw new RuntimeException(e);
+            } catch (VerificationException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return null;
+    }
+
+    public String getRedirectTo(UUID uuid) {
+        return redirectTo.get(uuid);
+    }
+
+    public String getOpenIDLink(String host, String path, String returnTo) {
+
+        JSONObject kc = getConfig().optJSONObject("keycloak");
+
+        if (kc != null) {
+            try {
+                KeyCloakAdapter keycloak = new KeyCloakAdapter(kc.getString("server"), kc.getString("realm"), kc.getString("clientId"), kc.getString("clientSecret"));
+                UUID uuid = UUID.randomUUID();
+                while (kcs.containsKey(uuid)) {
+                    uuid = UUID.randomUUID();
+                }
+                String redirectUri = null;
+                if (returnTo != null) {
+                    if (returnTo.startsWith("http://")) {
+                        redirectUri = String.format("http://%s%s", host, path);
+                    }
+
+                }
+                if (redirectUri == null) {
+                    String.format("https://%s%s", host, path);
+                }
+
+
+                kcs.put(uuid, keycloak);
+                if (returnTo != null) {
+
+                    this.redirectTo.put(uuid, returnTo);
+                }
+                String aurl = keycloak.getAuthUrl(redirectUri, uuid.toString());
+                //logger.info("aurl {}", aurl);
+                return aurl;
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            logger.info("WS Config: {}", getConfig());
+        }
+
+        return null;
+    }
 }
+
+

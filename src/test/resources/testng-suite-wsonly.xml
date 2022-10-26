@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Common">
+    <test name="Common" preserve-order="true" thread-count="10" parallel="methods">
+        <packages>
+            <package name="common"/>
+            <package name="CI.Client"/>
+        </packages>
+    </test>
+</suite>

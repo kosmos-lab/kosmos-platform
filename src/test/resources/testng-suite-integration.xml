@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="full">
+    <test name="full">
+        <packages>
+            <package name="common"/>
+            <package name="CI.FunctionTests"/>
+            <package name="CI.HTTP"/>
+            <package name="CI.client"/>
+            <package name="CI"/>
+            <package name="integration"/>
+        </packages>
+    </test>
+</suite>

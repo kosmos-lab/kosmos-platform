@@ -11,12 +11,16 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+
 import java.io.File;
 
 class StartController {
 
 
     public static void main(String[] args) {
+
+
+
 
         KosmosFileUtils.writeToFile(new File("kosmos.pid"),String.valueOf(ProcessHandle.current().pid()));
 

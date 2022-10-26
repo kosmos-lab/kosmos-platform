@@ -17,15 +17,15 @@ public class TestKREE {
     
     @Test(dependsOnGroups = {"createUser"})
     public void testKreeMXML() {
-        String uname1 = CommonBase.clientAdmin.getUserName();
+        String uname1 = CommonBase.httpClientAdmin.getUserName();
         Assert.assertNotNull(uname1);
         KosmoSUser u1 = (KosmoSUser) CommonBase.controller.getUser(uname1);
         Assert.assertNotNull(u1);
-        String uname2 = CommonBase.clientUser.getUserName();
+        String uname2 = CommonBase.httpClientUser.getUserName();
         Assert.assertNotNull(uname2);
         KosmoSUser u2 = (KosmoSUser) CommonBase.controller.getUser(uname2);
         Assert.assertNotNull(u2);
-        String uname3 = CommonBase.clientUser2.getUserName();
+        String uname3 = CommonBase.httpClientUser2.getUserName();
         Assert.assertNotNull(uname3);
         KosmoSUser u3 = (KosmoSUser) CommonBase.controller.getUser(uname3);
         Assert.assertNotNull(u3);
@@ -42,16 +42,16 @@ public class TestKREE {
         ContentResponse response;
         
         
-        response = CommonBase.clientUser.getResponse("/kree/loadXML", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse("/kree/loadXML", HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "XML Loading did fail");
         xml = response.getContentAsString();
         Assert.assertEquals(xml,"<xml xmlns=\"https://developers.google.com/blockly/xml\">\n</xml>","empty XML was not correct");
         String postXML = "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"text_print\" id=\"Wa+Xh46KKAx44(^88qwb\" x=\"388\" y=\"213\"><value name=\"TEXT\"><shadow type=\"text\" id=\"BR%,@t_#iTEW4Y70c)y~\"><field name=\"TEXT\">abc</field></shadow></value></block></xml>";
-        response = CommonBase.clientUser.getResponse("/kree/saveXML", HttpMethod.POST,postXML);
+        response = CommonBase.httpClientUser.getResponse("/kree/saveXML", HttpMethod.POST,postXML);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
-        response = CommonBase.clientUser.getResponse("/kree/loadXML", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse("/kree/loadXML", HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "XML Loading did fail");
         xml = response.getContentAsString().trim();
@@ -72,15 +72,15 @@ public class TestKREE {
     }
     @Test(dependsOnGroups = {"createUser"})
     public void testKreePython() {
-        String uname1 = CommonBase.clientAdmin.getUserName();
+        String uname1 = CommonBase.httpClientAdmin.getUserName();
         Assert.assertNotNull(uname1);
         KosmoSUser u1 = (KosmoSUser) CommonBase.controller.getUser(uname1);
         Assert.assertNotNull(u1);
-        String uname2 = CommonBase.clientUser.getUserName();
+        String uname2 = CommonBase.httpClientUser.getUserName();
         Assert.assertNotNull(uname2);
         KosmoSUser u2 = (KosmoSUser) CommonBase.controller.getUser(uname2);
         Assert.assertNotNull(u2);
-        String uname3 = CommonBase.clientUser2.getUserName();
+        String uname3 = CommonBase.httpClientUser2.getUserName();
         Assert.assertNotNull(uname3);
         KosmoSUser u3 = (KosmoSUser) CommonBase.controller.getUser(uname3);
         Assert.assertNotNull(u3);
@@ -94,7 +94,7 @@ public class TestKREE {
         String python;
         ContentResponse response;
         String postPython = "test";
-        response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
+        response = CommonBase.httpClientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");
@@ -108,7 +108,7 @@ public class TestKREE {
     
     
         postPython = "import sys"+System.getProperty("line.separator")+"print('test')"+System.getProperty("line.separator");
-        response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
+        response = CommonBase.httpClientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "XML saving did fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");
@@ -120,7 +120,7 @@ public class TestKREE {
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u3.getID()+".py");
         Assert.assertFalse(ruleFile.exists());
         String postPython2 = "import os"+System.getProperty("line.separator")+"print('test')"+System.getProperty("line.separator");
-        response = CommonBase.clientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython2);
+        response = CommonBase.httpClientUser.getResponse("/kree/savePython", HttpMethod.POST,postPython2);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Python saving did NOT fail");
         ruleFile = new File(CommonBase.controller.getRulesService().getRuleDir()+"/"+u1.getID()+".py");

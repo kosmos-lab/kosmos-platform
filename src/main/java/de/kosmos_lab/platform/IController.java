@@ -3,6 +3,8 @@ package de.kosmos_lab.platform;
 import de.kosmos_lab.platform.data.Event;
 import de.kosmos_lab.platform.smarthome.EventInterface;
 import de.kosmos_lab.platform.web.KosmoSWebSocketService;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
+import de.kosmos_lab.web.exceptions.ServletException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.platform.exceptions.*;
 import de.kosmos_lab.platform.gesture.GestureProvider;
@@ -333,7 +335,7 @@ public interface IController {
     HashMap<Device, StateUpdates> getUpdates(@Nonnull Collection<String> uuids, long maxage);
 
     @CheckForNull
-    IUser tryLogin(@CheckForNull String username, @CheckForNull String password);
+    IUser tryLogin(@CheckForNull String username, @CheckForNull String password) throws de.kosmos_lab.web.exceptions.LoginFailedException;
 
     void updateFromSource(@Nonnull CommandInterface from, @Nonnull CommandSourceName source, @Nonnull Device device, @Nonnull String key, Object o);
 

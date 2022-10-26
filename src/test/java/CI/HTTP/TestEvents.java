@@ -1,20 +1,20 @@
 package CI.HTTP;
 
 import common.CommonBase;
+import de.kosmos_lab.platform.client.KosmoSPathHelper;
 import de.kosmos_lab.platform.persistence.Constants;
+import de.kosmos_lab.platform.web.servlets.event.EventServlet;
 import de.kosmos_lab.utils.StringFunctions;
 import de.kosmos_lab.web.client.websocket.SimpleWebSocketEndpoint;
 import de.kosmos_lab.web.client.websocket.WebSocketTestClient;
 import de.kosmos_lab.web.server.WebServer;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
@@ -47,7 +47,7 @@ public class TestEvents {
 
             String testpw = StringFunctions.generateRandomKey();
             //will actually never happen - but better safe than sorry
-            while (testpw.equals(CommonBase.clientAdmin.getPassword())) {
+            while (testpw.equals(CommonBase.httpClientAdmin.getPassword())) {
                 testpw = StringFunctions.generateRandomKey();
             }
 
@@ -65,17 +65,17 @@ public class TestEvents {
                 //JSONObject json = new JSONObject(matcher.group(2));
                 adminWebSocket.set(matcher.group(1),matcher.group(2));
             });
-            adminWebSocket.sendMessage(String.format("user/login:%s",new JSONObject().put("user", CommonBase.clientAdmin.getUserName()).put("pass", testpw)));
+            adminWebSocket.sendMessage(String.format("user/auth:%s",new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", testpw)));
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "authed", "0", 1000), "did not get auth failed back");
             JSONObject event = new JSONObject().put("type","test").put("value","7");
-            ContentResponse response = CommonBase.clientAdmin.getResponse("/event", HttpMethod.POST, event);
+            ContentResponse response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(EventServlet.class), HttpMethod.POST, event);
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE);
             Assert.assertFalse(CommonBase.waitForValue(adminWebSocket.getObjects(), "event", event, 1000), "did get event back before login!");
-            adminWebSocket.sendMessage(String.format("user/login:%s",new JSONObject().put("user", CommonBase.clientAdmin.getUserName()).put("pass", CommonBase.clientAdmin.getPassword())));
+            adminWebSocket.sendMessage(String.format("user/login:%s",new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", CommonBase.httpClientAdmin.getPassword())));
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "authed", "1", 1000), "did not get auth success back");
             event = new JSONObject().put("type","test").put("value","10");
-            response = CommonBase.clientAdmin.getResponse("/event", HttpMethod.POST, event);
+            response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(EventServlet.class), HttpMethod.POST, event);
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE);
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "event", event, 1000), "did not get event back");

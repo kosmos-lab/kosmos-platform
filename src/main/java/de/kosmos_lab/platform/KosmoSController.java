@@ -16,13 +16,13 @@ import de.kosmos_lab.platform.rules.RulesService;
 import de.kosmos_lab.platform.smarthome.CommandInterface;
 import de.kosmos_lab.platform.smarthome.CommandSourceName;
 import de.kosmos_lab.platform.smarthome.EventInterface;
-import de.kosmos_lab.platform.smarthome.PropertyTranslator;
 import de.kosmos_lab.platform.smarthome.SmartHomeInterface;
 import de.kosmos_lab.platform.smarthome.ha.HomeAssistantHTTPClient;
 import de.kosmos_lab.platform.utils.DataFactory;
 import de.kosmos_lab.platform.utils.KosmoSHelper;
 import de.kosmos_lab.platform.utils.SchemaComparator;
 import de.kosmos_lab.platform.utils.TimeFunctions;
+import de.kosmos_lab.platform.web.IAuthProvider;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
 import de.kosmos_lab.platform.web.KosmoSWebSocketService;
 import de.kosmos_lab.utils.HashFunctions;
@@ -31,6 +31,7 @@ import de.kosmos_lab.utils.KosmosFileUtils;
 import de.kosmos_lab.utils.StringFunctions;
 import de.kosmos_lab.utils.Wildcard;
 import de.kosmos_lab.web.data.IUser;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.web.server.JWT;
@@ -51,6 +52,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -158,6 +160,8 @@ public class KosmoSController implements IController {
      */
     Set<CommandInterface> commandInterfaces = ConcurrentHashMap.newKeySet();
     Set<EventInterface> eventInterfaces = ConcurrentHashMap.newKeySet();
+    Set<IAuthProvider> authProviders = ConcurrentHashMap.newKeySet();
+
     /**
      * The Gesture provider.
      */
@@ -594,7 +598,24 @@ public class KosmoSController implements IController {
                 }
             }
         }*/
+
         this.pluginManager = new KosmosPluginManager();
+        for (Class cls : pluginManager.getAllClassesFor(IAuthProvider.class)) {
+            try {
+                logger.info("found IAuthProvider class {}",cls.getCanonicalName());
+                //this.authProviders.add(cls.getI)
+
+                //IAuthProvider p = ((cls.get) cls).getInstance(this);
+                Method m = cls.getMethod("getInstance", IController.class);
+                Object p = m.invoke(null, this);
+                if (p != null) {
+                    this.authProviders.add((IAuthProvider) p);
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
 
         try {
             this.webServer = new KosmoSWebServer(this);
@@ -673,7 +694,7 @@ public class KosmoSController implements IController {
      * @return
      */
     private static JSONObject fixValidation(@Nonnull JSONObject json, @Nonnull ValidationException exception) {
-        logger.error("trying to fix ValidationException {} {}",json,exception.getMessage());
+        logger.error("trying to fix ValidationException {} {}", json, exception.getMessage());
         JSONObject exceptionjson = exception.toJSON();
         if (exceptionjson.has("keyword")) {
             String keyword = exceptionjson.getString("keyword");
@@ -696,37 +717,6 @@ public class KosmoSController implements IController {
         return null;
 
 
-    }
-    @Override
-    public void addDeviceText(Device device,String key, String value) {
-        DeviceText deviceText = device.getText(key);
-        if (deviceText == null ) {
-            deviceText = new DeviceText(device,key,value);
-            //device.addText(deviceText);
-            this.getPersistence().addDeviceText(deviceText);
-        }
-        else {
-            deviceText.setValue(value);
-            this.getPersistence().updateDeviceText(deviceText);
-        }
-
-
-
-}
-
-    @Override
-    public void addEventInterface(EventInterface eventInterface) {
-        this.eventInterfaces.add(eventInterface);
-
-    }
-
-    @Override
-    public void fireEvent(Event event, EventInterface source) {
-        for ( EventInterface eventInterface: this.eventInterfaces) {
-            if ( eventInterface != source) {
-                eventInterface.eventFired(source,event);
-            }
-        }
     }
 
     /**
@@ -768,6 +758,36 @@ public class KosmoSController implements IController {
         File f = new File(dir);
         f.getParentFile().mkdirs();
         return f;
+    }
+
+    @Override
+    public void addDeviceText(Device device, String key, String value) {
+        DeviceText deviceText = device.getText(key);
+        if (deviceText == null) {
+            deviceText = new DeviceText(device, key, value);
+            //device.addText(deviceText);
+            this.getPersistence().addDeviceText(deviceText);
+        } else {
+            deviceText.setValue(value);
+            this.getPersistence().updateDeviceText(deviceText);
+        }
+
+
+    }
+
+    @Override
+    public void addEventInterface(EventInterface eventInterface) {
+        this.eventInterfaces.add(eventInterface);
+
+    }
+
+    @Override
+    public void fireEvent(Event event, EventInterface source) {
+        for (EventInterface eventInterface : this.eventInterfaces) {
+            if (eventInterface != source) {
+                eventInterface.eventFired(source, event);
+            }
+        }
     }
 
     /**
@@ -1523,7 +1543,7 @@ public class KosmoSController implements IController {
                 return s;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
 
@@ -1624,12 +1644,15 @@ public class KosmoSController implements IController {
     }
 
     public IUser getUserCreateIfUnavailable(@Nonnull String user) {
+        logger.info("looking for {}",user);
         IUser u = this.getUser(user);
         if (u == null) {
-            this.addUser(user, "pass", 1);
+            logger.info("needing to create user {}",user);
+            this.addUser(user, StringFunctions.generateRandomKey(), 1);
             u = this.getUser(user);
 
         }
+        logger.info("returning {}",u);
         return u;
 
     }
@@ -1818,18 +1841,13 @@ public class KosmoSController implements IController {
                                 json.put("schema", "https://kosmos-lab.de/schema/HAHSCCTLamp.json");
                             } else if (JSONFunctions.hasEntries(scm, new String[]{"color_temp"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HACCTLamp.json");
-                            }
-
-                            else if (JSONFunctions.hasEntries(scm, new String[]{"rgbw"})) {
+                            } else if (JSONFunctions.hasEntries(scm, new String[]{"rgbw"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HARGBWLamp.json");
-                            }
-                            else if (JSONFunctions.hasEntries(scm, new String[]{"rgb"})) {
+                            } else if (JSONFunctions.hasEntries(scm, new String[]{"rgb"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HARGBLamp.json");
-                            }
-                            else if (JSONFunctions.hasEntries(scm, new String[]{"brightness"})) {
+                            } else if (JSONFunctions.hasEntries(scm, new String[]{"brightness"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HADimLamp.json");
-                            }
-                            else if (JSONFunctions.hasEntries(scm, new String[]{"onoff"})) {
+                            } else if (JSONFunctions.hasEntries(scm, new String[]{"onoff"})) {
                                 json.put("schema", "https://kosmos-lab.de/schema/HAToggleLamp.json");
                             }
                         } catch (Exception ex) {
@@ -1849,28 +1867,24 @@ public class KosmoSController implements IController {
                         } else if (uuid.startsWith("weather.") &&
                                 JSONFunctions.hasEntries(sjson, new String[]{"forecast"})) {
                             json.put("schema", "https://kosmos-lab.de/schema/HAWeather.json");
-                        }
-                        else if ( uuid.startsWith("switch.") ) {
+                        } else if (uuid.startsWith("switch.")) {
 
                             json.put("schema", "https://kosmos-lab.de/schema/HASwitch.json");
 
-                        }
-                        else if ( uuid.startsWith("cover.") ) {
+                        } else if (uuid.startsWith("cover.")) {
 
                             json.put("schema", "https://kosmos-lab.de/schema/HACover.json");
 
-                        }
-                        else if ( uuid.startsWith("sensor.") ) {
+                        } else if (uuid.startsWith("sensor.")) {
                             String state_class = sjson.optString("state_class");
-                            if (state_class != null ) {
-                                if ( state_class.equalsIgnoreCase("humidity")) {
+                            if (state_class != null) {
+                                if (state_class.equalsIgnoreCase("humidity")) {
 
                                 }
                             }
                             json.put("schema", "https://kosmos-lab.de/schema/HASensor.json");
 
-                        }
-                        else if ( uuid.startsWith("scene.") ) {
+                        } else if (uuid.startsWith("scene.")) {
                             return null;
 
                         }
@@ -2038,7 +2052,7 @@ public class KosmoSController implements IController {
 
 
                     }
-                    for ( String key : toClean) {
+                    for (String key : toClean) {
                         json.remove(key);
                     }
                 }
@@ -2387,11 +2401,28 @@ public class KosmoSController implements IController {
      * @return a user if the login was successful
      */
     public @CheckForNull
-    IUser tryLogin(@CheckForNull String user, @CheckForNull String pass) {
+    IUser tryLogin(@CheckForNull String user, @CheckForNull String pass) throws de.kosmos_lab.web.exceptions.LoginFailedException {
         if (user == null || pass == null) {
             return null;
         }
+        for (IAuthProvider provider : this.authProviders) {
+            try {
+                IUser u = provider.tryLogin(user, pass);
+                if (u != null) {
+                    return u;
+                }
+            } catch (LoginFailedException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (user.contains(":")) {
+            return null;
+        }
         IUser u = getUser(user);
+
         if (u != null) {
             if (u.checkPassword(pass)) {
                 return u;

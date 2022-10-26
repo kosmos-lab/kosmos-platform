@@ -28,7 +28,9 @@ import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.Channel;
 import de.kosmos_lab.web.doc.openapi.Message;
 import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.ServletException;
 import de.kosmos_lab.web.server.JWT;
 import de.kosmos_lab.web.server.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
@@ -523,13 +525,19 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
                 String usern = json.optString("user");
                 String pass = json.optString("pass");
                 if (usern != null && pass != null) {
-                    IUser u = controller.tryLogin(usern, pass);
-                    if (u != null) {
-                        logins.put(sess, u);
-                        logger.info("auth successful");
-                        afterAuth(sess, u);
-                        return;
+                    IUser u = null;
+                    try {
+                        u = controller.tryLogin(usern, pass);
+                        if (u != null) {
+                            logins.put(sess, u);
+                            logger.info("auth successful");
+                            afterAuth(sess, u);
+                            return;
+                        }
+                    } catch (LoginFailedException e) {
+                        throw new RuntimeException(e);
                     }
+
 
                 } else {
                     logger.warn("json not correct");

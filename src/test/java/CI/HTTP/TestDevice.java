@@ -2,6 +2,17 @@ package CI.HTTP;
 
 import common.CommonBase;
 import common.Utils;
+import de.kosmos_lab.platform.client.KosmoSPathHelper;
+import de.kosmos_lab.platform.web.servlets.device.DeviceAddServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceDeleteServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceGetServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceListServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceLocationServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceLocationsServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceSetServlet;
+import de.kosmos_lab.platform.web.servlets.device.DeviceSetTextServlet;
+import de.kosmos_lab.platform.web.servlets.obs.OBSLiveServlet;
+import de.kosmos_lab.platform.web.servlets.scope.ScopeAddUserServlet;
 import de.kosmos_lab.web.server.WebServer;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.http.HttpMethod;
@@ -16,7 +27,7 @@ public class TestDevice {
 
 
     public static void retest() {
-        ContentResponse response = CommonBase.clientAdmin.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        ContentResponse response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
         JSONObject dev = new JSONObject(response.getContentAsString());
@@ -31,19 +42,19 @@ public class TestDevice {
     public void deviceTest() {
 
 
-        ContentResponse response = CommonBase.clientAdmin.getResponse("/device/list", HttpMethod.GET);
+        ContentResponse response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         //Assert.assertEquals(response.getContentAsString(), "[]", "Device list was not empty");
         String uuid = "deviceTestmulti1";
 
-        response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 50)));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 50)));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_DUPLICATE, "Device add did NOT fail for a duplicate!");
-        response = CommonBase.clientUser.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         String buffer = response.getContentAsString();
@@ -73,10 +84,10 @@ public class TestDevice {
             Assert.fail("could not see " + uuid + " in Device list");
         }
 
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 17));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 17));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
+        obj = CommonBase.httpClientUser.fetchJSONObject(KosmoSPathHelper.getPath(DeviceGetServlet.class) , HttpMethod.GET,new String[][]{{"id",uuid}});
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -88,25 +99,25 @@ public class TestDevice {
         Assert.assertEquals(state.getInt("humidityLevel"), 50);
         //should fail because this property does not exist!
         String scopeName = "test";
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentenvironmenttemperature", 20));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("currentenvironmenttemperature", 20));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Device set did NOT fail!");
 
 
-        response = CommonBase.clientUser2.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", uuid));
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceDeleteServlet.class), HttpMethod.DELETE, new JSONObject().put("id", uuid));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device delete NOT failed");
-        response = CommonBase.clientUser.getResponse("/device/delete", HttpMethod.DELETE, new JSONObject().put("id", uuid));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceDeleteServlet.class), HttpMethod.DELETE, new JSONObject().put("id", uuid));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device delete failed");
 
-        response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("scopes", new JSONObject().put("write", scopeName + ":write").put("del", scopeName + ":del").put("read", scopeName + ":read")).put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", uuid).put("scopes", new JSONObject().put("write", scopeName + ":write").put("del", scopeName + ":del").put("read", scopeName + ":read")).put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        response = CommonBase.clientUser2.getResponse("/device/get?id=" + uuid, HttpMethod.GET);
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new String[][]{{"id",uuid}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device was readable!");
-        response = CommonBase.clientUser2.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         arr = new JSONArray(response.getContentAsString());
@@ -117,7 +128,7 @@ public class TestDevice {
                 break;
             }
         }
-        response = CommonBase.clientUser.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         arr = new JSONArray(response.getContentAsString());
@@ -132,7 +143,7 @@ public class TestDevice {
         if (!found) {
             Assert.fail("could not see " + uuid + " in Device list as user2");
         }
-        response = CommonBase.clientAdmin.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         arr = new JSONArray(response.getContentAsString());
@@ -147,19 +158,19 @@ public class TestDevice {
         if (!found) {
             Assert.fail("could not see " + uuid + " in Device list as admin");
         }
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 14));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 14));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set was NOT possible without access!");
-        response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 15));
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 15));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device set was possible without access!");
-        response = CommonBase.clientUser.getResponse("/scope/adduser", HttpMethod.POST, new JSONObject().put("user", CommonBase.clientUser2.getUserName()).put("scope", scopeName + ":read"));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(ScopeAddUserServlet.class), HttpMethod.POST, new JSONObject().put("user", CommonBase.httpClientUser2.getUserName()).put("scope", scopeName + ":read"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Scope add did fail!");
-        response = CommonBase.clientUser2.getResponse("/device/get?id=" + uuid, HttpMethod.GET);
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new String[][]{{"id",uuid}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device was NOT readable!");
-        response = CommonBase.clientUser.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         arr = new JSONArray(response.getContentAsString());
@@ -174,13 +185,13 @@ public class TestDevice {
         if (!found) {
             Assert.fail("could not see " + uuid + " in Device list");
         }
-        response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 15));
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id",uuid).put("currentEnvironmentTemperature", 15));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_FORBIDDEN, "Device set was possible without access!");
-        response = CommonBase.clientAdmin.getResponse("/scope/adduser", HttpMethod.POST, new JSONObject().put("user", CommonBase.clientUser2.getUserName()).put("scope", scopeName + ":write"));
+        response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(ScopeAddUserServlet.class), HttpMethod.POST, new JSONObject().put("user", CommonBase.httpClientUser2.getUserName()).put("scope", scopeName + ":write"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Scope add as admin did fail!");
-        response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 13));
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("currentEnvironmentTemperature", 13));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set was NOT possible with the right access!");
     }
@@ -189,20 +200,20 @@ public class TestDevice {
     public void readOnlyTest() {
 
 
-        ContentResponse response = CommonBase.clientAdmin.getResponse("/device/list", HttpMethod.GET);
+        ContentResponse response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         //Assert.assertEquals(response.getContentAsString(), "[]", "Device list was not empty");
         String uuid = "occupancy1";
 
-        response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/OccupancySensor.json").put("state", new JSONObject().put("occupancy", true).put("battery", 70)));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/OccupancySensor.json").put("state", new JSONObject().put("occupancy", true).put("battery", 70)));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/OccupancySensor.json"));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", uuid).put("schema", "https://kosmos-lab.de/schema/OccupancySensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_DUPLICATE, "Device add did NOT fail for a duplicate!");
 
-        response = CommonBase.clientUser.getResponse("/device/list", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceListServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device list was not possible!");
         String buffer = response.getContentAsString();
@@ -232,11 +243,11 @@ public class TestDevice {
             Assert.fail("could not see " + uuid + " in Device list");
         }
 
-        response = CommonBase.clientUser2.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("occupancy", false));
+        response = CommonBase.httpClientUser2.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("occupancy", false));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_VALIDATION_FAILED, "Device set did NOT fail!");
 
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
+        obj = CommonBase.httpClientUser.fetchJSONObject(KosmoSPathHelper.getPath(DeviceGetServlet.class) , HttpMethod.GET,new String[][]{{"id",uuid}});
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -248,12 +259,12 @@ public class TestDevice {
         Assert.assertEquals(state.getBoolean("occupancy"), true);
         Assert.assertTrue(state.has("battery"), "humidityLevel not found!");
         Assert.assertEquals(state.getInt("battery"), 70);
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", uuid).put("occupancy", false));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("id", uuid).put("occupancy", false));
         Assert.assertNotNull(response);
 
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did NOT fail!");
 
-        obj = CommonBase.clientUser.fetchJSONObject("/device/get?id=" + uuid, HttpMethod.GET);
+        obj = CommonBase.httpClientUser.fetchJSONObject(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET,new String[][]{{"id",uuid}});
         Assert.assertNotNull(obj);
 
         Assert.assertEquals(obj.getString("name"), uuid);
@@ -271,20 +282,20 @@ public class TestDevice {
     @Test(groups = "testChangeSets", dependsOnGroups = {"testGroups", "deviceTest"})
     public void testChangeSets() {
         String deviceName = "FakeMultiSensor124";
-        ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        ContentResponse response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
 
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
-        response = CommonBase.clientUser.getResponse("/obs/live?json&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"json","true"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         JSONObject obj = new JSONObject(response.getContentAsString());
         Assert.assertNotNull(obj, "Response was null?");
         Assert.assertEquals(obj.length(), 0, "Change list was not empty");
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 19));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 19));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
-        response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&json&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"json","true"},{"maxAge","10"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         obj = new JSONObject(response.getContentAsString());
@@ -295,7 +306,7 @@ public class TestDevice {
         Assert.assertNotNull(c, "change was null");
         Assert.assertTrue(c.has("currentEnvironmentTemperature"), "change did not have currentEnvironmentTemperature " + obj);
         Assert.assertEquals(c.getJSONObject("currentEnvironmentTemperature").getInt("value"), 19);
-        response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"maxAge","10"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         String res = response.getContentAsString();
@@ -307,7 +318,7 @@ public class TestDevice {
             e.printStackTrace();
         }
         //change to same value
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 19));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 19));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
 
@@ -317,17 +328,17 @@ public class TestDevice {
             e.printStackTrace();
         }
 
-        response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&json&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"json","true"},{"maxAge","10"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         obj = new JSONObject(response.getContentAsString());
         Assert.assertNotNull(obj, "Response was null?");
         Assert.assertEquals(obj.length(), 0, "Change list did not have 0 entries " + obj);
         //change to same value
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 20).put("humidityLevel", 70));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 20).put("humidityLevel", 70));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
-        response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"maxAge","10"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         res = response.getContentAsString();
@@ -339,7 +350,7 @@ public class TestDevice {
             e.printStackTrace();
         }
         JSONObject json = new JSONObject().put("uuid", deviceName).put("currentEnvironmentTemperature", 20).put("humidityLevel", 80);
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, json);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetServlet.class), HttpMethod.POST, json);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "Device set did fail!");
         try {
@@ -347,7 +358,7 @@ public class TestDevice {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        response = CommonBase.clientUser.getResponse("/obs/live?maxAge=10&uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(OBSLiveServlet.class), HttpMethod.GET, new String[][]{{"uuid",deviceName},{"maxAge","10"}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "obs live did fail!");
         res = response.getContentAsString();
@@ -360,31 +371,31 @@ public class TestDevice {
     @Test(groups = "testLocation", dependsOnGroups = {"testGroups", "deviceTest"})
     public void testLocation() {
         String deviceName = "FakeMultiSensor127";
-        ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        ContentResponse response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
 
 
-        response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.GET, new String[][]{{"uuid", deviceName}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         String r = response.getContentAsString();
         Assert.assertEquals(r, "{}", "did not get an empty json object");
         JSONObject jsonCheck = new JSONObject().put("uuid", deviceName).put("x", 1).put("y", 2).put("z", 3).put("w", 4).put("d", 5).put("h", 6).put("area", "test1");
-        response = CommonBase.clientUser.getResponse("/device/location", HttpMethod.POST, jsonCheck);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.POST, jsonCheck);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device set location failed!");
-        response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.GET, new String[][]{{"uuid", deviceName}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         JSONObject json = new JSONObject(response.getContentAsString());
 
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         jsonCheck.put("uuid", deviceName).put("x", 11).put("y", 12).put("z", 13).put("w", 14).put("d", 15).put("h", 16).put("area", "test2");
-        response = CommonBase.clientUser.getResponse("/device/location", HttpMethod.POST, jsonCheck);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.POST, jsonCheck);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device set location failed!");
-        response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.GET, new String[][]{{"uuid", deviceName}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
@@ -392,25 +403,25 @@ public class TestDevice {
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         jsonCheck.put("x", 112);
         //create empty json again to check against
-        response = CommonBase.clientUser.getResponse("/device/location", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("x", 112));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("x", 112));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device set location failed!");
-        response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.GET, new String[][]{{"uuid", deviceName}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         jsonCheck.put("roll", 19).put("yaw", 20).put("pitch", 21);
-        response = CommonBase.clientUser.getResponse("/device/location", HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("roll", 19).put("yaw", 20).put("pitch", 21));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.POST, new JSONObject().put("uuid", deviceName).put("roll", 19).put("yaw", 20).put("pitch", 21));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device set location failed!");
-        response = CommonBase.clientUser.getResponse("/device/location?uuid=" + deviceName, HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationServlet.class), HttpMethod.GET, new String[][]{{"uuid", deviceName}});
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
         Utils.compare(jsonCheck, json, new String[]{"uuid"});
         CommonBase.jsonCache.put("location_" + deviceName, jsonCheck);
-        response = CommonBase.clientUser.getResponse("/device/locations", HttpMethod.GET);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceLocationsServlet.class), HttpMethod.GET);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "location did fail!");
         json = new JSONObject(response.getContentAsString());
@@ -422,21 +433,21 @@ public class TestDevice {
     @Test(groups = "testLabel", dependsOnGroups = {"testGroups", "deviceTest"})
     public void testLabel() {
 
-        ContentResponse response = CommonBase.clientUser.getResponse("/device/add", HttpMethod.POST, new JSONObject().put("uuid", texts_device_name).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
+        ContentResponse response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceAddServlet.class), HttpMethod.POST, new JSONObject().put("uuid", texts_device_name).put("schema", "https://kosmos-lab.de/schema/FakeMultiSensor.json"));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "Device add did fail!");
 
-        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
         Assert.assertNotNull(response);
         JSONObject dev = new JSONObject(response.getContentAsString());
         Assert.assertEquals(dev.getString("uuid"), texts_device_name);
         Assert.assertFalse(dev.has("texts"));
 
         JSONObject jsonCheck = new JSONObject().put("uuid", texts_device_name).put("key", "description").put("value", "test");
-        response = CommonBase.clientUser.getResponse("/device/settext", HttpMethod.POST, jsonCheck);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetTextServlet.class), HttpMethod.POST, jsonCheck);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "device set text failed!");
-        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
         dev = new JSONObject(response.getContentAsString());
@@ -447,10 +458,10 @@ public class TestDevice {
 
 
         jsonCheck = new JSONObject().put("uuid", texts_device_name).put("key", "description").put("value", "test2");
-        response = CommonBase.clientUser.getResponse("/device/settext", HttpMethod.POST, jsonCheck);
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceSetTextServlet.class), HttpMethod.POST, jsonCheck);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE, "device set text failed!");
-        response = CommonBase.clientUser.getResponse("/device/get", HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
+        response = CommonBase.httpClientUser.getResponse(KosmoSPathHelper.getPath(DeviceGetServlet.class), HttpMethod.GET, new JSONObject().put("uuid", texts_device_name));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), WebServer.STATUS_OK, "device get failed!");
         dev = new JSONObject(response.getContentAsString());

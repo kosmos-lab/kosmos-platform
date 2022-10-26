@@ -1,6 +1,5 @@
 package Integration;
 
-import CI.HTTP.TestDevice;
 import common.CommonBase;
 import common.Utils;
 import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
@@ -148,7 +147,7 @@ public class HAClientTest {
         jsonObject.put(key, value);
         //set the state via the rest API
 
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set? " + new String(response.getContent(), StandardCharsets.UTF_8));
         Assert.assertTrue(CommonBase.waitForValue(d, key, value, 10000), "device did not have correct state");
@@ -164,7 +163,7 @@ public class HAClientTest {
 
         JSONObject json = new JSONObject(state.toMap());
         json.put("id", uuid);
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", json);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", json);
         //check if the result was accepted
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
@@ -333,7 +332,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("on", false);
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
 
         //check if the result was accepted
@@ -345,7 +344,7 @@ public class HAClientTest {
 
         //turn it on again
         jsonObject.put("on", true);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         //is it changed locally?
@@ -490,7 +489,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("on", false);
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
 
         //check if the result was accepted
@@ -502,7 +501,7 @@ public class HAClientTest {
 
         //turn it on again
         jsonObject.put("on", true);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         //is it changed locally?
@@ -655,7 +654,7 @@ public class HAClientTest {
     }
 
     private void addDeviceToKosmos(JSONObject jsonObject) {
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/add", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/add", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 204, "Add not successful?");
 
@@ -772,7 +771,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("state", "off");
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
 
         //check if the result was accepted
@@ -784,7 +783,7 @@ public class HAClientTest {
 
         //turn it on again
         jsonObject.put("state","on");
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         //is it changed locally?
@@ -812,11 +811,11 @@ public class HAClientTest {
         Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
         jsonObject.put("state","on");
         jsonObject.put("rgb_color",new JSONArray().put(255).put(0).put(255));
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(255).put(0).put(255), 10000), "device did not have correct rgb_color");
         jsonObject.put("state","on");
         jsonObject.put("rgb_color",new JSONArray().put(0).put(255).put(0));
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(0).put(255).put(0), 10000), "device did not have correct rgb_color");
 
         //Assert.assertTrue(haclient.waitForValue("device_light." + uuid + "_state", "on", 10000), "device did not have correct state");
@@ -847,7 +846,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("state", "off");
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
 
         //check if the result was accepted
@@ -859,7 +858,7 @@ public class HAClientTest {
 
         //turn it on again
         jsonObject.put("state","on");
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         //is it changed locally?
@@ -887,7 +886,7 @@ public class HAClientTest {
         Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
         jsonObject.put("state","on");
         jsonObject.put("rgb_color",new JSONArray().put(255).put(0).put(255));
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         //Assert.assertTrue(CommonBase.waitForValue(d, "hs_color", new JSONArray().put(300).put(100), 10000), "device did not have correct rgb_color");
         Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(255).put(0).put(255), 10000), "device did not have correct rgb_color");
         jsonObject.put("state","on");
@@ -895,7 +894,7 @@ public class HAClientTest {
         jsonObject.put("rgbw_color",new JSONArray().put(0).put(255).put(0).put(0));
 
         Thread.sleep(1000);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response, "not set?");
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(0).put(255).put(0).put(0), 10000), "device did not have correct rgb_color");
@@ -904,7 +903,7 @@ public class HAClientTest {
         Assert.assertTrue(haclient.waitForValue("device_" + uuid + "_rgb_color", new JSONArray().put(0).put(255).put(0), 10000), "device did not have correct state");
         jsonObject.put("rgbw_color","[255,255,0,0]");
         Thread.sleep(1000);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response, "not set?");
         Assert.assertEquals(response.getStatus(), 200, response.getContentAsString());
         Assert.assertTrue(CommonBase.waitForValue(d, "rgbw_color", new JSONArray().put(255).put(255).put(0).put(0), 10000), "device did not have correct rgb_color");
@@ -915,7 +914,7 @@ public class HAClientTest {
         jsonObject.remove("rgbw_color");
 
         jsonObject.put("rgb_color","[0,0,255]");
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response, "not set?");
         Assert.assertEquals(response.getStatus(), 200, response.getContentAsString());
         Assert.assertTrue(CommonBase.waitForValue(d, "rgb_color", new JSONArray().put(0).put(0).put(255), 10000), "device did not have correct rgb_color");
@@ -954,7 +953,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("state", "off");
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
 
         //check if the result was accepted
@@ -966,7 +965,7 @@ public class HAClientTest {
 
         //turn it on again
         jsonObject.put("state","on");
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "not set?");
         //is it changed locally?
@@ -994,13 +993,13 @@ public class HAClientTest {
         Assert.assertTrue(CommonBase.waitForValue(d, "state", "on", 10000), "device did not have correct state");
         jsonObject.put("state","on");
         jsonObject.put("color_temp",162);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         //Assert.assertTrue(CommonBase.waitForValue(d, "hs_color", new JSONArray().put(300).put(100), 10000), "device did not have correct rgb_color");
         Assert.assertTrue(CommonBase.waitForValue(d, "color_temp", 162, 10000), "device did not have correct color_temp");
         jsonObject.put("state","on");
 
         jsonObject.put("color_temp",300);
-        response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response, "not set?");
         Assert.assertEquals(response.getStatus(), 200, "not set?");
 
@@ -1038,7 +1037,7 @@ public class HAClientTest {
         //we want the lamp to turn off
         jsonObject.put("state", "open");
         //set the state via the rest API
-        ContentResponse response = CommonBase.clientAdmin.postJSONObject2("/device/set", jsonObject);
+        ContentResponse response = CommonBase.httpClientAdmin.postJSONObject2("/device/set", jsonObject);
         Assert.assertNotNull(response);
         Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "opening", 5000), "opening was not propagated via HA" + haclient.getVars());
         Assert.assertTrue(haclient.waitForValue("device_"+uuid + "_state", "open", 30000), "opened was not propagated via HA" + haclient.getVars());

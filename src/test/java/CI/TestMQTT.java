@@ -33,10 +33,10 @@ public class TestMQTT implements IMqttMessageListener{
             MqttClient client = new MqttClient("tcp://localhost:1884", "createDeviceMQTT", new MemoryPersistence());
         
             MqttConnectOptions connOpts = new MqttConnectOptions();
-            String pass = CommonBase.clientAdmin.getPassword();
+            String pass = CommonBase.httpClientAdmin.getPassword();
             Assert.assertNotNull(pass);
             connOpts.setPassword(pass.toCharArray());
-            connOpts.setUserName(CommonBase.clientAdmin.getUserName());
+            connOpts.setUserName(CommonBase.httpClientAdmin.getUserName());
             client.connect(connOpts);
             logger.info("MQTT Connected");
             client.subscribeWithResponse("#", this);
@@ -99,15 +99,15 @@ public class TestMQTT implements IMqttMessageListener{
             MqttClient client = new MqttClient("tcp://localhost:1884", "testMQTTPublish", new MemoryPersistence());
     
             MqttConnectOptions connOpts = new MqttConnectOptions();
-            String pass = CommonBase.clientAdmin.getPassword();
+            String pass = CommonBase.httpClientAdmin.getPassword();
             Assert.assertNotNull(pass);
             connOpts.setPassword(pass.toCharArray());
-            connOpts.setUserName(CommonBase.clientAdmin.getUserName());
+            connOpts.setUserName(CommonBase.httpClientAdmin.getUserName());
             client.connect(connOpts);
             client.subscribeWithResponse("#", this);
     
             logger.info("Connected");
-            ContentResponse response = CommonBase.clientUser.getResponse(CommonBase.clientUser.createAuthedPostRequest("/device/add", new JSONObject().put("uuid", "multi2").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/MultiSensor.json").put("scopes", new JSONObject().put("write", "mqttest:write").put("del", "mqttest:del").put("read", "mqttest:read"))));
+            ContentResponse response = CommonBase.httpClientUser.getResponse(CommonBase.httpClientUser.createAuthedPostRequest("/device/add", new JSONObject().put("uuid", "multi2").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/MultiSensor.json").put("scopes", new JSONObject().put("write", "mqttest:write").put("del", "mqttest:del").put("read", "mqttest:read"))));
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), 204, "Device add did fail!");
             logger.info("MQTT device add done");
@@ -140,23 +140,23 @@ public class TestMQTT implements IMqttMessageListener{
             
             MqttConnectOptions connOpts = new MqttConnectOptions();
 
-            String pass = CommonBase.clientAdmin.getPassword();
+            String pass = CommonBase.httpClientAdmin.getPassword();
             Assert.assertNotNull(pass);
             connOpts.setPassword(pass.toCharArray());
-            connOpts.setUserName(CommonBase.clientUser.getUserName());
+            connOpts.setUserName(CommonBase.httpClientUser.getUserName());
             client.connect(connOpts);
             client.subscribeWithResponse("#", this);
             MqttClient client2 = new MqttClient("tcp://localhost", "MQTTTest3", new MemoryPersistence());
     
             MqttConnectOptions connOpts2 = new MqttConnectOptions();
-            String pass2 = CommonBase.clientUser2.getPassword();
+            String pass2 = CommonBase.httpClientUser2.getPassword();
             Assert.assertNotNull(pass);
             connOpts2.setPassword(pass2.toCharArray());
-            connOpts2.setUserName(CommonBase.clientUser2.getUserName());
+            connOpts2.setUserName(CommonBase.httpClientUser2.getUserName());
             client2.connect(connOpts2);
             client2.subscribeWithResponse("#", this);
             logger.info("Connected");
-            ContentResponse response = CommonBase.clientUser.getResponse(CommonBase.clientUser.createAuthedPostRequest("/device/add", new JSONObject().put("uuid", "multi3").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/MultiSensor.json")));
+            ContentResponse response = CommonBase.httpClientUser.getResponse(CommonBase.httpClientUser.createAuthedPostRequest("/device/add", new JSONObject().put("uuid", "multi3").put("state", new JSONObject().put("currentEnvironmentTemperature", 25).put("humidityLevel", 100)).put("schema", "https://kosmos-lab.de/schema/MultiSensor.json")));
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), 204, "Device add did fail!");
             client.publish("kosmos/multi3/set",new JSONObject().put("currentEnvironmentTemperature",19).toString().getBytes(StandardCharsets.UTF_8),1,false);

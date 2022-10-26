@@ -153,7 +153,7 @@ public class HTTPClient extends HttpClient {
             try {
                 return new JSONObject(r.getContentAsString());
             } catch (JSONException ex) {
-                logger.error("could not parse response to JSON!", ex);
+                //logger.error("could not parse response to JSON!", ex);
             }
         }
         return null;
@@ -252,7 +252,7 @@ public class HTTPClient extends HttpClient {
 
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            logger.error("could not get Response for Request {}", e);
+            logger.error("could not get Response for Request {}",e.getMessage(), e);
         }
         return response;
 

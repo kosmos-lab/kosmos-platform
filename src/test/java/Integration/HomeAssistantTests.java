@@ -38,7 +38,7 @@ public class HomeAssistantTests {
                 json.put("state", state);
             }
 
-            ContentResponse response = CommonBase.clientAdmin.getResponse("/device/add", HttpMethod.POST, json);
+            ContentResponse response = CommonBase.httpClientAdmin.getResponse("/device/add", HttpMethod.POST, json);
             Assert.assertNotNull(response);
 
             //Assert.assertEquals(response.getStatus(), 204, "Device add did fail!");
@@ -68,20 +68,20 @@ public class HomeAssistantTests {
             Assert.fail("Could not load Schema from file " + f.getName() + ":" + e.getCause());
         }
         logger.info("getting schema/get?" + UrlEncoded.encodeString(schema.getString("$id")));
-        ContentResponse response = CommonBase.clientAdmin.getResponse("/schema/get?id=" + UrlEncoded.encodeString(schema.getString("$id")), HttpMethod.GET);
+        ContentResponse response = CommonBase.httpClientAdmin.getResponse("/schema/get?id=" + UrlEncoded.encodeString(schema.getString("$id")), HttpMethod.GET);
         Assert.assertNotNull(response);
 
         if (response.getStatus() != 200) {
 
 
-            response = CommonBase.clientAdmin.getResponse("/schema/add", HttpMethod.POST, schema);
+            response = CommonBase.httpClientAdmin.getResponse("/schema/add", HttpMethod.POST, schema);
             Assert.assertNotNull(response);
 
             if (response.getStatus() != 200 && response.getStatus() != 409) {
                 Assert.fail("Could not add schema: " + f.getName() + "!" + response.getStatus());
             }
 
-            response = CommonBase.clientAdmin.getResponse("/schema/get?id=" + UrlEncoded.encodeString(schema.getString("$id")), HttpMethod.GET);
+            response = CommonBase.httpClientAdmin.getResponse("/schema/get?id=" + UrlEncoded.encodeString(schema.getString("$id")), HttpMethod.GET);
             Assert.assertNotNull(response);
 
             if (response.getStatus() != 200) {
@@ -153,11 +153,11 @@ public class HomeAssistantTests {
 
         Device device = addDevice(deviceName, new File("schema/Heater.json"), new JSONObject().put("heatingTemperatureSetting", 20.0).put("valvePosition", 50));
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "temperature", 20.0, 5000), "Did not find value for temp 20 again");
-        ContentResponse response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("heatingTemperatureSetting", 22));
+        ContentResponse response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("heatingTemperatureSetting", 22));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "Device set did fail!");
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "temperature", 22.0, 5000), "Did not find value for temp 22 again");
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("heatingTemperatureSetting", 24.791));
+        response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("heatingTemperatureSetting", 24.791));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "Device set did fail!");
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "temperature", 25.0, 5000), "Did not find value for temp 25 again");
@@ -177,12 +177,12 @@ public class HomeAssistantTests {
         //the valveposition is its own device for now
         HADeviceName = "sensor.heatertest_valvePosition";
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 50.0, 5000), "Did not find value for valvePosition 50 again");
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("valvePosition", 40.0));
+        response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("valvePosition", 40.0));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200);
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 40.0, 5000), "Did not find value for valvePosition 40 again");
 
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("valvePosition", 22.0));
+        response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("valvePosition", 22.0));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200);
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 20.0, 5000), "Did not find value for valvePosition 20 again");
@@ -221,7 +221,7 @@ public class HomeAssistantTests {
         long started = System.currentTimeMillis();
         while (true) {
             long delta = System.currentTimeMillis() - started;
-            JSONObject obj = CommonBase.clientha.fetchJSONObject("/api/states/" + HADeviceName, HttpMethod.GET);
+            JSONObject obj = CommonBase.clientha.fetchJSONObject("/api/states/" + HADeviceName, HttpMethod.GET,null);
 
             if (obj == null) {
                 if (delta > 15000) {
@@ -239,15 +239,15 @@ public class HomeAssistantTests {
             }
         }
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 20.0, 5000), "Did not find value for temp 18 again");
-        ContentResponse response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 18));
+        ContentResponse response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 18));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "Device set did fail!");
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 18.0, 5000), "Did not find value for temp 18 again");
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 22));
+        response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 22));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "Device set did fail!");
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 22.0, 5000), "Did not find value for temp 22 again");
-        response = CommonBase.clientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 24.791));
+        response = CommonBase.httpClientUser.getResponse("/device/set", HttpMethod.POST, new JSONObject().put("id", deviceName).put("currentEnvironmentTemperature", 24.791));
         Assert.assertNotNull(response);
         Assert.assertEquals(response.getStatus(), 200, "Device set did fail!");
         Assert.assertTrue(CommonBase.waitForValueJSONHttp(CommonBase.clientha, "/api/states/" + HADeviceName, "state", 24.791, 5000), "Did not find value for temp 22 again");

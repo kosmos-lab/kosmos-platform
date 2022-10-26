@@ -16,7 +16,9 @@ import de.kosmos_lab.web.annotations.tags.Tag;
 import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
+import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.server.WebServer;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -97,19 +99,23 @@ public class AuthServlet extends KosmoSServlet {
     )
     @Override
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws ParameterNotFoundException {
-        IUser u = controller.tryLogin(request.getParameter(FIELD_USER,true), request.getParameter(FIELD_PASS,true));
-        if (u != null) {
-            try {
-                sendJWT(request, response, controller.getJwt().sign(u.toJWT()));
-                return;
-            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-                //e.printStackTrace();
-                logger.warn("error while taking auth", e);
-            }
-        }
+            throws ParameterNotFoundException, LoginFailedException {
+        IUser u = null;
 
-        response.setStatus(403);
+            u = controller.tryLogin(request.getParameter(FIELD_USER,true), request.getParameter(FIELD_PASS,true));
+            if (u != null) {
+                try {
+                    sendJWT(request, response, controller.getJwt().sign(u.toJWT()));
+                    return;
+                } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+                    //e.printStackTrace();
+                    logger.warn("error while taking auth", e);
+                }
+            }
+
+
+
+        response.setStatus(WebServer.STATUS_FORBIDDEN);
 
 
     }

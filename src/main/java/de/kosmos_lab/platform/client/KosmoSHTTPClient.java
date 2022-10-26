@@ -3,7 +3,8 @@ package de.kosmos_lab.platform.client;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.client.util.StringRequestContent;
+import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * test client, primarly used for testing
  */
-public class KosmoSClient extends HttpClient {
+public class KosmoSHTTPClient extends HttpClient {
     private static final Logger logger = LoggerFactory.getLogger("KosmoSClient");
 
     private final String base;
@@ -37,28 +37,28 @@ public class KosmoSClient extends HttpClient {
      *
      * @throws Exception some catastrophic failure
      */
-    public KosmoSClient(@Nonnull String baseurl, @Nonnull String user, @Nonnull String pass) throws Exception {
+    public KosmoSHTTPClient(@Nonnull String baseurl, @Nonnull String user, @Nonnull String pass) throws Exception {
         this.base = baseurl;
         this.user = user;
         this.pass = pass;
         this.start();
     }
 
-    public KosmoSClient(@Nonnull String baseurl, @Nullable String token) throws Exception {
+    public KosmoSHTTPClient(@Nonnull String baseurl, @Nonnull String token) throws Exception {
         this.base = baseurl;
         this.token = token;
         this.user = null;
         this.pass = null;
-
         this.start();
     }
 
     @CheckForNull
     public Request createAuthedDeleteRequest(@Nonnull String url, @CheckForNull JSONObject body) {
         Request request = createAuthedRequest(url, HttpMethod.DELETE);
-        if (request != null ) {
+        if (request != null) {
             if (body != null) {
-                request.content(new StringContentProvider(body.toString()), "application/json");
+
+                request.body(new StringRequestContent("application/json", body.toString()));
             }
         }
         return request;
@@ -70,7 +70,7 @@ public class KosmoSClient extends HttpClient {
         Request request = createAuthedRequest(url, HttpMethod.POST);
         if (request != null) {
             if (body != null) {
-                request.content(new StringContentProvider(body.toString()), "application/json");
+                request.body(new StringRequestContent("application/json", body.toString()));
             }
         }
         return request;
@@ -93,8 +93,11 @@ public class KosmoSClient extends HttpClient {
             }
         }
         Request request = createRequest(url, method);
-        if ( request != null ) {
-            request.header("Authorization", "Bearer " + this.token);
+        if (request != null) {
+            request.headers(headers -> headers
+                    .put(HttpHeader.AUTHORIZATION, String.format("Bearer %s", this.token)));
+
+
         }
         return request;
     }
@@ -104,7 +107,8 @@ public class KosmoSClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.content(new StringContentProvider(body.toString()), "application/json");
+                request.body(new StringRequestContent("application/json",body.toString()));
+
             }
         }
         return request;
@@ -116,7 +120,7 @@ public class KosmoSClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.content(new StringContentProvider(body.toString()), "application/json");
+                request.body(new StringRequestContent("application/json",body.toString()));
             }
         }
         return request;
@@ -127,8 +131,7 @@ public class KosmoSClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.content(new StringContentProvider(body), "application/text");
-            }
+                request.body(new StringRequestContent("application/text",body));            }
         }
         return request;
 
@@ -178,9 +181,17 @@ public class KosmoSClient extends HttpClient {
     }
 
     @CheckForNull
-    public JSONObject fetchJSONObject(@Nonnull String url, @Nonnull HttpMethod method) {
+    public JSONObject fetchJSONObject(@Nonnull String url, @Nonnull HttpMethod method, String[][] params) {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
+            if ( params != null) {
+                for (String p[] : params) {
+                    if ( p.length==2) {
+                        request.param(p[0],p[1]);
+                    }
+                }
+            }
+            //request.param("a","b");
             ContentResponse response = getResponse(request);
             if (response != null) {
                 return new JSONObject(response.getContentAsString());
@@ -204,7 +215,11 @@ public class KosmoSClient extends HttpClient {
 
     @CheckForNull
     public JSONObject getJSONObject(String url) {
-        return fetchJSONObject(url, HttpMethod.GET);
+        return fetchJSONObject(url, HttpMethod.GET,null);
+    }
+    @CheckForNull
+    public JSONObject getJSONObject(String url,String[][] params) {
+        return fetchJSONObject(url, HttpMethod.GET,params);
     }
 
     @CheckForNull
@@ -212,8 +227,12 @@ public class KosmoSClient extends HttpClient {
         return this.pass;
     }
 
+    public void setPassword(@Nonnull String pass) {
+        this.pass = pass;
+    }
+
     @CheckForNull
-    public ContentResponse getResponse(@Nonnull String url,@Nonnull HttpMethod method,@CheckForNull String body) {
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method, @CheckForNull String body) {
         Request request = this.createAuthedRequest(url, method, body);
         if (request != null) {
             return this.getResponse(request);
@@ -221,16 +240,8 @@ public class KosmoSClient extends HttpClient {
         return null;
     }
 
-    @CheckForNull public ContentResponse getResponse(@Nonnull String url,@Nonnull HttpMethod method,@CheckForNull JSONObject body) {
-        Request request = this.createAuthedRequest(url, method, body);
-        if (request != null) {
-            return this.getResponse(request);
-        }
-        return null;
-
-    }
-
-    @CheckForNull public ContentResponse getResponse(@Nonnull String url,@Nonnull HttpMethod method,@CheckForNull JSONArray body) {
+    @CheckForNull
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method, @CheckForNull JSONObject body) {
         Request request = this.createAuthedRequest(url, method, body);
         if (request != null) {
             return this.getResponse(request);
@@ -239,10 +250,30 @@ public class KosmoSClient extends HttpClient {
 
     }
 
-    @CheckForNull  public ContentResponse getResponse(@Nonnull String url,@Nonnull HttpMethod method) {
+    @CheckForNull
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method, @CheckForNull JSONArray body) {
+        Request request = this.createAuthedRequest(url, method, body);
+        if (request != null) {
+            return this.getResponse(request);
+        }
+        return null;
+
+    }
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method) {
+        return getResponse(url,method,new String[][]{{}});
+    }
+    @CheckForNull
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method,String[][] params) {
 
         Request request = this.createAuthedRequest(url, method);
         if (request != null) {
+            if ( params != null) {
+                for (String p[] : params) {
+                    if ( p.length==2) {
+                        request.param(p[0],p[1]);
+                    }
+                }
+            }
             return this.getResponse(request);
         }
         return null;
@@ -258,7 +289,7 @@ public class KosmoSClient extends HttpClient {
      */
     @CheckForNull
     public ContentResponse getResponse(@CheckForNull Request request) {
-        if (request == null ) {
+        if (request == null) {
             return null;
         }
         ContentResponse response = null;
@@ -277,13 +308,15 @@ public class KosmoSClient extends HttpClient {
 
     }
 
-    @CheckForNull public String getUserName() {
+    @CheckForNull
+    public String getUserName() {
         return this.user;
     }
 
-    @CheckForNull public String login() {
+    @CheckForNull
+    public String login() {
         Request request = this.createRequest("/user/login", HttpMethod.POST);
-        if (request != null ) {
+        if (request != null) {
             try {
                 request.param("user", user);
                 request.param("pass", pass);
@@ -308,9 +341,10 @@ public class KosmoSClient extends HttpClient {
      *
      * @return the JSONObject returned from
      */
-   @CheckForNull public JSONObject postJSONObject(@Nonnull String url,@CheckForNull JSONObject body) {
-       ContentResponse response = getResponse(url, HttpMethod.POST, body);
-        if (response != null )  {
+    @CheckForNull
+    public JSONObject postJSONObject(@Nonnull String url, @CheckForNull JSONObject body) {
+        ContentResponse response = getResponse(url, HttpMethod.POST, body);
+        if (response != null) {
             return new JSONObject(response.getContentAsString());
         }
         return null;
@@ -324,7 +358,8 @@ public class KosmoSClient extends HttpClient {
      *
      * @return the JSONObject returned from
      */
-    @CheckForNull public ContentResponse postJSONObject2(@Nonnull String url,@CheckForNull JSONObject body) {
+    @CheckForNull
+    public ContentResponse postJSONObject2(@Nonnull String url, @CheckForNull JSONObject body) {
         return getResponse(url, HttpMethod.POST, body);
     }
 
@@ -346,10 +381,6 @@ public class KosmoSClient extends HttpClient {
         }
         return false;
 
-    }
-
-    public void setPassword(@Nonnull  String pass) {
-        this.pass = pass;
     }
 
 }
