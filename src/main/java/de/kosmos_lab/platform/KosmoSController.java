@@ -2405,9 +2405,20 @@ public class KosmoSController implements IController {
         if (user == null || pass == null) {
             return null;
         }
+        IUser u = getUser(user);
+
+        if (u != null) {
+            if (u.checkPassword(pass)) {
+                return u;
+            } else {
+                logger.warn("user {} password mismatch!", user);
+            }
+        } else {
+            logger.warn("user {} not found!", user);
+        }
         for (IAuthProvider provider : this.authProviders) {
             try {
-                IUser u = provider.tryLogin(user, pass);
+                 u = provider.tryLogin(user, pass);
                 if (u != null) {
                     return u;
                 }
@@ -2421,17 +2432,7 @@ public class KosmoSController implements IController {
         if (user.contains(":")) {
             return null;
         }
-        IUser u = getUser(user);
-
-        if (u != null) {
-            if (u.checkPassword(pass)) {
-                return u;
-            } else {
-                logger.warn("user {} password mismatch!", user);
-            }
-        } else {
-            logger.warn("user {} not found!", user);
-        }
+        
         return null;
     }
 
