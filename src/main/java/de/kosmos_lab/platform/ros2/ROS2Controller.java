@@ -115,7 +115,7 @@ public class ROS2Controller implements CommandInterface {
 
         for (Map.Entry<String, Schema> entry : schema.getPropertySchemas().entrySet()) {
             Schema prop_schema = entry.getValue();
-            String topic = String.format("/%s/%s/%s%s", pre, uuid, pre_state, entry.getKey());
+            String topic = String.format("/%s/%s/%s%s", pre, uuid.replace(".","_").replace("-","_"), pre_state, entry.getKey());
             ROS2Publisher publisher = publishers.get(topic);
 
 
