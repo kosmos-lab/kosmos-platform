@@ -12,6 +12,7 @@ import de.kosmos_lab.platform.persistence.Constants.RunMode;
 import de.kosmos_lab.platform.persistence.IPersistence;
 import de.kosmos_lab.platform.persistence.KosmoSPersistence;
 import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.platform.ros2.ROS2Controller;
 import de.kosmos_lab.platform.rules.RulesService;
 import de.kosmos_lab.platform.smarthome.CommandInterface;
 import de.kosmos_lab.platform.smarthome.CommandSourceName;
@@ -90,6 +91,7 @@ public class KosmoSController implements IController {
     private final ConcurrentHashMap<Device, Boolean> logByDevice = new ConcurrentHashMap<>();
     private final HashSet<String> logWhiteListFilter = new HashSet<>();
     private final HashSet<String> logBlackListFilter = new HashSet<>();
+    private ROS2Controller ros2controller;
     /**
      * cache of the CommandSourceNames
      */
@@ -269,7 +271,13 @@ public class KosmoSController implements IController {
         this.rulesService = new RulesService(this, getFileString("rules"));
         if (runMode == RunMode.NORMAL) {
 
+            if (KosmoSHelper.getEnvBool("USE_ROS2") || config.has("ros2")) {
+                this.ros2controller = new ROS2Controller(this,"kosmos");
+                if ( this.ros2controller != null ) {
+                    this.commandInterfaces.add(ros2controller);
+                }
 
+            }
             //create default users
             if (this.users.isEmpty()) {
                 String USERS = KosmoSHelper.getEnv("USERS");
@@ -584,6 +592,7 @@ public class KosmoSController implements IController {
             } catch (Exception e) {
                 logger.error("Exception while reading devices.json", e);
             }
+
         }
        /*
         File schemaDir = new File("schema");
@@ -2418,7 +2427,7 @@ public class KosmoSController implements IController {
         }
         for (IAuthProvider provider : this.authProviders) {
             try {
-                 u = provider.tryLogin(user, pass);
+                u = provider.tryLogin(user, pass);
                 if (u != null) {
                     return u;
                 }
@@ -2432,7 +2441,7 @@ public class KosmoSController implements IController {
         if (user.contains(":")) {
             return null;
         }
-        
+
         return null;
     }
 

@@ -262,7 +262,21 @@
             <artifactId>kosmos-plugins</artifactId>
         </dependency>
 
-
+        <dependency>
+            <groupId>us.ihmc</groupId>
+            <artifactId>ihmc-ros2-library</artifactId>
+            <version>0.20.4</version>
+        </dependency>
+        <dependency>
+            <groupId>us.ihmc</groupId>
+            <artifactId>ros2-common-interfaces</artifactId>
+            <version>0.20.4</version>
+        </dependency>
+        <dependency>
+            <groupId>us.ihmc</groupId>
+            <artifactId>ros2-msg-to-pubsub-generator</artifactId>
+            <version>0.20.4</version>
+        </dependency>
         <dependency>
             <groupId>org.pf4j</groupId>
             <artifactId>pf4j</artifactId>
