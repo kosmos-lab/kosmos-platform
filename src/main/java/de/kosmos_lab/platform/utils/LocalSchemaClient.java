@@ -11,19 +11,19 @@ import java.io.InputStream;
 
 public class LocalSchemaClient implements SchemaClient {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("LocalSchemaClient");
-    
+
     private final SchemaClient fallbackClient;
     private final String namespace;
-    
+
     public LocalSchemaClient(String url) {
         this.fallbackClient = new DefaultSchemaClient();
         this.namespace = url;
     }
-    
+
     @Override
     public InputStream get(String url) {
-        url = url.replace(".json.json",".json");
-        logger.trace("getting {}",url);
+        url = url.replace(".json.json", ".json");
+        logger.trace("getting {}", url);
         if (url.startsWith(namespace)) {
             String nurl = url.substring(namespace.length());
             File f = new File(nurl);
@@ -36,9 +36,9 @@ public class LocalSchemaClient implements SchemaClient {
                 }
             }
         }
-        
+
         return fallbackClient.get(url);
     }
-    
-    
+
+
 }

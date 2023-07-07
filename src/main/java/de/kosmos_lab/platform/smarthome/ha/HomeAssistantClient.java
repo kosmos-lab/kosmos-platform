@@ -24,49 +24,50 @@ public class HomeAssistantClient extends Endpoint {
     private boolean authed = false;
     private final JSONObject vars = new JSONObject();
     private final HashMap<Integer, HomeAssistantEventConsumer> consumers = new HashMap<>();
-    
+
     public HomeAssistantClient(HomeAssistantHTTPClient haclient) {
         this.haclient = haclient;
         this.initLatch = new CountDownLatch(1);
 
     }
-    
+
     public void addConsumer(int id, HomeAssistantEventConsumer consumer) {
         this.consumers.put(id, consumer);
-        
-        
+
+
     }
-    
+
     public Object getVar(String name) {
         return this.vars.get(name);
     }
+
     public JSONObject getVars() {
         return this.vars;
     }
-    
+
     public boolean isAuthed() {
         return this.authed;
     }
-    
+
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         super.onClose(session, closeReason);
         logger.info("HA onClose");
         //this.stopped = false;
     }
-    
+
     public void onMessageReceived(String message) {
-        
-        
+
+
         onMessageReceived(new JSONObject(message));
-        
+
     }
 
     public void onMessageReceived(JSONObject json) {
-        logger.info("wsreceived: {}",json.toString());
-        
+        logger.info("wsreceived: {}", json.toString());
+
         try {
-            
+
             if (json.has("id")) {
                 Integer id = json.getInt("id");
                 HomeAssistantEventConsumer consumer = consumers.get(id);
@@ -75,28 +76,28 @@ public class HomeAssistantClient extends Endpoint {
                     consumer.parse(this, json);
                 }
             }
-            
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 
         try {
             logger.info("HAClient onOpen");
             this.session = session;
-            
+
             session.addMessageHandler(new MessageHandler.Whole<String>() {
-                
+
                 @Override
                 public void onMessage(String message) {
                     logger.trace("HAClient onMessage {}", message);
                     JSONObject json = new JSONObject(message);
                     if (json.has("type")) {
                         String type = json.getString("type");
-                        
+
                         if (type.equals("auth_required")) {
                             authed = false;
                             //we need to authenticate ourself
@@ -106,39 +107,40 @@ public class HomeAssistantClient extends Endpoint {
                             } catch (IOException e) {
                                 logger.error("Exception!", e);
                             }
-                            
-                        } else  if (type.equals("auth_ok")) {
+
+                        } else if (type.equals("auth_ok")) {
 
                             authed = true;
-    
+
                         }
-                        
-                        
+
+
                     }
                     //if the returned json has an id, we know its a response - handle it accordingly
                     if (json.has("id")) {
                         onMessageReceived(json);
                     }
-                    
+
                 }
             });
         } catch (Exception e) {
             logger.error("Exception!", e);
         }
     }
-    
-    
+
+
     /**
      * sends the given text to the Endpoint
      *
      * @param text
+     *
      * @throws IOException
      */
     public void send(String text) throws IOException {
-        
+
         session.getBasicRemote().sendText(text);
     }
-    
+
     public void sendCommand(JSONObject command, HomeAssistantEventConsumer consumer) {
         if (command.has("id")) {
             try {
@@ -146,7 +148,7 @@ public class HomeAssistantClient extends Endpoint {
                 if (id > lastId) {
                     lastId = id;
                 }
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -157,34 +159,33 @@ public class HomeAssistantClient extends Endpoint {
         this.addConsumer(command.getInt("id"), consumer);
         try {
             logger.info("wssent: {}", command);
-    
+
             this.send(command.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
-    public boolean waitForValue( String key, Object expected, long waittime) {
+
+    public boolean waitForValue(String key, Object expected, long waittime) {
         long started = System.currentTimeMillis();
         while (true) {
             try {
                 Object v = vars.get(key);
-                if ( v != null ) {
+                if (v != null) {
                     if (JSONChecker.equals(v, expected)) {
                         logger.info("FOUND MATCH FOR {} - it seems to be", key, expected);
                         return true;
                     }
-                    logger.info("key {} is but should be {} ",key,v,expected);
-                }
-                else {
-                    logger.info("key {} does not exist!",key);
+                    logger.info("key {} is but should be {} ", key, v, expected);
+                } else {
+                    logger.info("key {} does not exist!", key);
                 }
 
             } catch (Exception e) {
                 //e.printStackTrace();
             }
-    
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -192,20 +193,20 @@ public class HomeAssistantClient extends Endpoint {
             }
             long delta = System.currentTimeMillis() - started;
             if (delta > waittime) {
-                logger.info("GAVE UP FOR {}",key);
-                logger.info("all vars: {}",vars);
+                logger.info("GAVE UP FOR {}", key);
+                logger.info("all vars: {}", vars);
 
                 return false;
             }
         }
     }
-    
-    
+
+
     public void setVar(String name, Object value) {
-        logger.info("setting {} to {}",name,value);
+        logger.info("setting {} to {}", name, value);
         this.vars.put(name, value);
     }
-    
+
     public void stop() {
         this.stopped = true;
         try {

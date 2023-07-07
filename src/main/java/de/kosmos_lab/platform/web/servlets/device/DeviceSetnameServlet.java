@@ -1,7 +1,12 @@
 package de.kosmos_lab.platform.web.servlets.device;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
-
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Device;
+import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -10,23 +15,13 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Device;
-
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-
-
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import jakarta.ws.rs.core.MediaType;
+
 import java.io.IOException;
 
 
@@ -38,6 +33,7 @@ public class DeviceSetnameServlet extends KosmoSAuthedServlet {
     public DeviceSetnameServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
+
     @Operation(
             tags = {"device"},
             summary = "setname",
@@ -80,21 +76,21 @@ public class DeviceSetnameServlet extends KosmoSAuthedServlet {
                     }
             ),
             responses = {
-                                       @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The name was changed successfully"),            })
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The name was changed successfully"),})
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
- throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
-        
-        
+            throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
+
+
         Device d = controller.getDevice(request.getUUID());
-        
+
         controller.setName(d, request.getString("name"));
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);
-        
-        
+
+
     }
-    
-    
+
+
 }
     
     

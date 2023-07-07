@@ -1,7 +1,6 @@
 package de.dfki.baall.helper.persistence;
 
 
-
 import de.kosmos_lab.web.data.User;
 import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.persistence.exceptions.AlreadyExistsException;
@@ -16,30 +15,34 @@ public interface IUserPersistence extends IPersistence {
      *
      * @param username
      * @param password
+     *
      * @return
      */
     boolean addUser(@CheckForNull String username, @CheckForNull String password, int level) throws AlreadyExistsException;
-    
+
     /**
      * get a user from persistence
      *
      * @param username
+     *
      * @return
      */
     User getUser(@CheckForNull String username) throws NotFoundInPersistenceException;
-    
+
     /**
      * try to login
      *
      * @param username
      * @param password
+     *
      * @return returns a jwt token on success
+     *
      * @throws LoginFailedException
      */
     User login(@CheckForNull String username, @CheckForNull String password) throws LoginFailedException;
-    
-    User getUser(@CheckForNull UUID uuid)  throws NotFoundInPersistenceException;
-    
+
+    User getUser(@CheckForNull UUID uuid) throws NotFoundInPersistenceException;
+
     int initUsers();
-    
+
 }

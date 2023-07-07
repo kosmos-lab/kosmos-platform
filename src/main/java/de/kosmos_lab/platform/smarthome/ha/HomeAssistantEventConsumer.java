@@ -7,5 +7,5 @@ import org.json.JSONObject;
 public interface HomeAssistantEventConsumer {
 
 
-    void parse(HomeAssistantClient client, JSONObject object) ;
+    void parse(HomeAssistantClient client, JSONObject object);
 }

@@ -107,7 +107,7 @@ public class KosmoSHTTPClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.body(new StringRequestContent("application/json",body.toString()));
+                request.body(new StringRequestContent("application/json", body.toString()));
 
             }
         }
@@ -120,7 +120,7 @@ public class KosmoSHTTPClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.body(new StringRequestContent("application/json",body.toString()));
+                request.body(new StringRequestContent("application/json", body.toString()));
             }
         }
         return request;
@@ -131,7 +131,8 @@ public class KosmoSHTTPClient extends HttpClient {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
             if (body != null) {
-                request.body(new StringRequestContent("application/text",body));            }
+                request.body(new StringRequestContent("application/text", body));
+            }
         }
         return request;
 
@@ -184,10 +185,10 @@ public class KosmoSHTTPClient extends HttpClient {
     public JSONObject fetchJSONObject(@Nonnull String url, @Nonnull HttpMethod method, String[][] params) {
         Request request = createAuthedRequest(url, method);
         if (request != null) {
-            if ( params != null) {
-                for (String p[] : params) {
-                    if ( p.length==2) {
-                        request.param(p[0],p[1]);
+            if (params != null) {
+                for (String[] p : params) {
+                    if (p.length == 2) {
+                        request.param(p[0], p[1]);
                     }
                 }
             }
@@ -215,11 +216,12 @@ public class KosmoSHTTPClient extends HttpClient {
 
     @CheckForNull
     public JSONObject getJSONObject(String url) {
-        return fetchJSONObject(url, HttpMethod.GET,null);
+        return fetchJSONObject(url, HttpMethod.GET, null);
     }
+
     @CheckForNull
-    public JSONObject getJSONObject(String url,String[][] params) {
-        return fetchJSONObject(url, HttpMethod.GET,params);
+    public JSONObject getJSONObject(String url, String[][] params) {
+        return fetchJSONObject(url, HttpMethod.GET, params);
     }
 
     @CheckForNull
@@ -259,18 +261,20 @@ public class KosmoSHTTPClient extends HttpClient {
         return null;
 
     }
+
     public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method) {
-        return getResponse(url,method,new String[][]{{}});
+        return getResponse(url, method, new String[][]{{}});
     }
+
     @CheckForNull
-    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method,String[][] params) {
+    public ContentResponse getResponse(@Nonnull String url, @Nonnull HttpMethod method, String[][] params) {
 
         Request request = this.createAuthedRequest(url, method);
         if (request != null) {
-            if ( params != null) {
-                for (String p[] : params) {
-                    if ( p.length==2) {
-                        request.param(p[0],p[1]);
+            if (params != null) {
+                for (String[] p : params) {
+                    if (p.length == 2) {
+                        request.param(p[0], p[1]);
                     }
                 }
             }

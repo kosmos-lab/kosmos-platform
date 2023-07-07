@@ -1,29 +1,27 @@
 package de.kosmos_lab.platform.web.servlets.schema;
 
-import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.exceptions.AlreadyExistsException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.DataSchema;
+import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
+import de.kosmos_lab.platform.exceptions.SchemaAlreadyExistsException;
+import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.media.ExampleObject;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.DataSchema;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaAlreadyExistsException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONObject;
 
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 import static de.kosmos_lab.platform.web.servlets.schema.SchemaGetServlet.SCHEMA_ALL;
@@ -53,16 +51,16 @@ public class SchemaAddServlet extends KosmoSAuthedServlet {
                                             ref = "#/components/schemas/schema"
 
                                     )
-                                  ,examples = {
-                                            @ExampleObject(
-                                                    name = "Person",
-                                                    value = SCHEMA_PERSON
-                                            ),
-                                            @ExampleObject(
-                                                    name = "All",
-                                                    value = SCHEMA_ALL
-                                            )
-                                    }
+                                    , examples = {
+                                    @ExampleObject(
+                                            name = "Person",
+                                            value = SCHEMA_PERSON
+                                    ),
+                                    @ExampleObject(
+                                            name = "All",
+                                            value = SCHEMA_ALL
+                                    )
+                            }
                             )
 
                     }
@@ -94,12 +92,12 @@ public class SchemaAddServlet extends KosmoSAuthedServlet {
                             }
 
                     ),
-                   // @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
+                    // @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, NotObjectSchemaException,  AlreadyExistsException, UnauthorizedException {
+            throws IOException, NotObjectSchemaException, AlreadyExistsException, UnauthorizedException {
         JSONObject o = request.getBodyAsJSONObject();
         if (o != null) {
             logger.info("schema add {}", o);
@@ -117,7 +115,7 @@ public class SchemaAddServlet extends KosmoSAuthedServlet {
                     }
                     DataSchema ds = new DataSchema(o);
                     controller.addSchema(ds);
-                    sendJSON(request,response,o);
+                    sendJSON(request, response, o);
                     return;
                 }
             }

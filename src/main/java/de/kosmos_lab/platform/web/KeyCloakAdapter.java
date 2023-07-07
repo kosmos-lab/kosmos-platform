@@ -12,9 +12,7 @@ import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.json.JSONObject;
-import org.keycloak.OAuthErrorException;
 import org.keycloak.adapters.KeycloakDeployment;
-import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.keycloak.adapters.ServerRequest;
 import org.keycloak.adapters.ServerRequest.HttpFailure;
 import org.keycloak.adapters.rotation.AdapterTokenVerifier;
@@ -27,9 +25,7 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.IDToken;
 
 import java.awt.Desktop;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
@@ -41,7 +37,6 @@ import java.security.MessageDigest;
 import java.util.Deque;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -54,39 +49,40 @@ public class KeyCloakAdapter {
     private KeyCloakAdapter.Pkce pkce;
     private Status status;
 
-    public KeyCloakAdapter(String server, String realm, String clientId, String clientSecret){
-    this (String.format("{\n" +
-            "  \"realm\" : \"%s\",\n" +
-            "  \"resource\" : \"%s\",\n" +
-            "  \"auth-server-url\" : \"%s\",\n" +
-            "  \"ssl-required\" : \"external\",\n" +
-            "  \"use-resource-role-mappings\" : false,\n" +
-            "  \"enable-cors\" : true,\n" +
-            "  \"cors-max-age\" : 1000,\n" +
-            "  \"cors-allowed-methods\" : \"POST, PUT, DELETE, GET\",\n" +
-            "  \"cors-exposed-headers\" : \"WWW-Authenticate, My-custom-exposed-Header\",\n" +
-            "  \"bearer-only\" : false,\n" +
-            "  \"enable-basic-auth\" : false,\n" +
-            "  \"expose-token\" : true,\n" +
-            "  \"verify-token-audience\" : true,\n" +
-            "  \"credentials\" : {\n" +
-            "    \"secret\" : \"%s\"\n" +
-            "  },\n" +
-            "\n" +
-            "  \"connection-pool-size\" : 20,\n" +
-            "  \"socket-timeout-millis\" : 5000,\n" +
-            "  \"connection-timeout-millis\" : 6000,\n" +
-            "  \"connection-ttl-millis\" : 500,\n" +
-            "  \"disable-trust-manager\" : false,\n" +
-            "  \"allow-any-hostname\" : false,\n" +
-            "  \"token-minimum-time-to-live\" : 10,\n" +
-            "  \"min-time-between-jwks-requests\" : 10,\n" +
-            "  \"public-key-cache-ttl\" : 86400,\n" +
-            "  \"redirect-rewrite-rules\" : {\n" +
-            "    \"^/wsmaster/api/(.*)$\" : \"/api/$1\"\n" +
-            "  }\n" +
-            "}",realm, clientId,server,clientSecret));
-}
+    public KeyCloakAdapter(String server, String realm, String clientId, String clientSecret) {
+        this(String.format("{\n" +
+                "  \"realm\" : \"%s\",\n" +
+                "  \"resource\" : \"%s\",\n" +
+                "  \"auth-server-url\" : \"%s\",\n" +
+                "  \"ssl-required\" : \"external\",\n" +
+                "  \"use-resource-role-mappings\" : false,\n" +
+                "  \"enable-cors\" : true,\n" +
+                "  \"cors-max-age\" : 1000,\n" +
+                "  \"cors-allowed-methods\" : \"POST, PUT, DELETE, GET\",\n" +
+                "  \"cors-exposed-headers\" : \"WWW-Authenticate, My-custom-exposed-Header\",\n" +
+                "  \"bearer-only\" : false,\n" +
+                "  \"enable-basic-auth\" : false,\n" +
+                "  \"expose-token\" : true,\n" +
+                "  \"verify-token-audience\" : true,\n" +
+                "  \"credentials\" : {\n" +
+                "    \"secret\" : \"%s\"\n" +
+                "  },\n" +
+                "\n" +
+                "  \"connection-pool-size\" : 20,\n" +
+                "  \"socket-timeout-millis\" : 5000,\n" +
+                "  \"connection-timeout-millis\" : 6000,\n" +
+                "  \"connection-ttl-millis\" : 500,\n" +
+                "  \"disable-trust-manager\" : false,\n" +
+                "  \"allow-any-hostname\" : false,\n" +
+                "  \"token-minimum-time-to-live\" : 10,\n" +
+                "  \"min-time-between-jwks-requests\" : 10,\n" +
+                "  \"public-key-cache-ttl\" : 86400,\n" +
+                "  \"redirect-rewrite-rules\" : {\n" +
+                "    \"^/wsmaster/api/(.*)$\" : \"/api/$1\"\n" +
+                "  }\n" +
+                "}", realm, clientId, server, clientSecret));
+    }
+
     public KeyCloakAdapter(String config) {
         this(new JSONObject(config));
     }
@@ -99,24 +95,23 @@ public class KeyCloakAdapter {
     }
 
 
-
     public String getAuthUrl(String redirectUrl) {
         this.pkce = this.generatePkce();
         this.redirectUrl = redirectUrl;
-        this.authUrl = this.createAuthUrl(redirectUrl, (String) null, pkce);
+        this.authUrl = this.createAuthUrl(redirectUrl, null, pkce);
         return authUrl;
     }
-    public String getAuthUrl(String redirectUrl,String state) {
+
+    public String getAuthUrl(String redirectUrl, String state) {
         this.pkce = this.generatePkce();
         this.redirectUrl = redirectUrl;
         this.authUrl = this.createAuthUrl(redirectUrl, state, pkce);
         return authUrl;
     }
-    
 
 
     private static final String KEYCLOAK_JSON = "META-INF/keycloak.json";
-    private KeycloakDeployment deployment;
+    private final KeycloakDeployment deployment;
     private int listenPort = 0;
     private String listenHostname = "localhost";
     private AccessTokenResponse tokenResponse;
@@ -131,11 +126,6 @@ public class KeyCloakAdapter {
     Pattern paramPattern = Pattern.compile("param=\"([^\"]+)\"\\s+label=\"([^\"]+)\"\\s+mask=(\\S+)");
     Pattern codePattern = Pattern.compile("code=([^&]+)");
     private KeyCloakAdapter.DesktopProvider desktopProvider = new KeyCloakAdapter.DesktopProvider();
-
-
-
-
-
 
 
     public void setResteasyClient(ResteasyClient resteasyClient) {
@@ -170,10 +160,9 @@ public class KeyCloakAdapter {
         this.listenHostname = listenHostname;
     }
 
-    
 
     public void logout() throws IOException, InterruptedException, URISyntaxException {
-        
+
         this.tokenString = null;
         this.token = null;
         this.idTokenString = null;
@@ -183,28 +172,27 @@ public class KeyCloakAdapter {
     }
 
 
-
     public void close() {
-        
+
 
     }
 
     protected String createAuthUrl(String redirectUri, String state, KeyCloakAdapter.Pkce pkce) {
-        KeycloakUriBuilder builder = this.deployment.getAuthUrl().clone().queryParam("response_type", new Object[]{"code"}).queryParam("client_id", new Object[]{this.deployment.getResourceName()}).queryParam("redirect_uri", new Object[]{redirectUri}).queryParam("scope", new Object[]{"openid"});
+        KeycloakUriBuilder builder = this.deployment.getAuthUrl().clone().queryParam("response_type", "code").queryParam("client_id", this.deployment.getResourceName()).queryParam("redirect_uri", redirectUri).queryParam("scope", "openid");
         if (state != null) {
-            builder.queryParam("state", new Object[]{state});
+            builder.queryParam("state", state);
         }
 
         if (this.locale != null) {
-            builder.queryParam("ui_locales", new Object[]{this.locale.getLanguage()});
+            builder.queryParam("ui_locales", this.locale.getLanguage());
         }
 
         if (pkce != null) {
-            builder.queryParam("code_challenge", new Object[]{pkce.getCodeChallenge()});
-            builder.queryParam("code_challenge_method", new Object[]{"S256"});
+            builder.queryParam("code_challenge", pkce.getCodeChallenge());
+            builder.queryParam("code_challenge_method", "S256");
         }
 
-        return builder.build(new Object[0]).toString();
+        return builder.build().toString();
     }
 
     protected KeyCloakAdapter.Pkce generatePkce() {
@@ -215,7 +203,7 @@ public class KeyCloakAdapter {
         KeyCloakAdapter.CallbackListener callback = new KeyCloakAdapter.CallbackListener();
         callback.start();
         String redirectUri = this.getRedirectUri(callback);
-        String logoutUrl = this.deployment.getLogoutUrl().clone().queryParam("post_logout_redirect_uri", new Object[]{redirectUri}).queryParam("id_token_hint", new Object[]{this.idTokenString}).build(new Object[0]).toString();
+        String logoutUrl = this.deployment.getLogoutUrl().clone().queryParam("post_logout_redirect_uri", redirectUri).queryParam("id_token_hint", new Object[]{this.idTokenString}).build().toString();
         this.desktopProvider.browse(new URI(logoutUrl));
 
         try {
@@ -237,7 +225,7 @@ public class KeyCloakAdapter {
     public void loginManual(PrintStream printer, Reader reader) throws IOException, ServerRequest.HttpFailure, VerificationException {
         String redirectUri = "urn:ietf:wg:oauth:2.0:oob";
         KeyCloakAdapter.Pkce pkce = this.generatePkce();
-        String authUrl = this.createAuthUrl(redirectUri, (String)null, pkce);
+        String authUrl = this.createAuthUrl(redirectUri, null, pkce);
         printer.println("Open the following URL in a browser. After login copy/paste the code back and press <enter>");
         printer.println(authUrl);
         printer.println();
@@ -252,7 +240,7 @@ public class KeyCloakAdapter {
     }
 
     public String getTokenString(long minValidity, TimeUnit unit) throws VerificationException, IOException, ServerRequest.HttpFailure {
-        long expires = (long)this.token.getExpiration() * 1000L - unit.toMillis(minValidity);
+        long expires = (long) this.token.getExpiration() * 1000L - unit.toMillis(minValidity);
         if (expires < System.currentTimeMillis()) {
             this.refreshToken();
         }
@@ -313,7 +301,7 @@ public class KeyCloakAdapter {
     }
 
     private void processCode(String code, String redirectUri, KeyCloakAdapter.Pkce pkce) throws IOException, ServerRequest.HttpFailure, VerificationException {
-        AccessTokenResponse tokenResponse = ServerRequest.invokeAccessCodeToToken(this.deployment, code, redirectUri, (String)null, pkce == null ? null : pkce.getCodeVerifier());
+        AccessTokenResponse tokenResponse = ServerRequest.invokeAccessCodeToToken(this.deployment, code, redirectUri, null, pkce == null ? null : pkce.getCodeVerifier());
         this.parseAccessToken(tokenResponse);
     }
 
@@ -321,7 +309,7 @@ public class KeyCloakAdapter {
         StringBuilder sb = new StringBuilder();
         char[] cb = new char[1];
 
-        while(reader.read(cb) != -1) {
+        while (reader.read(cb) != -1) {
             char c = cb[0];
             if (c == ' ' || c == '\n' || c == '\r') {
                 break;
@@ -334,7 +322,7 @@ public class KeyCloakAdapter {
     }
 
     public void process(String code) throws HttpFailure, VerificationException, IOException {
-        this.processCode(code,redirectUrl,pkce);
+        this.processCode(code, redirectUrl, pkce);
     }
 
     public static class DesktopProvider {
@@ -399,7 +387,7 @@ public class KeyCloakAdapter {
 
         public void start() {
             PathHandler pathHandler = Handlers.path().addExactPath("/", this);
-            AllowedMethodsHandler allowedMethodsHandler = new AllowedMethodsHandler(pathHandler, new HttpString[]{Methods.GET});
+            AllowedMethodsHandler allowedMethodsHandler = new AllowedMethodsHandler(pathHandler, Methods.GET);
             this.gracefulShutdownHandler = Handlers.gracefulShutdown(allowedMethodsHandler);
             this.server = Undertow.builder().setIoThreads(1).setWorkerThreads(1).addHttpListener(KeyCloakAdapter.this.getListenPort(), KeyCloakAdapter.this.getListenHostname()).setHandler(this.gracefulShutdownHandler).build();
             this.server.start();
@@ -415,7 +403,7 @@ public class KeyCloakAdapter {
         }
 
         public int getLocalPort() {
-            return ((InetSocketAddress)((Undertow.ListenerInfo)this.server.getListenerInfo().get(0)).getAddress()).getPort();
+            return ((InetSocketAddress) this.server.getListenerInfo().get(0).getAddress()).getPort();
         }
 
         public void await() throws InterruptedException {
@@ -444,7 +432,7 @@ public class KeyCloakAdapter {
 
         private String getQueryParameterIfPresent(HttpServerExchange exchange, String name) {
             Map<String, Deque<String>> queryParameters = exchange.getQueryParameters();
-            return queryParameters.containsKey(name) ? (String)((Deque)queryParameters.get(name)).getFirst() : null;
+            return queryParameters.containsKey(name) ? (String) ((Deque) queryParameters.get(name)).getFirst() : null;
         }
 
         private String getRedirectUrl() {
@@ -457,11 +445,11 @@ public class KeyCloakAdapter {
         }
     }
 
-    private static enum Status {
+    private enum Status {
         LOGGED_MANUAL,
         LOGGED_DESKTOP;
 
-        private Status() {
+        Status() {
         }
     }
 }

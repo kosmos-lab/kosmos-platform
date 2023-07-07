@@ -1,6 +1,10 @@
 package de.kosmos_lab.platform.web.servlets.gesture;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.GestureNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
@@ -9,15 +13,10 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.GestureNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -25,8 +24,8 @@ import java.io.IOException;
         userLevel = 1
 )
 public class GestureDeleteServlet extends KosmoSAuthedServlet {
-    
-    
+
+
     public GestureDeleteServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
@@ -53,16 +52,16 @@ public class GestureDeleteServlet extends KosmoSAuthedServlet {
             })
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
-            
-            throws IOException, ParameterNotFoundException, GestureNotFoundException , UnauthorizedException {
+
+            throws IOException, ParameterNotFoundException, GestureNotFoundException, UnauthorizedException {
         String id = request.getString("id");
         if (controller.getGestureProvider().deleteGesture(id)) {
             sendJSON(request, response, GestureListServlet.getGestureList(this.controller));
             return;
         }
         throw new GestureNotFoundException(id);
-        
+
     }
-    
+
 }
 

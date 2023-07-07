@@ -1,31 +1,25 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
-import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Scope;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 
 @ApiEndpoint(
         path = "/scope/delete",
@@ -77,7 +71,7 @@ public class ScopeDeleteServlet extends KosmoSAuthedServlet {
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws  NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException {
+            throws NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException {
 
         try {
             String sname = request.getString(FIELD_NAME);

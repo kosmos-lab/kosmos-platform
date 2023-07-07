@@ -1,7 +1,6 @@
 package CI.HTTP;
 
 import common.CommonBase;
-import de.kosmos_lab.web.server.WebServer;
 import de.kosmos_lab.platform.client.KosmoSHTTPClient;
 import de.kosmos_lab.utils.StringFunctions;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -11,19 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import static common.CommonBase.*;
+import static common.CommonBase.baseUrl;
 
 public class TestUser {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger("TestUser");
-
-
 
 
     @Test(groups = {"setPassword"}, dependsOnGroups = {"createUser"})

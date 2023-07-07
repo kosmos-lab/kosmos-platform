@@ -1,32 +1,34 @@
 package de.kosmos_lab.platform.web;
 
 
-import de.kosmos_lab.web.annotations.Operation;
-import de.kosmos_lab.web.annotations.security.SecurityRequirement;
-import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import de.kosmos_lab.platform.data.KosmoSUser;
+import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
 import de.kosmos_lab.web.annotations.headers.Header;
 import de.kosmos_lab.web.annotations.media.ExampleObject;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
+import de.kosmos_lab.web.annotations.security.SecurityRequirement;
+import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
+
 import java.io.IOException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 
 @Deprecated
 public class OpenApiToYaml {
-    public static String asYaml(String jsonString) throws JsonProcessingException, IOException {
+    public static String asYaml(String jsonString) throws IOException {
         // parse JSON
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
         // save it as YAML
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
         return jsonAsYaml;
     }
+
     public static String toYaml(ApiEndpoint endpoint, Operation method, String httpMethod) {
         return toYaml(endpoint, method, 0, httpMethod);
     }
@@ -55,20 +57,17 @@ public class OpenApiToYaml {
             if (method.security().length == 0) {
 
 
-
                 //append(method.security(), tabs + 4, sb);
-                if ( endpoint.userLevel() >= KosmoSUser.LEVEL_ADMIN) {
+                if (endpoint.userLevel() >= KosmoSUser.LEVEL_ADMIN) {
                     //append(new ApiSecurity[]{@ApiSecurity(name = "bearerAuth", scopes = {"admin"})}, tabs + 4, sb);
-                    appendItem("security",tabs+4,sb);
-                    appendListItem("bearerAuth [admin]",tabs+4,sb);
+                    appendItem("security", tabs + 4, sb);
+                    appendListItem("bearerAuth [admin]", tabs + 4, sb);
                     //method.security({@ApiSecurity(name = "bearerAuth", scopes = {"admin"})});
+                } else if (endpoint.userLevel() >= 0) {
+                    appendItem("security", tabs + 4, sb);
+                    appendListItem("bearerAuth [user]", tabs + 4, sb);
                 }
-                else if ( endpoint.userLevel() >= 0) {
-                    appendItem("security",tabs+4,sb);
-                    appendListItem("bearerAuth [user]",tabs+4,sb);
-                }
-            }
-            else {
+            } else {
                 append(method.security(), tabs + 4, sb);
             }
             append(method.responses(), tabs + 4, sb);
@@ -112,7 +111,7 @@ public class OpenApiToYaml {
         sb.append(String.format("%s- name: %s\n", tabs(tabs), r.name()));
         append("description", r.description(), tabs + 2, sb);
 
-        if (!r.in().equals(ParameterIn.DEFAULT)) {
+        if (r.in() != ParameterIn.DEFAULT) {
             sb.append(String.format("%sin: %s\n", " ".repeat(tabs + 2), r.in()));
         } else {
             sb.append(String.format("%sin: %s\n", " ".repeat(tabs + 2), "query"));
@@ -170,10 +169,8 @@ public class OpenApiToYaml {
     }
 
     private static void append(Header[] headers, int tabs, StringBuilder sb) {
-        if (headers.length > 0) {
-            for (Header header : headers) {
-                append(header, tabs + 2, sb);
-            }
+        for (Header header : headers) {
+            append(header, tabs + 2, sb);
         }
     }
 

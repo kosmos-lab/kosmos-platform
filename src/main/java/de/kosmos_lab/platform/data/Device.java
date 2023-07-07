@@ -51,7 +51,7 @@ public class Device extends DataEntry {
     private Scope readScope;
     private Scope writeScope;
     private Location location = null;
-    private ConcurrentHashMap<String, DeviceText> text = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, DeviceText> text = new ConcurrentHashMap<>();
 
     public Device(@Nonnull IController controller, @Nonnull CommandSourceName source, @Nonnull DataSchema schema, @Nonnull JSONObject json, @Nonnull String name, @Nonnull String uuid, @Nonnull IUser owner, boolean force) throws ValidationException {
         super(schema, json, force);
@@ -261,7 +261,7 @@ public class Device extends DataEntry {
         if (controller != null) {
             controller.updateLastUpdate(this);
         }
-        if (value != null && value !=  JSONObject.NULL) {
+        if (value != null && value != JSONObject.NULL) {
 
             //logger.info("key {} type {} value {}", key, value.getClass(), value);
             //if its a string, check if it should not be..
@@ -524,28 +524,25 @@ public class Device extends DataEntry {
                     }
                     //[124,122,1] == [124,122,1]
                 } else {
-                    if ( old instanceof Integer && !(value instanceof Integer) ) {
+                    if (old instanceof Integer && !(value instanceof Integer)) {
                         try {
                             value = Integer.parseInt(String.valueOf(value));
                         } catch (Exception ex) {
 
                         }
-                    }
-                    else if ( old instanceof Double && !(value instanceof Double) ) {
+                    } else if (old instanceof Double && !(value instanceof Double)) {
                         try {
                             value = Double.parseDouble(String.valueOf(value));
                         } catch (Exception ex) {
 
                         }
-                    }
-                    else if ( old instanceof Float && !(value instanceof Float) ) {
+                    } else if (old instanceof Float && !(value instanceof Float)) {
                         try {
                             value = Float.parseFloat(String.valueOf(value));
                         } catch (Exception ex) {
 
                         }
-                    }
-                    else if ( old instanceof Boolean && !(value instanceof Boolean) ) {
+                    } else if (old instanceof Boolean && !(value instanceof Boolean)) {
                         try {
                             value = Boolean.parseBoolean(String.valueOf(value));
                         } catch (Exception ex) {
@@ -920,7 +917,7 @@ public class Device extends DataEntry {
             }
             if (json.has("area")) {
                 String newV = json.getString("area");
-                if (area == null || !newV.equals(area)) {
+                if (!newV.equals(area)) {
                     this.area = newV;
                     dirty = true;
                 }

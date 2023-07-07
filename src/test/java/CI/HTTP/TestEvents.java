@@ -63,18 +63,18 @@ public class TestEvents {
             adminWebSocket.addMessageHandler(Constants.websocketSplitPattern, (message, matcher) -> {
                 //set the variable targetList to the current value
                 //JSONObject json = new JSONObject(matcher.group(2));
-                adminWebSocket.set(matcher.group(1),matcher.group(2));
+                adminWebSocket.set(matcher.group(1), matcher.group(2));
             });
-            adminWebSocket.sendMessage(String.format("user/auth:%s",new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", testpw)));
+            adminWebSocket.sendMessage(String.format("user/auth:%s", new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", testpw)));
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "authed", "0", 1000), "did not get auth failed back");
-            JSONObject event = new JSONObject().put("type","test").put("value","7");
+            JSONObject event = new JSONObject().put("type", "test").put("value", "7");
             ContentResponse response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(EventServlet.class), HttpMethod.POST, event);
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE);
             Assert.assertFalse(CommonBase.waitForValue(adminWebSocket.getObjects(), "event", event, 1000), "did get event back before login!");
-            adminWebSocket.sendMessage(String.format("user/login:%s",new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", CommonBase.httpClientAdmin.getPassword())));
+            adminWebSocket.sendMessage(String.format("user/login:%s", new JSONObject().put("user", CommonBase.httpClientAdmin.getUserName()).put("pass", CommonBase.httpClientAdmin.getPassword())));
             Assert.assertTrue(CommonBase.waitForValue(adminWebSocket.getObjects(), "authed", "1", 1000), "did not get auth success back");
-            event = new JSONObject().put("type","test").put("value","10");
+            event = new JSONObject().put("type", "test").put("value", "10");
             response = CommonBase.httpClientAdmin.getResponse(KosmoSPathHelper.getPath(EventServlet.class), HttpMethod.POST, event);
             Assert.assertNotNull(response);
             Assert.assertEquals(response.getStatus(), WebServer.STATUS_NO_RESPONSE);

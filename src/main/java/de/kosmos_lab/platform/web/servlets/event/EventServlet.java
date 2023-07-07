@@ -23,8 +23,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-;
-
 
 @ApiEndpoint(
         path = "/event",
@@ -67,14 +65,9 @@ public class EventServlet extends KosmoSAuthedServlet {
 
             this.controller.fireEvent(new Event(this.controller, this.server, o, null), this.server);
             response.setStatus(WebServer.STATUS_NO_RESPONSE);
-            return;
-
-
-
 
 
         }
-
 
 
     }

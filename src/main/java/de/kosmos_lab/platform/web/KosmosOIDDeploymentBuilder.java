@@ -2,12 +2,6 @@ package de.kosmos_lab.platform.web;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.PublicKey;
-import java.util.concurrent.Callable;
 import org.apache.http.client.HttpClient;
 import org.jboss.logging.Logger;
 import org.json.JSONObject;
@@ -26,6 +20,12 @@ import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.representations.adapters.config.PolicyEnforcerConfig;
 import org.keycloak.util.SystemPropertiesJsonParserFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.PublicKey;
+import java.util.concurrent.Callable;
+
 public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
     private static final Logger log = Logger.getLogger(KosmosOIDDeploymentBuilder.class);
     protected KosmosOIDDeployment deployment = new KosmosOIDDeployment();
@@ -34,7 +34,7 @@ public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
     protected KosmosOIDDeploymentBuilder() {
     }
 
-    protected KeycloakDeployment internalBuild(final AdapterConfig adapterConfig,JSONObject config) {
+    protected KeycloakDeployment internalBuild(final AdapterConfig adapterConfig, JSONObject config) {
         this.deployment.config = config;
         if (adapterConfig.getRealm() == null) {
             throw new RuntimeException("Must set 'realm' in config");
@@ -128,7 +128,7 @@ public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
 
                             public PolicyEnforcer call() {
                                 if (this.policyEnforcer == null) {
-                                    synchronized(KosmosOIDDeploymentBuilder.this.deployment) {
+                                    synchronized (KosmosOIDDeploymentBuilder.this.deployment) {
                                         if (this.policyEnforcer == null) {
                                             this.policyEnforcer = new PolicyEnforcer(KosmosOIDDeploymentBuilder.this.deployment, adapterConfig);
                                         }
@@ -154,7 +154,7 @@ public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
 
             public HttpClient call() {
                 if (this.client == null) {
-                    synchronized(KosmosOIDDeploymentBuilder.this.deployment) {
+                    synchronized (KosmosOIDDeploymentBuilder.this.deployment) {
                         if (this.client == null) {
                             this.client = (new HttpClientBuilder()).build(adapterConfig);
                         }
@@ -165,10 +165,11 @@ public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
             }
         };
     }
+
     public static KeycloakDeployment build(JSONObject config) {
         CryptoIntegration.init(KosmosOIDDeploymentBuilder.class.getClassLoader());
         AdapterConfig adapterConfig = loadAdapterConfig(new ByteArrayInputStream(config.toString().getBytes()));
-        return (new KosmosOIDDeploymentBuilder()).internalBuild(adapterConfig,config);
+        return (new KosmosOIDDeploymentBuilder()).internalBuild(adapterConfig, config);
     }
 
     public static AdapterConfig loadAdapterConfig(InputStream is) {
@@ -176,7 +177,7 @@ public class KosmosOIDDeploymentBuilder extends KeycloakDeploymentBuilder {
         mapper.setSerializationInclusion(Include.NON_DEFAULT);
 
         try {
-            AdapterConfig adapterConfig = (AdapterConfig)mapper.readValue(is, AdapterConfig.class);
+            AdapterConfig adapterConfig = mapper.readValue(is, AdapterConfig.class);
             return adapterConfig;
         } catch (IOException var4) {
             throw new RuntimeException(var4);

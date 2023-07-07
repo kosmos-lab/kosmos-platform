@@ -102,17 +102,16 @@ public class AuthServlet extends KosmoSServlet {
             throws ParameterNotFoundException, LoginFailedException {
         IUser u = null;
 
-            u = controller.tryLogin(request.getParameter(FIELD_USER,true), request.getParameter(FIELD_PASS,true));
-            if (u != null) {
-                try {
-                    sendJWT(request, response, controller.getJwt().sign(u.toJWT()));
-                    return;
-                } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-                    //e.printStackTrace();
-                    logger.warn("error while taking auth", e);
-                }
+        u = controller.tryLogin(request.getParameter(FIELD_USER, true), request.getParameter(FIELD_PASS, true));
+        if (u != null) {
+            try {
+                sendJWT(request, response, controller.getJwt().sign(u.toJWT()));
+                return;
+            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+                //e.printStackTrace();
+                logger.warn("error while taking auth", e);
             }
-
+        }
 
 
         response.setStatus(WebServer.STATUS_FORBIDDEN);

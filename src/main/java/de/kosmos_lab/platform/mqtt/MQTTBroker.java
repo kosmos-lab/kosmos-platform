@@ -1,15 +1,15 @@
 package de.kosmos_lab.platform.mqtt;
 
-import de.kosmos_lab.platform.smarthome.CommandInterface;
-import de.kosmos_lab.platform.smarthome.CommandSourceName;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.data.Device;
 import de.kosmos_lab.platform.exceptions.DeviceAlreadyExistsException;
 import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
 import de.kosmos_lab.platform.exceptions.NoAccessToScope;
 import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.smarthome.CommandInterface;
+import de.kosmos_lab.platform.smarthome.CommandSourceName;
+import de.kosmos_lab.web.data.IUser;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.moquette.BrokerConstants;
 import io.moquette.broker.Server;
@@ -87,7 +87,7 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
 
     @Override
     public boolean canRead(Topic topic, String user, String client) {
-        logger.info("check if {} can read {} ",user, topic.toString());
+        logger.info("check if {} can read {} ", user, topic.toString());
         Matcher m = re_state.matcher(topic.toString());
         if (m.matches()) {
             try {
@@ -213,15 +213,15 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
             try {
                 Device d = controller.getDevice(m.group("uuid"));
 
-                    try {
-                        if (d.canWrite(controller.getUser(user))) {
-                            return true;
-                        }
-                    } catch (NoAccessToScope noAccessToScope) {
-                        //noAccessToScope.printStackTrace();
-                        logger.warn("User {} tried to write to topic {}", user, topic);
-
+                try {
+                    if (d.canWrite(controller.getUser(user))) {
+                        return true;
                     }
+                } catch (NoAccessToScope noAccessToScope) {
+                    //noAccessToScope.printStackTrace();
+                    logger.warn("User {} tried to write to topic {}", user, topic);
+
+                }
 
 
                 return true;
@@ -275,11 +275,10 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
         this.publish(topic, device.toJSON().toString());
         if (key != null) {
             Object value = device.opt(key);
-            if ( value != null ) {
-                this.publish(pre + device.getUniqueID() + "/" + key + "/state",value.toString());
-            }
-            else {
-                this.publish(pre + device.getUniqueID() + "/" + key + "/state","");
+            if (value != null) {
+                this.publish(pre + device.getUniqueID() + "/" + key + "/state", value.toString());
+            } else {
+                this.publish(pre + device.getUniqueID() + "/" + key + "/state", "");
             }
         }
     }
@@ -429,7 +428,6 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
                             noAccessToScope.printStackTrace();
                         }
                     }
-                    return;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -437,6 +435,7 @@ public final class MQTTBroker implements CommandInterface, io.moquette.broker.se
         }
 
     }
+
     public int getPort() {
         return this.port;
     }

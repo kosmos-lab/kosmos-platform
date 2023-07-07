@@ -1,16 +1,15 @@
 package de.kosmos_lab.platform.web.servlets.kree;
 
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -40,8 +39,8 @@ public class KreeSaveXMLServlet extends KosmoSAuthedServlet {
 
             ),
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE),description = "XML saved successfully" ),
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE),description = "Could not save XML, the request body was empty." ),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "XML saved successfully"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE), description = "Could not save XML, the request body was empty."),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = KosmoSServlet.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError")
             }
     )
@@ -57,7 +56,6 @@ public class KreeSaveXMLServlet extends KosmoSAuthedServlet {
             return;
         }
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_MISSING_VALUE);
-        return;
     }
 
 

@@ -76,7 +76,6 @@ public class CameraDownloadRecordingServlet extends KosmoSAuthedServlet {
         try {
             response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", filename));
             response.getOutputStream().write(content);
-            return;
         } catch (IOException e) {
             throw e;
         } catch (Exception ex) {

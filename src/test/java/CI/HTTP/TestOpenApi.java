@@ -1,7 +1,5 @@
 package CI.HTTP;
 
-import de.kosmos_lab.web.server.OpenApiParser;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestOpenApi {

@@ -30,28 +30,26 @@ public class CallbackWebServlet extends KosmoSServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws  UnauthorizedException, ParameterNotFoundException {
+            throws UnauthorizedException, ParameterNotFoundException {
         UUID uuid = UUID.fromString(request.getString("state"));
         IUser u = server.processKC(request.getString("code"), uuid);
         if (u != null) {
             try {
-                String token =controller.getJwt().sign(u.toJWT());
+                String token = controller.getJwt().sign(u.toJWT());
                 String redirect = server.getRedirectTo(uuid);
 
-                if ( redirect != null ) {
+                if (redirect != null) {
                     if (redirect.contains("?")) {
-                        redirect = String.format("window.location.replace(\"%s&token=%s\")",redirect,token);
-                    }
-                    else {
-                        redirect = String.format("window.location.replace(\"%s?token=%s\")",redirect,token);
+                        redirect = String.format("window.location.replace(\"%s&token=%s\")", redirect, token);
+                    } else {
+                        redirect = String.format("window.location.replace(\"%s?token=%s\")", redirect, token);
                     }
 
 
-                }
-                else {
+                } else {
                     redirect = "";
                 }
-                sendHTML(request, response, String.format("<html><script>window.localStorage.setItem('token',\"%s\");%s</script><body>You are now logged in, please close this window and reload the service you wanted to access</html>", token,redirect));
+                sendHTML(request, response, String.format("<html><script>window.localStorage.setItem('token',\"%s\");%s</script><body>You are now logged in, please close this window and reload the service you wanted to access</html>", token, redirect));
                 //sendJWT(request, response, );
                 return;
             } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {

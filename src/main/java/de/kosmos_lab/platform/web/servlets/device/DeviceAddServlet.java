@@ -1,6 +1,11 @@
 package de.kosmos_lab.platform.web.servlets.device;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.DeviceAlreadyExistsException;
+import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -12,20 +17,11 @@ import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.DeviceAlreadyExistsException;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
-
 import jakarta.ws.rs.core.MediaType;
-import java.io.IOException;
+import org.json.JSONObject;
 
 
 @ApiEndpoint(
@@ -36,7 +32,7 @@ import java.io.IOException;
 @ObjectSchema(
         componentName = "deviceScopes",
         properties = {
-                
+
                 @SchemaProperty(
                         name = "read",
                         schema = @Schema(
@@ -44,7 +40,7 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-                
+
                 ),
                 @SchemaProperty(
                         name = "write",
@@ -53,7 +49,7 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-                
+
                 ),
                 @SchemaProperty(
                         name = "del",
@@ -62,20 +58,20 @@ import java.io.IOException;
                                 type = SchemaType.STRING,
                                 required = false
                         )
-                
+
                 )
         }
 )
 public class DeviceAddServlet extends KosmoSAuthedServlet {
-    
-    
+
+
     public DeviceAddServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
-    
+
     @Operation(
             tags = {"device"},
-            
+
             summary = "Add a device",
             description = "Add a device to the system.",
             requestBody = @RequestBody(
@@ -145,7 +141,7 @@ public class DeviceAddServlet extends KosmoSAuthedServlet {
                                             value = "{\"name\":\"lamp1\",\"uuid\":\"lamp1\",\"schema\":\"https://kosmos-lab.de/schema/Lamp.json\",\"state\":{\"on\":true}}"
                                     )
                             }
-                            
+
                             )
                     }
             ),
@@ -155,9 +151,8 @@ public class DeviceAddServlet extends KosmoSAuthedServlet {
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
-            
 
-            throws  DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException, UnauthorizedException {
+            throws DeviceAlreadyExistsException, SchemaNotFoundException, ParameterNotFoundException, UnauthorizedException {
 
 
         JSONObject o = request.getBodyAsJSONObject();
@@ -170,7 +165,7 @@ public class DeviceAddServlet extends KosmoSAuthedServlet {
         }
 
     }
-    
-    
+
+
 }
 

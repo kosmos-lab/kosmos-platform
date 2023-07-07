@@ -1,22 +1,21 @@
 package de.kosmos_lab.platform.web.servlets.user;
 
+import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.exceptions.NoAccessException;
 import de.kosmos_lab.platform.exceptions.UserNotFoundException;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 

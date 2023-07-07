@@ -33,6 +33,7 @@ public class DeviceSetTextServlet extends KosmoSAuthedServlet {
     public DeviceSetTextServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
+
     @Operation(
             tags = {"device"},
             summary = "settext",
@@ -84,21 +85,21 @@ public class DeviceSetTextServlet extends KosmoSAuthedServlet {
                     }
             ),
             responses = {
-                                       @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The text was added"),            })
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The text was added"),})
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
- throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
-        
-        
+            throws IOException, DeviceNotFoundException, ParameterNotFoundException, NoAccessToScope, UnauthorizedException {
+
+
         Device d = controller.getDevice(request.getUUID());
-        
-        controller.addDeviceText(d, request.getString("key"),request.getString("value"));
+
+        controller.addDeviceText(d, request.getString("key"), request.getString("value"));
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);
-        
-        
+
+
     }
-    
-    
+
+
 }
     
     

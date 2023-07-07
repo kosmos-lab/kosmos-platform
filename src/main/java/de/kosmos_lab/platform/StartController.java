@@ -11,7 +11,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-
 import java.io.File;
 
 class StartController {
@@ -20,12 +19,10 @@ class StartController {
     public static void main(String[] args) {
 
 
-
-
-        KosmosFileUtils.writeToFile(new File("kosmos.pid"),String.valueOf(ProcessHandle.current().pid()));
+        KosmosFileUtils.writeToFile(new File("kosmos.pid"), String.valueOf(ProcessHandle.current().pid()));
 
         Options options = new Options();
-        options.addOption("help","print this message");
+        options.addOption("help", "print this message");
 
         options.addOption(Option.builder("c").longOpt("config")
                 .argName("file")
@@ -39,7 +36,7 @@ class StartController {
             CommandLine line = parser.parse(options, args);
             if (line.hasOption("help")) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp( "java -jar kosmos.jar", options );
+                formatter.printHelp("java -jar kosmos.jar", options);
                 System.exit(0);
             }
             File config = new File("config/config.json");
@@ -52,7 +49,7 @@ class StartController {
                 mode = RunMode.TEST;
             }
 
-            new KosmoSController(config,mode);
+            new KosmoSController(config, mode);
         } catch (ParseException exp) {
             // oops, something went wrong
             //noinspection UseOfSystemOutOrSystemErr

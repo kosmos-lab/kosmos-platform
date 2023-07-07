@@ -26,8 +26,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-;
-
 
 @ApiEndpoint(
         path = "/device/event",
@@ -112,7 +110,6 @@ public class DeviceEventServlet extends KosmoSAuthedServlet {
 
             }
             return;
-
 
 
         }

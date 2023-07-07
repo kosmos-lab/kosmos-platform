@@ -21,8 +21,8 @@ import de.kosmos_lab.web.doc.openapi.ResponseCode;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import jakarta.ws.rs.core.MediaType;
+
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -102,7 +102,7 @@ public class UserPasswordServlet extends KosmoSAuthedServlet {
         try {
             String user = request.getString(FIELD_USER);
             u = this.controller.getUser(user);
-            if ( u == null ) {
+            if (u == null) {
                 throw new UserNotFoundException(user);
             }
         } catch (ParameterNotFoundException ex) {
@@ -131,7 +131,6 @@ public class UserPasswordServlet extends KosmoSAuthedServlet {
 
         }
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND);
-        return;
 
 
     }

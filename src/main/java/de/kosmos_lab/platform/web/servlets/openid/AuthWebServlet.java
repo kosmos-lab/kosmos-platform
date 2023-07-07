@@ -16,8 +16,6 @@ import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import de.kosmos_lab.web.server.WebServer;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
 
 @ApiEndpoint(
         path = AuthWebServlet.path
@@ -33,8 +31,8 @@ public class AuthWebServlet extends KosmoSServlet {
             tags = {"openid"},
             description = "Used to login to an openId provider, if one is given",
             parameters = {
-                    @Parameter(in= ParameterIn.QUERY,name="redirectTo",required = false,schema = @Schema(type = SchemaType.STRING)
-                            ,description = "the URI the user is returned to after the auth was successful, the callback will be done with a parameter 'token' which contains a valid JWT for the current session")},
+                    @Parameter(in = ParameterIn.QUERY, name = "redirectTo", required = false, schema = @Schema(type = SchemaType.STRING)
+                            , description = "the URI the user is returned to after the auth was successful, the callback will be done with a parameter 'token' which contains a valid JWT for the current session")},
 
             responses = {
                     @ApiResponse(responseCode = @ResponseCode(statusCode = WebServer.STATUS_OK), description = "redirect to openId provider if setup"),
@@ -44,23 +42,22 @@ public class AuthWebServlet extends KosmoSServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws  UnauthorizedException {
-        String host = request.getParameter("host");;
-        if ( host == null ) {
+            throws UnauthorizedException {
+        String host = request.getParameter("host");
+        if (host == null) {
             try {
                 host = request.getRequest().getHeader("host");
             } catch (Exception ex) {
 
             }
         }
-        String uri = server.getOpenIDLink(host,"/openid/callback/web",request.getString("redirectTo",null));
-        if ( uri != null ) {
+        String uri = server.getOpenIDLink(host, "/openid/callback/web", request.getString("redirectTo", null));
+        if (uri != null) {
             response.setStatus(302);
             response.setHeader("Location", uri);
             return;
         }
         response.setStatus(WebServer.STATUS_NOT_FOUND);
-
 
 
     }

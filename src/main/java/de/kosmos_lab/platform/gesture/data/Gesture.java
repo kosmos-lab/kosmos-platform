@@ -8,9 +8,9 @@ import org.json.JSONObject;
 import javax.annotation.Nonnull;
 
 /**
- * Implements a gesture as a cloud of points (i.e., an unordered set of points).
- * For $P, gestures are normalized with respect to scale, translated to origin, and resampled into a fixed number of 32 points.
- * For $Q, a LUT is also computed.
+ * Implements a gesture as a cloud of points (i.e., an unordered set of points). For $P, gestures are normalized with
+ * respect to scale, translated to origin, and resampled into a fixed number of 32 points. For $Q, a LUT is also
+ * computed.
  */
 public class Gesture {
     private static final int SAMPLING_RESOLUTION = 32;                             // default number of points on the gesture path
@@ -22,7 +22,7 @@ public class Gesture {
     public Point[] points = null;            // gesture points (normalized)
     public String name;                 // gesture class
     public int[][] lookupTable = null;               // lookup table
-    
+
     /**
      * Constructs a gesture from an array of points
      *
@@ -32,20 +32,20 @@ public class Gesture {
     public Gesture(@Nonnull Point[] points, @Nonnull String gestureName, @Nonnull String id) {
         this(points, gestureName, true, id);
     }
-    
+
     /**
      * Constructs a gesture from an array of points
      *
      * @param points
      */
     public Gesture(@Nonnull Point[] points) {
-        
+
         this(points, "", true, StringFunctions.generateRandomKey(26));
-        
-        
+
+
     }
-    
-    
+
+
     /**
      * Constructs a gesture from an array of points
      *
@@ -61,22 +61,22 @@ public class Gesture {
         this.points = Scale(points);
         this.points = TranslateTo(this.points, Centroid(this.points));
         this.points = Resample(this.points, SAMPLING_RESOLUTION);
-        
+
         if (constructLUT) {
             // constructs a lookup table for fast lower bounding (used by $Q)
             this.TransformCoordinatesToIntegers();
             this.ConstructLUT();
         }
     }
-    
 
-    
+
     //region gesture pre-processing steps: scale normalization, translation to origin, and resampling
-    
+
     /**
      * Computes the centroid for an array of points
      *
      * @param points
+     *
      * @return
      */
     private Point Centroid(@Nonnull Point[] points) {
@@ -87,7 +87,7 @@ public class Gesture {
         }
         return new Point(cx / points.length, cy / points.length, 0);
     }
-    
+
     /**
      * Constructs a Lookup Table that maps grip points to the closest point from the gesture path
      */
@@ -95,7 +95,7 @@ public class Gesture {
         this.lookupTable = new int[LUT_SIZE][];
         for (int i = 0; i < LUT_SIZE; i++)
             lookupTable[i] = new int[LUT_SIZE];
-        
+
         for (int i = 0; i < LUT_SIZE; i++)
             for (int j = 0; j < LUT_SIZE; j++) {
                 int minDistance = Integer.MAX_VALUE;
@@ -112,11 +112,12 @@ public class Gesture {
                 lookupTable[i][j] = indexMin;
             }
     }
-    
+
     /**
      * Computes the path length for an array of points
      *
      * @param points
+     *
      * @return
      */
     private float PathLength(@Nonnull Point[] points) {
@@ -126,19 +127,21 @@ public class Gesture {
                 length += Geometry.euclideanDistance(points[i - 1], points[i]);
         return length;
     }
-    
+
     /**
      * Resamples the array of points into n equally-distanced points
      *
      * @param points
      * @param n
+     *
      * @return
      */
-    @Nonnull public Point[] Resample(@Nonnull Point[] points, int n) {
+    @Nonnull
+    public Point[] Resample(@Nonnull Point[] points, int n) {
         Point[] newPoints = new Point[n];
         newPoints[0] = new Point(points[0].x, points[0].y, points[0].stroke);
         int numPoints = 1;
-        
+
         float I = PathLength(points) / (n - 1); // computes interval length
         float D = 0;
         for (int i = 1; i < points.length; i++) {
@@ -155,7 +158,7 @@ public class Gesture {
                                 (1.0f - t) * firstPoint.y + t * points[i].y,
                                 points[i].stroke
                         );
-                        
+
                         // update partial length
                         d = D + d - I;
                         D = 0;
@@ -165,19 +168,21 @@ public class Gesture {
                 } else D += d;
             }
         }
-        
+
         if (numPoints == n - 1) // sometimes we fall a rounding-error short of adding the last point, so add it if so
             newPoints[numPoints++] = new Point(points[points.length - 1].x, points[points.length - 1].y, points[points.length - 1].stroke);
         return newPoints;
     }
-    
+
     /**
      * Performs scale normalization with shape preservation into [0..1]x[0..1]
      *
      * @param points
+     *
      * @return
      */
-    @Nonnull private Point[] Scale(@Nonnull Point[] points) {
+    @Nonnull
+    private Point[] Scale(@Nonnull Point[] points) {
         float minx = Float.MAX_VALUE, miny = Float.MAX_VALUE, maxx = -Float.MAX_VALUE, maxy = -Float.MAX_VALUE;
         for (int i = 0; i < points.length; i++) {
             if (minx > points[i].x) minx = points[i].x;
@@ -185,14 +190,14 @@ public class Gesture {
             if (maxx < points[i].x) maxx = points[i].x;
             if (maxy < points[i].y) maxy = points[i].y;
         }
-        
+
         Point[] newPoints = new Point[points.length];
         float scale = Math.max(maxx - minx, maxy - miny);
         for (int i = 0; i < points.length; i++)
             newPoints[i] = new Point((points[i].x - minx) / scale, (points[i].y - miny) / scale, points[i].stroke);
         return newPoints;
     }
-    
+
     /**
      * Scales point coordinates to the integer domain [0..MAXINT-1] x [0..MAXINT-1]
      */
@@ -202,22 +207,25 @@ public class Gesture {
             points[i].lookupY = (int) ((points[i].y + 1.0f) / 2.0f * (MAX_INT_COORDINATES - 1));
         }
     }
-    
+
     /**
      * Translates the array of points by p
      *
      * @param points
      * @param p
+     *
      * @return
      */
-    @Nonnull private Point[] TranslateTo(@Nonnull Point[] points,@Nonnull  Point p) {
+    @Nonnull
+    private Point[] TranslateTo(@Nonnull Point[] points, @Nonnull Point p) {
         Point[] newPoints = new Point[points.length];
         for (int i = 0; i < points.length; i++)
             newPoints[i] = new Point(points[i].x - p.x, points[i].y - p.y, points[i].stroke);
         return newPoints;
     }
 
-    @Nonnull public JSONArray pointsToJSON() {
+    @Nonnull
+    public JSONArray pointsToJSON() {
         JSONArray points = new JSONArray();
         for (Point p : rawPoints) {
             points.put(new JSONArray().put(p.x).put(p.y));
@@ -226,15 +234,15 @@ public class Gesture {
     }
 
 
-
-    @Nonnull public JSONObject toJSON() {
+    @Nonnull
+    public JSONObject toJSON() {
         JSONObject json = new JSONObject();
-        
+
         json.put("name", this.name);
-        
+
         json.put("points", pointsToJSON());
         return json;
     }
-    
+
     //endregion
 }

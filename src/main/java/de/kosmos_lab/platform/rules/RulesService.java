@@ -1,12 +1,13 @@
 package de.kosmos_lab.platform.rules;
 
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.UserNotFoundException;
+import de.kosmos_lab.utils.KosmosFileUtils;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
 import de.kosmos_lab.web.server.JWT;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.platform.exceptions.UserNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.utils.KosmosFileUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -15,8 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.eclipse.jetty.websocket.api.Session;
-import jakarta.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -42,7 +41,7 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
     }
 
     @SuppressFBWarnings("DM_EXIT")
-    public RulesService(@Nonnull IController controller,@Nonnull  String dir) {
+    public RulesService(@Nonnull IController controller, @Nonnull String dir) {
         super(controller.getWebServer());
         logger.info("started RulesService");
         this.controller = controller;
@@ -90,7 +89,7 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
         }
     }
 
-    public void broadcastToUser(@Nonnull IUser user,@Nonnull String text) {
+    public void broadcastToUser(@Nonnull IUser user, @Nonnull String text) {
         //better safe than sorry here
         synchronized (webSocketClients) {
             for (Map.Entry<Session, IUser> entry : this.webSocketClients.entrySet()) {
@@ -136,14 +135,14 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
 
     }
 
-    public void newLogMessage(@Nonnull IUser user,@Nonnull  String line) {
+    public void newLogMessage(@Nonnull IUser user, @Nonnull String line) {
         logger.info("new log for {}: {}", user.getUUID().getLeastSignificantBits(), line);
         broadcastToUser(user, (new JSONObject().put("type", "log").put("value", line)).toString());
     }
 
     @Override
     @OnWebSocketMessage
-    public void onWebSocketMessage(@Nonnull Session sess,@Nonnull  String message) {
+    public void onWebSocketMessage(@Nonnull Session sess, @Nonnull String message) {
         if (message.equalsIgnoreCase("ping")) {
             try {
                 sess.getRemote().sendString("pong");
@@ -207,12 +206,11 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
             }
 
 
-            return;
         }
 
     }
 
-    public void savePython(@Nonnull IUser user,@Nonnull  String code) {
+    public void savePython(@Nonnull IUser user, @Nonnull String code) {
 
         KosmosFileUtils.writeToFile(new File(getName(user) + ".py"), code);
         if (!controller.currentlyInTesting()) {
@@ -226,7 +224,7 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
         }
     }
 
-    public void saveXML(@Nonnull IUser user,@Nonnull  String xml) {
+    public void saveXML(@Nonnull IUser user, @Nonnull String xml) {
         KosmosFileUtils.writeToFile(new File(getName(user) + ".xml"), xml);
 
     }
@@ -243,8 +241,7 @@ public class RulesService extends de.kosmos_lab.web.server.WebSocketService {
         RulesExecuter re = this.executors.get(user);
         if (re != null) {
             re.restart();
-        }
-        else {
+        } else {
             re = new RulesExecuter(this, user);
             this.executors.put(user, re);
             re.start();

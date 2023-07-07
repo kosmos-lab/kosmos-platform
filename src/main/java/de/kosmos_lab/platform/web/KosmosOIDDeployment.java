@@ -1,10 +1,5 @@
 package de.kosmos_lab.platform.web;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +18,13 @@ import org.keycloak.protocol.oidc.representations.OIDCConfigurationRepresentatio
 import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.util.JsonSerialization;
 
-public class KosmosOIDDeployment  extends KeycloakDeployment {
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
+public class KosmosOIDDeployment extends KeycloakDeployment {
     private static final Logger log = Logger.getLogger(KosmosOIDDeployment.class);
     public JSONObject config;
     protected RelativeUrlsUsed relativeUrls;
@@ -118,7 +119,7 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
     public void setAuthServerBaseUrl(AdapterConfig config) {
         this.authServerBaseUrl = config.getAuthServerUrl();
         if (this.authServerBaseUrl != null) {
-            this.authServerBaseUrl = KeycloakUriBuilder.fromUri(this.authServerBaseUrl).build(new Object[0]).toString();
+            this.authServerBaseUrl = KeycloakUriBuilder.fromUri(this.authServerBaseUrl).build().toString();
 
             this.authUrl = null;
             this.realmInfoUrl = null;
@@ -140,27 +141,27 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
 
     protected void resolveUrls() {
         if (this.realmInfoUrl == null) {
-            synchronized(this) {
+            synchronized (this) {
                 if (this.realmInfoUrl == null) {
                     OIDCConfigurationRepresentation config = null;
-                    String content ="";
-                    if ( this.config != null ) {
-                        log.infov("have config {0}",this.config.toString());
+                    String content = "";
+                    if (this.config != null) {
+                        log.infov("have config {0}", this.config.toString());
                         JSONObject c = this.config.optJSONObject("config");
-                        if ( c != null ) {
+                        if (c != null) {
                             try {
                                 log.infov("loading from config");
 
-                                config = (OIDCConfigurationRepresentation)JsonSerialization.readValue(content, OIDCConfigurationRepresentation.class);
+                                config = JsonSerialization.readValue(content, OIDCConfigurationRepresentation.class);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
                         }
                     }
                     KeycloakUriBuilder authUrlBuilder = KeycloakUriBuilder.fromUri(this.authServerBaseUrl);
-                    if ( config == null ) {
+                    if (config == null) {
 
-                        String discoveryUrl = authUrlBuilder.clone().path("/realms/{realm-name}/.well-known/openid-configuration").build(new Object[]{this.getRealm()}).toString();
+                        String discoveryUrl = authUrlBuilder.clone().path("/realms/{realm-name}/.well-known/openid-configuration").build(this.getRealm()).toString();
                         try {
                             log.infov("Resolving URLs from {0}", discoveryUrl);
 
@@ -178,9 +179,9 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
                         this.realmInfoUrl = config.getIssuer();
                         this.tokenUrl = config.getTokenEndpoint();
                         this.logoutUrl = KeycloakUriBuilder.fromUri(config.getLogoutEndpoint());
-                        this.accountUrl = KeycloakUriBuilder.fromUri(config.getIssuer()).path("/account").build(new Object[0]).toString();
-                        this.registerNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/register-node").build(new Object[]{this.getRealm()}).toString();
-                        this.unregisterNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/unregister-node").build(new Object[]{this.getRealm()}).toString();
+                        this.accountUrl = KeycloakUriBuilder.fromUri(config.getIssuer()).path("/account").build().toString();
+                        this.registerNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/register-node").build(this.getRealm()).toString();
+                        this.unregisterNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/unregister-node").build(this.getRealm()).toString();
                         this.jwksUrl = config.getJwksUri();
 
                     } catch (Exception var6) {
@@ -197,15 +198,15 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
             log.debug("resolveUrls");
         }
 
-        String login = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/auth").build(new Object[]{this.getRealm()}).toString();
+        String login = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/auth").build(this.getRealm()).toString();
         this.authUrl = KeycloakUriBuilder.fromUri(login);
-        this.realmInfoUrl = authUrlBuilder.clone().path("/realms/{realm-name}").build(new Object[]{this.getRealm()}).toString();
-        this.tokenUrl = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/token").build(new Object[]{this.getRealm()}).toString();
-        this.logoutUrl = KeycloakUriBuilder.fromUri(authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/logout").build(new Object[]{this.getRealm()}).toString());
-        this.accountUrl = authUrlBuilder.clone().path("/realms/{realm-name}/account").build(new Object[]{this.getRealm()}).toString();
-        this.registerNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/register-node").build(new Object[]{this.getRealm()}).toString();
-        this.unregisterNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/unregister-node").build(new Object[]{this.getRealm()}).toString();
-        this.jwksUrl = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/certs").build(new Object[]{this.getRealm()}).toString();
+        this.realmInfoUrl = authUrlBuilder.clone().path("/realms/{realm-name}").build(this.getRealm()).toString();
+        this.tokenUrl = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/token").build(this.getRealm()).toString();
+        this.logoutUrl = KeycloakUriBuilder.fromUri(authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/logout").build(this.getRealm()).toString());
+        this.accountUrl = authUrlBuilder.clone().path("/realms/{realm-name}/account").build(this.getRealm()).toString();
+        this.registerNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/register-node").build(this.getRealm()).toString();
+        this.unregisterNodeUrl = authUrlBuilder.clone().path("/realms/{realm-name}/clients-managements/unregister-node").build(this.getRealm()).toString();
+        this.jwksUrl = authUrlBuilder.clone().path("/realms/{realm-name}/protocol/openid-connect/certs").build(this.getRealm()).toString();
     }
 
     protected OIDCConfigurationRepresentation getOidcConfiguration(String discoveryUrl) throws Exception {
@@ -220,7 +221,7 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
                 throw new Exception(response.getStatusLine().getReasonPhrase());
             }
 
-            var4 = (OIDCConfigurationRepresentation)JsonSerialization.readValue(response.getEntity().getContent(), OIDCConfigurationRepresentation.class);
+            var4 = JsonSerialization.readValue(response.getEntity().getContent(), OIDCConfigurationRepresentation.class);
         } finally {
             request.releaseConnection();
         }
@@ -326,7 +327,7 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
 
     public HttpClient getClient() {
         try {
-            return (HttpClient)this.client.call();
+            return this.client.call();
         } catch (Exception var2) {
             throw new RuntimeException(var2);
         }
@@ -357,7 +358,7 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
     }
 
     public boolean isSSLEnabled() {
-        return SslRequired.NONE != this.sslRequired;
+        return this.sslRequired != SslRequired.NONE;
     }
 
     public int getConfidentialPort() {
@@ -534,7 +535,7 @@ public class KosmosOIDDeployment  extends KeycloakDeployment {
             return null;
         } else {
             try {
-                return (PolicyEnforcer)this.policyEnforcer.call();
+                return this.policyEnforcer.call();
             } catch (Exception var2) {
                 throw new RuntimeException("Failed to obtain policy enforcer", var2);
             }

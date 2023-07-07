@@ -1,10 +1,13 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
-import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -13,23 +16,14 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import jakarta.ws.rs.core.MediaType;
-import java.io.IOException;
 
 @ApiEndpoint(
         path = "/scope/deladmin",
@@ -87,7 +81,7 @@ public class ScopeDelAdminServlet extends KosmoSAuthedServlet {
             ),
 
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description ="The user was removed from the group successfully."),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE), description = "The user was removed from the group successfully."),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
@@ -96,7 +90,7 @@ public class ScopeDelAdminServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws  NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException {
+            throws NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException {
         String sname = request.getString(FIELD_SCOPE);
         String uname = request.getString(FIELD_USER);
         try {

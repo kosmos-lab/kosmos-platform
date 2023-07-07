@@ -8,9 +8,9 @@ import de.kosmos_lab.platform.exceptions.NotFoundException;
 import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
 import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
 import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.exceptions.AlreadyExistsException;
 import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import de.kosmos_lab.web.server.servlets.BaseServlet;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,6 @@ public class KosmoSServlet extends BaseServlet {
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger("KosmoSServlet");
     protected final IController controller;
 
-    ;
     protected final KosmoSWebServer server;
     final ALLOW_AUTH allow_auth;
 
@@ -44,7 +43,7 @@ public class KosmoSServlet extends BaseServlet {
 
 
     public void delete(KosmoSHttpServletRequest request, HttpServletResponse response)
-            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessToScope, NoAccessToGroup, NoAccessException {
+            throws UnauthorizedException, ServletException, IOException, NotObjectSchemaException, ParameterNotFoundException, NotFoundException, ValidationException, NoAccessException {
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
@@ -151,7 +150,6 @@ public class KosmoSServlet extends BaseServlet {
         //logger.info("HITTING PUT");
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_METHOD_NOT_ALLOWED);
     }
-
 
 
     public enum ALLOW_AUTH {HEADER_ONLY, PARAMETER_AND_HEADER}

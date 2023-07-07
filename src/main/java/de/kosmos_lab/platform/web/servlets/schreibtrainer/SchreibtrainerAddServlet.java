@@ -1,6 +1,9 @@
 package de.kosmos_lab.platform.web.servlets.schreibtrainer;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -11,16 +14,10 @@ import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.annotations.tags.Tag;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
-
 import jakarta.ws.rs.core.MediaType;
+import org.json.JSONObject;
 
 
 @Tag(

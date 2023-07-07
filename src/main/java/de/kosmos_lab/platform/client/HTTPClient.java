@@ -2,21 +2,18 @@ package de.kosmos_lab.platform.client;
 
 
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.HttpClientTransport;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.util.ssl.SslContextFactory.Client;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -252,7 +249,7 @@ public class HTTPClient extends HttpClient {
 
 
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            logger.error("could not get Response for Request {}",e.getMessage(), e);
+            logger.error("could not get Response for Request {}", e.getMessage(), e);
         }
         return response;
 

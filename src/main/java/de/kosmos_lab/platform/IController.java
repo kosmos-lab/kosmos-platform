@@ -1,32 +1,29 @@
 package de.kosmos_lab.platform;
 
-import de.kosmos_lab.platform.data.Event;
-import de.kosmos_lab.platform.smarthome.EventInterface;
-import de.kosmos_lab.platform.web.KosmoSWebSocketService;
-import de.kosmos_lab.web.exceptions.LoginFailedException;
-import de.kosmos_lab.web.exceptions.ServletException;
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
-import de.kosmos_lab.platform.exceptions.*;
-import de.kosmos_lab.platform.gesture.GestureProvider;
-import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.platform.persistence.IPersistence;
-import de.kosmos_lab.platform.rules.RulesService;
-import de.kosmos_lab.platform.smarthome.CommandInterface;
-import de.kosmos_lab.platform.smarthome.CommandSourceName;
-import de.kosmos_lab.platform.smarthome.SmartHomeInterface;
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.web.server.JWT;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.platform.data.Config;
 import de.kosmos_lab.platform.data.DataSchema;
 import de.kosmos_lab.platform.data.Device;
+import de.kosmos_lab.platform.data.Event;
 import de.kosmos_lab.platform.data.Group;
 import de.kosmos_lab.platform.data.LogEntry;
 import de.kosmos_lab.platform.data.LoggingRequest;
 import de.kosmos_lab.platform.data.Scope;
 import de.kosmos_lab.platform.data.StateUpdates;
+import de.kosmos_lab.platform.exceptions.*;
+import de.kosmos_lab.platform.gesture.GestureProvider;
+import de.kosmos_lab.platform.persistence.Constants.CacheMode;
+import de.kosmos_lab.platform.persistence.IPersistence;
 import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.platform.rules.RulesService;
+import de.kosmos_lab.platform.smarthome.CommandInterface;
+import de.kosmos_lab.platform.smarthome.CommandSourceName;
+import de.kosmos_lab.platform.smarthome.EventInterface;
+import de.kosmos_lab.platform.smarthome.SmartHomeInterface;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.web.data.IUser;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.web.server.JWT;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import org.everit.json.schema.ValidationException;
 import org.json.JSONObject;
@@ -134,6 +131,7 @@ public interface IController {
      * @param group
      */
     void addScopeGroup(@Nonnull Scope scope, @Nonnull Group group);
+
     void addScopeAdminGroup(@Nonnull Scope scope, @Nonnull Group group);
 
     /**
@@ -143,6 +141,7 @@ public interface IController {
      * @param u
      */
     void addScopeUser(@Nonnull Scope scope, @Nonnull IUser u);
+
     void addScopeAdmin(@Nonnull Scope scope, @Nonnull IUser u);
 
     /**

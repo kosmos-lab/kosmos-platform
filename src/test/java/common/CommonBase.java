@@ -430,7 +430,7 @@ public class CommonBase {
 
             if (context.getFailedTests().size() == 0) {
                 if (KosmoSHelper.getEnvBool("DONT_STOP_TEST")) {
-                    System.out.println(String.format("Test FINISHED! you can now login via %s %s and stop the server once you are done to exit the test", httpClientAdmin.getUserName(), httpClientAdmin.getPassword()));
+                    System.out.printf("Test FINISHED! you can now login via %s %s and stop the server once you are done to exit the test%n", httpClientAdmin.getUserName(), httpClientAdmin.getPassword());
                     while (true) {
                         try {
                             Thread.sleep(10000);
@@ -455,8 +455,8 @@ public class CommonBase {
 
                 for (ITestNGMethod method : context.getPassedTests().getAllMethods()) {
 
-                    String n = String.format("%s.%s",method.getConstructorOrMethod().getDeclaringClass().getCanonicalName(),method.getMethodName());
-                    logger.info("found passed test {}",n);
+                    String n = String.format("%s.%s", method.getConstructorOrMethod().getDeclaringClass().getCanonicalName(), method.getMethodName());
+                    logger.info("found passed test {}", n);
                     methods.put(n, method);
                 }
 
@@ -537,19 +537,17 @@ public class CommonBase {
                     }
 
 
+                }
+
+
+                //System.out.println("Profile ID:  " + System.getProperty("profileId"));
             }
 
 
-
-
-            //System.out.println("Profile ID:  " + System.getProperty("profileId"));
+            controller.stop();
         }
 
-
-        controller.stop();
     }
-
-}
 
     @Test(priority = 10, groups = {"login"})
     public void login() {

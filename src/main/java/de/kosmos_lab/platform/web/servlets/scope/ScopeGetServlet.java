@@ -1,9 +1,13 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
-import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
@@ -14,22 +18,14 @@ import de.kosmos_lab.web.annotations.media.ExampleObject;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Scope;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.exceptions.ScopeNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import jakarta.ws.rs.core.MediaType;
+
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -37,7 +33,7 @@ import java.io.IOException;
         userLevel = 1
 )
 @ApiResponse(
-        componentName="scopeGet",
+        componentName = "scopeGet",
         responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE),
         description = "Details about the scope",
 
@@ -46,8 +42,8 @@ import java.io.IOException;
                 mediaType = MediaType.APPLICATION_JSON,
                 examples = {
                         @ExampleObject(
-                                name="testScope",
-                                value="{\""+Scope.FIELD_NAME+"\":\"testScope\",\""+Scope.FIELD_ID+"\":18,\""+Scope.FIELD_USERS+"\":[{\"name\":\"user7\",\"id\":7}],\""+Scope.FIELD_ADMINS+"\":[{\"name\":\"admin\",\"id\":1}],\""+Scope.FIELD_ADMIN_GROUPS+"\":[],\""+Scope.FIELD_USER_GROUPS+"\":[{\"name\":\"testGroup2\",\"id\":2}]}"
+                                name = "testScope",
+                                value = "{\"" + Scope.FIELD_NAME + "\":\"testScope\",\"" + Scope.FIELD_ID + "\":18,\"" + Scope.FIELD_USERS + "\":[{\"name\":\"user7\",\"id\":7}],\"" + Scope.FIELD_ADMINS + "\":[{\"name\":\"admin\",\"id\":1}],\"" + Scope.FIELD_ADMIN_GROUPS + "\":[],\"" + Scope.FIELD_USER_GROUPS + "\":[{\"name\":\"testGroup2\",\"id\":2}]}"
                         )
                 },
                 schemaProperties = {
@@ -132,7 +128,7 @@ public class ScopeGetServlet extends KosmoSAuthedServlet {
             },
 
             responses = {
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK),ref = "#/components/responses/scopeGet"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK), ref = "#/components/responses/scopeGet"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_FORBIDDEN), ref = "#/components/responses/NoAccessError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NOT_FOUND), ref = "#/components/responses/NotFoundError"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
@@ -142,8 +138,6 @@ public class ScopeGetServlet extends KosmoSAuthedServlet {
 
 
             throws NoAccessToScope, ScopeNotFoundException, ParameterNotFoundException, UnauthorizedException, IOException {
-
-
 
 
         try {
@@ -165,7 +159,6 @@ public class ScopeGetServlet extends KosmoSAuthedServlet {
         try {
             Scope scope = controller.getScope(id, CacheMode.CACHE_AND_PERSISTENCE);
             sendJSON(request, response, scope.toJSON());
-            return;
         } catch (NotFoundInPersistenceException ex) {
             throw new ScopeNotFoundException("" + id);
         }

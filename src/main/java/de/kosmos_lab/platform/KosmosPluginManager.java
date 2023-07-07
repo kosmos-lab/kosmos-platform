@@ -89,6 +89,7 @@ public class KosmosPluginManager extends DefaultPluginManager {
         }
         return matched;
     }
+
     public @Nonnull
     Collection<Class> getAllClassesFor(@Nonnull Class className) {
         Collection<Class> matched = new HashSet<>();
@@ -106,9 +107,9 @@ public class KosmosPluginManager extends DefaultPluginManager {
         }
 
 
-
-            return matched;
+        return matched;
     }
+
     /**
      * get a new instance of the given class
      *
@@ -186,7 +187,7 @@ public class KosmosPluginManager extends DefaultPluginManager {
                             Path myPath = null;
                             if (uri.getScheme().equals("jar")) {
                                 try {
-                                    FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
+                                    FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
                                     myPath = fileSystem.getPath("/web/");
                                 } catch (FileSystemAlreadyExistsException ex) {
                                     logger.error("could not create filesystem for {}", uri);
@@ -216,7 +217,7 @@ public class KosmosPluginManager extends DefaultPluginManager {
                                                 new File(String.format("./web/%s", filteredName)).mkdirs();
                                             }
                                         } catch (Exception ex) {
-                                           // logger.error("Could not parse Path {} - {}", path, filteredName, ex);
+                                            // logger.error("Could not parse Path {} - {}", path, filteredName, ex);
                                             //ex.printStackTrace();
                                         }
                                         //logger.warn("Path File is null?! {}", path);

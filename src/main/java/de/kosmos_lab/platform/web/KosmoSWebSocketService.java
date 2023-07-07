@@ -30,7 +30,6 @@ import de.kosmos_lab.web.doc.openapi.Message;
 import de.kosmos_lab.web.doc.openapi.WebSocketEndpoint;
 import de.kosmos_lab.web.exceptions.LoginFailedException;
 import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
-import de.kosmos_lab.web.exceptions.ServletException;
 import de.kosmos_lab.web.server.JWT;
 import de.kosmos_lab.web.server.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
@@ -454,9 +453,9 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
         if (from != this) {
             if (event.getDevice() != null) {
 
-                this.broadcastToReadUsers(event.getDevice(), String.format("device/%s/event:%s",event.getDevice().getUniqueID(),event.toJSON().toString()), null, sourceSession);
+                this.broadcastToReadUsers(event.getDevice(), String.format("device/%s/event:%s", event.getDevice().getUniqueID(), event.toJSON().toString()), null, sourceSession);
             } else {
-                this.broadCast(String.format("event:%s",event.toJSON().toString()), sourceSession);
+                this.broadCast(String.format("event:%s", event.toJSON().toString()), sourceSession);
             }
         }
     }
@@ -857,7 +856,6 @@ public class KosmoSWebSocketService extends WebSocketService implements CommandI
             sess.getRemote().sendString("schemas:" + s);
             sess.getRemote().sendString("devices:" + arr);
 
-            return;
         } catch (Exception e) {
             logger.warn("Exception:", e);
         }

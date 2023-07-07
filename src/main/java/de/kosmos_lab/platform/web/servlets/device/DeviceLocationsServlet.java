@@ -1,29 +1,27 @@
 package de.kosmos_lab.platform.web.servlets.device;
 
-import de.kosmos_lab.web.annotations.media.SchemaProperty;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Device;
+import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
-import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.media.ExampleObject;
 import de.kosmos_lab.web.annotations.media.Schema;
+import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Device;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.DeviceNotFoundException;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONObject;
 
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -52,7 +50,7 @@ public class DeviceLocationsServlet extends KosmoSAuthedServlet {
                             content = @Content(
 
                                     mediaType = MediaType.APPLICATION_JSON,
-                                    schemaProperties = {@SchemaProperty(schema=@Schema(ref="#/components/schemas/deviceLocation"))}
+                                    schemaProperties = {@SchemaProperty(schema = @Schema(ref = "#/components/schemas/deviceLocation"))}
 
 
                                     ,

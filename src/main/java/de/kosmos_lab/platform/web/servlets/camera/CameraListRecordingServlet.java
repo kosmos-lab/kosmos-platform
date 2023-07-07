@@ -1,6 +1,11 @@
 package de.kosmos_lab.platform.web.servlets.camera;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.CameraNotFoundException;
+import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
@@ -14,13 +19,7 @@ import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.CameraNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MediaType;
@@ -121,8 +120,6 @@ public class CameraListRecordingServlet extends KosmoSAuthedServlet {
             );
         }
         sendJSON(request, response, arr);
-
-        return;
 
 
     }

@@ -1,5 +1,10 @@
 package de.kosmos_lab.platform.web.servlets.gesture;
 
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.GestureAlreadyExistsException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.ArraySchema;
@@ -11,17 +16,11 @@ import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.GestureAlreadyExistsException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONObject;
 
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -35,7 +34,7 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
     public GestureAddServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
-    
+
     @Operation(
             tags = {"gesture"},
             summary = "add",
@@ -46,7 +45,7 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
                             @Content(
                                     mediaType = MediaType.APPLICATION_JSON,
                                     schemaProperties = {
-                                            
+
                                             @SchemaProperty(
                                                     name = "name",
                                                     schema = @Schema(
@@ -80,7 +79,7 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
                                             value = "{\"name\":\"X\",\"points\":[[[349,221],[349,220],[349,219],[349,218],[349,217],[349,216],[349,214],[349,213],[349,212],[349,210],[349,208],[349,206],[349,204],[349,200],[349,197],[349,194],[349,190],[349,186],[349,182],[349,178],[348,175],[347,171],[347,168],[347,165],[346,162],[346,159],[345,157],[345,155],[344,153],[344,152],[343,150],[342,149],[342,148],[342,147],[341,146],[341,145],[340,145],[339,145],[338,145],[337,145],[336,145],[335,145],[334,145],[333,145],[332,145],[331,145],[330,145],[329,146],[329,147],[328,147],[327,148],[326,149],[325,149],[324,151],[322,152],[321,153],[320,155],[318,157],[317,158],[316,160],[315,161],[314,163],[313,165],[312,166],[312,168],[311,170],[310,172],[310,173],[310,175],[310,176],[309,177],[309,178],[309,180],[309,181],[309,183],[309,185],[309,187],[309,189],[309,190],[309,193],[309,195],[309,197],[311,199],[311,201],[312,203],[312,204],[313,206],[314,207],[315,209],[316,210],[317,211],[317,213],[319,214],[320,215],[321,217],[322,218],[323,218],[329,223],[330,224],[331,225],[332,226],[333,227],[334,227],[334,228],[335,228],[336,228],[337,228],[337,229],[338,229],[339,229],[340,229],[340,228],[341,228],[341,227],[342,226],[343,225],[343,224],[344,224],[344,223],[345,223],[345,222],[345,221],[345,220],[345,219],[346,219],[346,218]],[[427,114],[427,115],[427,116],[425,117],[423,118],[420,119],[418,121],[414,123],[410,126],[406,128],[402,130],[396,134],[392,137],[389,139],[385,142],[382,144],[380,147],[378,149],[376,151],[374,153],[373,155],[372,157],[372,158],[371,160],[370,161],[370,162],[370,163],[370,164],[370,165],[370,166]],[[409,249],[407,249],[406,249],[404,248],[403,248],[400,246],[398,245],[396,243],[394,242],[392,240],[390,237],[388,235],[385,232],[383,228],[381,225],[379,222],[377,219],[376,216],[375,213],[374,212],[374,210],[373,209],[373,208]],[[258,263],[259,263],[260,263],[262,262],[265,260],[269,259],[273,258],[276,255],[282,253],[286,251],[289,248],[293,245],[297,243],[300,240],[304,237],[307,235],[309,232],[311,230],[313,228],[314,227],[315,226],[315,225],[316,224],[316,223]],[[242,155],[243,155],[245,154],[247,154],[249,154],[253,154],[257,154],[261,154],[265,155],[269,157],[273,159],[276,161],[280,163],[283,165],[287,167],[290,169],[292,171],[294,173],[297,175],[298,177],[299,178],[300,179],[301,179],[302,179]],[[317,104],[318,104],[319,106],[320,106],[320,108],[321,111],[323,114],[325,119],[327,125],[330,133],[333,141],[337,149],[340,157],[342,166],[345,173],[348,181],[349,187],[351,193],[353,198],[354,202],[355,206],[355,208],[355,209]]]}"
                                     )
                             }
-                            
+
                             )
                     }
             ),
@@ -92,10 +91,10 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
             })
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
-            
+
             throws IOException, GestureAlreadyExistsException, UnauthorizedException {
         JSONObject body = request.getBodyAsJSONObject();
-        
+
         if (controller.getGestureProvider().addGesture(
                 body.getString("name")
                 , body.getJSONArray("points"),
@@ -104,8 +103,8 @@ public class GestureAddServlet extends KosmoSAuthedServlet {
             return;
         }
         throw new GestureAlreadyExistsException(body.getString("name"));
-        
+
     }
-    
+
 }
 

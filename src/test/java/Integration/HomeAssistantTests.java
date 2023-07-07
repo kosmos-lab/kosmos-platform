@@ -221,7 +221,7 @@ public class HomeAssistantTests {
         long started = System.currentTimeMillis();
         while (true) {
             long delta = System.currentTimeMillis() - started;
-            JSONObject obj = CommonBase.clientha.fetchJSONObject("/api/states/" + HADeviceName, HttpMethod.GET,null);
+            JSONObject obj = CommonBase.clientha.fetchJSONObject("/api/states/" + HADeviceName, HttpMethod.GET, null);
 
             if (obj == null) {
                 if (delta > 15000) {

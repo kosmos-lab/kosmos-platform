@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class TestSchema {
-    @Test(priority = 100,groups = {"testSchema"})
+    @Test(priority = 100, groups = {"testSchema"})
     public void testSchema() throws NotObjectSchemaException {
         DataSchema schema = new DataSchema(new JSONObject("{\n" +
                 "  \"$id\": \"https://example.com/person.schema.json\",\n" +
@@ -53,7 +53,7 @@ public class TestSchema {
                     "}"));
             Assert.fail("Should not have validated it...");
         } catch (ValidationException e) {
-        
+
         }
         try {
             schema.validate(new JSONObject("{\n" +
@@ -63,12 +63,12 @@ public class TestSchema {
                     "}"));
             Assert.fail("Should not have validated it...");
         } catch (ValidationException e) {
-        
+
         }
     }
-    
-    
-    @Test(dependsOnGroups = {"testSchema"},priority = 100,groups = {"testAllSchemas"})
+
+
+    @Test(dependsOnGroups = {"testSchema"}, priority = 100, groups = {"testAllSchemas"})
     public void testAllSchemas() throws FileNotFoundException {
         File dir = new File("schema");
         File[] files = dir.listFiles();
@@ -89,7 +89,7 @@ public class TestSchema {
 
                                 JSONObject example = arr.getJSONObject(i);
                                 try {
-                                    new DataEntry(schema, example,false);
+                                    new DataEntry(schema, example, false);
                                 } catch (ValidationException e) {
 
                                     Assert.fail("could not validate:\n " + schema.getSchema().getId() + " - " + example.toString() + "\n" + e.getErrorMessage());
@@ -102,8 +102,8 @@ public class TestSchema {
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject example = arr.getJSONObject(i);
                                 try {
-                                    new DataEntry(schema, example,false);
-                                    Assert.fail("should not have validated this!\n" + example.toString());
+                                    new DataEntry(schema, example, false);
+                                    Assert.fail("should not have validated this!\n" + example);
                                 } catch (ValidationException e) {
 
                                 }
@@ -117,10 +117,10 @@ public class TestSchema {
                     Assert.fail("run into Exception ", ex);
                 }
             }
-            
+
         }
-        
+
     }
-    
-    
+
+
 }

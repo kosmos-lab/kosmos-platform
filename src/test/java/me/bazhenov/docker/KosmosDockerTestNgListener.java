@@ -59,10 +59,10 @@ public class KosmosDockerTestNgListener extends TestListenerAdapter {
 
         if (!Utils.skip_docker_creation()) {
             logger.info("preparing to start container");
-            KosmoSHelper.setEnv("SETUPKNX","1");
-            KosmoSHelper.setEnv("SETUPHA","0");
+            KosmoSHelper.setEnv("SETUPKNX", "1");
+            KosmoSHelper.setEnv("SETUPHA", "0");
 
-            KosmoSHelper.setEnv("HA_HOST","hatest");
+            KosmoSHelper.setEnv("HA_HOST", "hatest");
             DockerAnnotationsInspector inspector = new DockerAnnotationsInspector();
             ExecutorService starter = Executors.newCachedThreadPool();
 

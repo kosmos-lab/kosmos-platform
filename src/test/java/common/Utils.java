@@ -5,18 +5,21 @@ import de.kosmos_lab.utils.JSONChecker;
 import org.json.JSONObject;
 import org.testng.Assert;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Utils {
     /**
      * check if we are NOT in the docker CI
+     *
      * @return
      */
     public static boolean skip_docker_creation() {
         return KosmoSHelper.getEnvBool("SKIP_DOCKER_CREATION");
 
     }
+
     public static boolean compare(JSONObject a, JSONObject b, Set<String> skippedKeys) {
         for (String k : a.keySet()) {
             if (!skippedKeys.contains(k)) {
@@ -30,24 +33,22 @@ public class Utils {
                     e.printStackTrace();
                     return false;
                 }
-                
+
             }
         }
         return true;
     }
-    
+
     public static boolean compare(JSONObject a, JSONObject b, String[] skippedKeys) {
         Set<String> keys = new HashSet<>();
-        
-        for (String k : skippedKeys) {
-            keys.add(k);
-        }
-        
+
+        Collections.addAll(keys, skippedKeys);
+
         return compare(a, b, keys);
     }
-    
+
     public static boolean compare(JSONObject a, JSONObject b) {
         return compare(a, b, new HashSet<String>());
     }
-    
+
 }

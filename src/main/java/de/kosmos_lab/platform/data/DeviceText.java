@@ -17,7 +17,7 @@ public class DeviceText {
 
     private final Device device;
     private final String key;
-    private  String value;
+    private String value;
 
     public DeviceText(Device device, String key, String value) {
         this.device = device;
@@ -27,7 +27,7 @@ public class DeviceText {
     }
 
     public JSONObject toJSON() {
-        return new JSONObject().put("key",key).put("value",value);
+        return new JSONObject().put("key", key).put("value", value);
     }
 
 

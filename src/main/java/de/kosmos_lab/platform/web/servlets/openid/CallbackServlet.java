@@ -30,7 +30,7 @@ public class CallbackServlet extends KosmoSServlet {
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws  UnauthorizedException, ParameterNotFoundException {
+            throws UnauthorizedException, ParameterNotFoundException {
         UUID uuid = UUID.fromString(request.getString("state"));
         IUser u = server.processKC(request.getString("code"), uuid);
         if (u != null) {

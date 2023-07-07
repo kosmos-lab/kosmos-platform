@@ -13,25 +13,25 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class DataFactory {
-    
+
     private static boolean allRead = false;
     private static final HashMap<String, DataSchema> cache = new HashMap<>();
-    
+
     public static DataSchema getSchema(File f) throws NotObjectSchemaException {
-        
+
         if (f.exists()) {
             try {
                 JSONObject json = new JSONObject(new JSONTokener(new FileReader(f, StandardCharsets.UTF_8)));
-                
+
                 DataSchema schema = new DataSchema(json);
                 if (json.has("$id")) {
                     cache.put(json.getString("$id"), schema);
                 }
-                
+
                 try {
                     cache.put(f.getCanonicalPath(), schema);
                 } catch (IOException e) {
-                
+
                 }
                 return schema;
             } catch (FileNotFoundException e) {
@@ -41,11 +41,11 @@ public class DataFactory {
             }
 
         }
-        
+
         return null;
-        
+
     }
-    
+
     public static DataSchema getSchema(String name) throws NotObjectSchemaException {
         DataSchema schema = cache.get(name);
         if (schema == null) {
@@ -55,14 +55,14 @@ public class DataFactory {
             } else {
                 f = new File("schema/" + new File(name).getName()); //very simple sanity check for the filename
             }
-            
+
             schema = getSchema(f);
             if (schema == null) {
                 if (!allRead) {
                     File dir = new File("schema/");
                     if (dir.exists()) {
                         File[] filelist = dir.listFiles();
-                        if ( filelist != null ) {
+                        if (filelist != null) {
                             for (File f2 : filelist) {
                                 if (f2.getName().endsWith(".json")) {
                                     getSchema(f2);
@@ -75,8 +75,8 @@ public class DataFactory {
                 }
             }
         }
-        
+
         return schema;
-        
+
     }
 }

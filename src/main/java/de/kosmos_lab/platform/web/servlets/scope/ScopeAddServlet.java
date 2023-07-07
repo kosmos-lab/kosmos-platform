@@ -1,11 +1,16 @@
 package de.kosmos_lab.platform.web.servlets.scope;
 
-import de.kosmos_lab.web.exceptions.UnauthorizedException;
-import de.kosmos_lab.web.exceptions.AlreadyExistsException;
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Group;
+import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.platform.exceptions.GroupNotFoundException;
+import de.kosmos_lab.platform.exceptions.NoAccessToScope;
+import de.kosmos_lab.platform.exceptions.ScopeAlreadyExistsException;
+import de.kosmos_lab.platform.exceptions.UserNotFoundException;
 import de.kosmos_lab.platform.persistence.Constants.CacheMode;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.ArraySchema;
@@ -15,28 +20,18 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Group;
-import de.kosmos_lab.platform.data.Scope;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.GroupNotFoundException;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.exceptions.ScopeAlreadyExistsException;
-import de.kosmos_lab.platform.exceptions.UserNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
+import de.kosmos_lab.web.exceptions.AlreadyExistsException;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -62,16 +57,16 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
                             @Content(
                                     examples = {
                                             @ExampleObject(
-                                                    name="add scope with name 'testScope'",
-                                                    value="{\""+Scope.FIELD_NAME+"\":\"testScope\"}"
+                                                    name = "add scope with name 'testScope'",
+                                                    value = "{\"" + Scope.FIELD_NAME + "\":\"testScope\"}"
                                             ),
                                             @ExampleObject(
-                                                    name="add scope with name 'testScope2', and add user 7 as user and user 2 as admin",
-                                                    value="{\""+Scope.FIELD_NAME+"\":\"testScope2\",\""+Scope.FIELD_USERS+"\":[7],\""+Scope.FIELD_ADMINS+"\":[2]}"
+                                                    name = "add scope with name 'testScope2', and add user 7 as user and user 2 as admin",
+                                                    value = "{\"" + Scope.FIELD_NAME + "\":\"testScope2\",\"" + Scope.FIELD_USERS + "\":[7],\"" + Scope.FIELD_ADMINS + "\":[2]}"
                                             ),
                                             @ExampleObject(
-                                                    name="add scope with name 'testScope2', and add user 7 as user and user 2 as admin",
-                                                    value="{\""+Scope.FIELD_NAME+"\":\"testScope2\",\""+Scope.FIELD_USERS+"\":[7],\""+Scope.FIELD_ADMINS+"\":[2]}"
+                                                    name = "add scope with name 'testScope2', and add user 7 as user and user 2 as admin",
+                                                    value = "{\"" + Scope.FIELD_NAME + "\":\"testScope2\",\"" + Scope.FIELD_USERS + "\":[7],\"" + Scope.FIELD_ADMINS + "\":[2]}"
                                             )
                                     },
                                     mediaType = MediaType.APPLICATION_JSON,
@@ -149,7 +144,7 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
                     }),
             responses = {
 
-                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK),ref = "#/components/responses/scopeGet",description = "The scope was added successfully"),
+                    @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_OK), ref = "#/components/responses/scopeGet", description = "The scope was added successfully"),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "There is already a scope with that name."),
                     //@ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_AUTH), ref = "#/components/responses/NoAuthError"),
 
@@ -303,7 +298,6 @@ public class ScopeAddServlet extends KosmoSAuthedServlet {
             //response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_OK);
 
 
-            return;
         }
 
 

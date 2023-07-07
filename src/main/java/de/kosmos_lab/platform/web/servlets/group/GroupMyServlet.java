@@ -1,5 +1,10 @@
 package de.kosmos_lab.platform.web.servlets.group;
 
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.Group;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.ArraySchema;
@@ -7,27 +12,14 @@ import de.kosmos_lab.web.annotations.media.Content;
 import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.Group;
-import de.kosmos_lab.web.annotations.tags.Tag;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.NoAccessToScope;
-import de.kosmos_lab.platform.exceptions.NotObjectSchemaException;
-import de.kosmos_lab.platform.exceptions.SchemaNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MediaType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletResponse;
-
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
 
@@ -37,13 +29,15 @@ import java.io.IOException;
 )
 
 public class GroupMyServlet extends KosmoSAuthedServlet {
-    
-    
+
+
     public GroupMyServlet(KosmoSWebServer webServer, IController controller, int level) {
         super(webServer, controller, level);
     }
+
     private static final String FIELD_USER = "user";
     private static final String FIELD_ADMIN = "admin";
+
     @Operation(
             tags = {"group"},
             summary = "my",
@@ -77,27 +71,27 @@ public class GroupMyServlet extends KosmoSAuthedServlet {
     )
     public void get(KosmoSHttpServletRequest request, HttpServletResponse response)
 
-            
-            throws  IOException, UnauthorizedException {
+
+            throws IOException, UnauthorizedException {
         JSONObject o = new JSONObject();
-    
+
         JSONArray arr = new JSONArray();
         for (Group group : this.controller.getAllGroupsWithUser(request.getKosmoSUser())) {
-        
+
             arr.put(group.getName());
-        
+
         }
-        o.put(FIELD_USER,arr);
+        o.put(FIELD_USER, arr);
         arr = new JSONArray();
         for (Group group : this.controller.getAllGroupsWithAdmin(request.getKosmoSUser())) {
-        
+
             arr.put(group.getName());
-        
+
         }
-        o.put(FIELD_ADMIN,arr);
+        o.put(FIELD_ADMIN, arr);
         sendJSON(request, response, o);
     }
-    
-    
+
+
 }
 

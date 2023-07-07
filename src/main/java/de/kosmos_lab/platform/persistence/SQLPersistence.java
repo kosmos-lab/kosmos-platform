@@ -1,10 +1,10 @@
 package de.kosmos_lab.platform.persistence;
 
-import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
+import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.platform.data.Device;
 import de.kosmos_lab.platform.data.LogEntry;
-import de.kosmos_lab.platform.IController;
 import de.kosmos_lab.utils.StringFunctions;
+import de.kosmos_lab.web.persistence.exceptions.NotFoundInPersistenceException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -172,9 +172,11 @@ public abstract class SQLPersistence implements IPersistence {
 
     /**
      * Checks the exception to determine what to do
-     * @param ex the given exception
-     * @param query the query that was executed
+     *
+     * @param ex     the given exception
+     * @param query  the query that was executed
      * @param params the parameters that were given
+     *
      * @return returns true if the request should be tried again
      */
     protected boolean checkException(final SQLException ex, String query, Object[] params) {
@@ -502,7 +504,7 @@ public abstract class SQLPersistence implements IPersistence {
         ResultSet rs = null;
         int tries = 5;
 
-        while(tries>0) {
+        while (tries > 0) {
             try {
                 stmt = conn.prepareStatement(query);
                 this.fillStatement(stmt, params);
@@ -513,11 +515,11 @@ public abstract class SQLPersistence implements IPersistence {
                 }
 
             } catch (final SQLException ex) {
-                if(!this.checkException(ex, query, params)) {
+                if (!this.checkException(ex, query, params)) {
                     throw new NotFoundInPersistenceException(String.format("query:%s", fullPrint(query, params)));
                 }
                 tries--;
-                if(tries>0) {
+                if (tries > 0) {
                     try {
                         Thread.sleep(250);
                     } catch (InterruptedException e) {
@@ -1274,7 +1276,7 @@ public abstract class SQLPersistence implements IPersistence {
                     query = query.replaceFirst("\\?", p.toString());
                 }
             } catch (Exception exx) {
-                logger.error("could not get full query! for {} ", query,exx);
+                logger.error("could not get full query! for {} ", query, exx);
             }
         }
         return query;

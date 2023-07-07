@@ -1,6 +1,11 @@
 package de.kosmos_lab.platform.web.servlets.camera;
 
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.exceptions.CameraNotFoundException;
+import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.Parameter;
 import de.kosmos_lab.web.annotations.enums.ParameterIn;
@@ -9,13 +14,7 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.exceptions.CameraNotFoundException;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import de.kosmos_lab.platform.plugins.camera.ICamera;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -51,12 +50,12 @@ public class CameraStartRecordingServlet extends KosmoSAuthedServlet {
             },
             responses = {
                     @ApiResponse(
-                            
+
                             responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE),
                             description = "The camera is now recording"
                     ),
 
-                    
+
                     @ApiResponse(responseCode = @ResponseCode(statusCode = de.kosmos_lab.web.server.WebServer.STATUS_CONFLICT), description = "This camera is already recording."),
 
             }
@@ -65,7 +64,7 @@ public class CameraStartRecordingServlet extends KosmoSAuthedServlet {
     public void post(KosmoSHttpServletRequest request, HttpServletResponse response)
 
 
-            throws IOException, CameraNotFoundException, ParameterNotFoundException , UnauthorizedException {
+            throws IOException, CameraNotFoundException, ParameterNotFoundException, UnauthorizedException {
 
         String cameraName = request.getParameter(FIELD_CAMERA, true);
         ICamera cam = controller.getCamera(cameraName);
@@ -78,7 +77,6 @@ public class CameraStartRecordingServlet extends KosmoSAuthedServlet {
 
 
         response.setStatus(de.kosmos_lab.web.server.WebServer.STATUS_NO_RESPONSE);
-        return;
     }
 
 }

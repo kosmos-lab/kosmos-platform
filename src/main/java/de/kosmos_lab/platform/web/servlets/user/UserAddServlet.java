@@ -1,8 +1,12 @@
 package de.kosmos_lab.platform.web.servlets.user;
 
+import de.kosmos_lab.platform.IController;
+import de.kosmos_lab.platform.data.KosmoSUser;
 import de.kosmos_lab.platform.exceptions.NoAccessException;
-import de.kosmos_lab.web.data.IUser;
-import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
+import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
+import de.kosmos_lab.platform.web.KosmoSWebServer;
+import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
+import de.kosmos_lab.utils.StringFunctions;
 import de.kosmos_lab.web.annotations.Operation;
 import de.kosmos_lab.web.annotations.enums.SchemaType;
 import de.kosmos_lab.web.annotations.media.Content;
@@ -11,19 +15,14 @@ import de.kosmos_lab.web.annotations.media.Schema;
 import de.kosmos_lab.web.annotations.media.SchemaProperty;
 import de.kosmos_lab.web.annotations.parameters.RequestBody;
 import de.kosmos_lab.web.annotations.responses.ApiResponse;
-import de.kosmos_lab.platform.data.KosmoSUser;
+import de.kosmos_lab.web.data.IUser;
 import de.kosmos_lab.web.doc.openapi.ApiEndpoint;
 import de.kosmos_lab.web.doc.openapi.ResponseCode;
-import de.kosmos_lab.platform.IController;
-import de.kosmos_lab.platform.web.KosmoSHttpServletRequest;
-
-import de.kosmos_lab.platform.web.KosmoSWebServer;
-import de.kosmos_lab.platform.web.servlets.KosmoSAuthedServlet;
-import de.kosmos_lab.utils.StringFunctions;
+import de.kosmos_lab.web.exceptions.ParameterNotFoundException;
 import de.kosmos_lab.web.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import jakarta.ws.rs.core.MediaType;
+
 import java.io.IOException;
 
 @ApiEndpoint(
@@ -128,7 +127,7 @@ public class UserAddServlet extends KosmoSAuthedServlet {
         int level = request.getInt(FIELD_LEVEL, 1);
         logger.info("trying to add user {} with level {}", user, level);
         IUser me = request.getKosmoSUser();
-        if (level <=0) {
+        if (level <= 0) {
             response.sendError(de.kosmos_lab.web.server.WebServer.STATUS_UNPROCESSABLE, "The level is too low, minimum is 1");
         }
         if (level >= me.getLevel()) {

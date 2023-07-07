@@ -33,7 +33,7 @@ public class Config extends JSONObject {
 
     }
 
-    public void setFile(@Nonnull  File f) {
+    public void setFile(@Nonnull File f) {
         this.file = f;
     }
 
@@ -55,7 +55,7 @@ public class Config extends JSONObject {
             if (!f.exists()) {
 
                 if (!f.mkdirs()) {
-                    logger.warn("could not create database folder \"{}\" - exiting",f);
+                    logger.warn("could not create database folder \"{}\" - exiting", f);
                     System.exit(1);
                 }
             }

@@ -91,7 +91,8 @@ public class DataSchema {
         return this.schema.definesProperty(key);
     }
 
-@CheckForNull public static Object getExample(@Nonnull Schema s) {
+    @CheckForNull
+    public static Object getExample(@Nonnull Schema s) {
 
         logger.info("getting an example value for " + s.getId() + " type:" + s.getClass().toString());
 

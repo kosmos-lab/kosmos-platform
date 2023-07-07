@@ -272,10 +272,12 @@ public class KosmoSController implements IController {
         if (runMode == RunMode.NORMAL) {
 
             if (KosmoSHelper.getEnvBool("USE_ROS2") || config.has("ros2")) {
-                this.ros2controller = new ROS2Controller(this,"kosmos");
+                /*this.ros2controller = new ROS2Controller(this);
                 if ( this.ros2controller != null ) {
                     this.commandInterfaces.add(ros2controller);
                 }
+
+                 */
 
             }
             //create default users
@@ -611,7 +613,7 @@ public class KosmoSController implements IController {
         this.pluginManager = new KosmosPluginManager();
         for (Class cls : pluginManager.getAllClassesFor(IAuthProvider.class)) {
             try {
-                logger.info("found IAuthProvider class {}",cls.getCanonicalName());
+                logger.info("found IAuthProvider class {}", cls.getCanonicalName());
                 //this.authProviders.add(cls.getI)
 
                 //IAuthProvider p = ((cls.get) cls).getInstance(this);
@@ -620,19 +622,16 @@ public class KosmoSController implements IController {
                 if (p != null) {
                     this.authProviders.add((IAuthProvider) p);
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
         try {
             this.webServer = new KosmoSWebServer(this);
         } catch (Exception e) {
             logger.error("Fatal exception while starting WebServer", e);
             System.exit(0);
             //throw new RuntimeException(e);
-
         }
         //addCommandInterface(webServer);
 
@@ -1653,15 +1652,15 @@ public class KosmoSController implements IController {
     }
 
     public IUser getUserCreateIfUnavailable(@Nonnull String user) {
-        logger.info("looking for {}",user);
+        logger.info("looking for {}", user);
         IUser u = this.getUser(user);
         if (u == null) {
-            logger.info("needing to create user {}",user);
+            logger.info("needing to create user {}", user);
             this.addUser(user, StringFunctions.generateRandomKey(), 1);
             u = this.getUser(user);
 
         }
-        logger.info("returning {}",u);
+        logger.info("returning {}", u);
         return u;
 
     }
@@ -2050,7 +2049,6 @@ public class KosmoSController implements IController {
 
                             if (!device.canWrite(k2, user)) {
                                 toClean.add(k2);
-                                ;
                             }
 
                         } else {

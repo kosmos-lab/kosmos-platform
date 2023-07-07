@@ -77,7 +77,6 @@ public class SchemaGetServlet extends KosmoSAuthedServlet {
         DataSchema s = controller.getSchema(id);
         if (s != null) {
             sendJSON(request, response, s.getRawSchema());
-            return;
         }
 
 
